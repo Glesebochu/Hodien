@@ -1,27 +1,37 @@
 enum HumorType {
-  Physical('Physical'),
-  Linguistic('Linguistic'),
-  Situational('Situational'),
-  Critical('Critical');
+  physical('Physical'),
+  linguistic('Linguistic'),
+  situational('Situational'),
+  critical('Critical');
 
   final String value;
   const HumorType(this.value);
 }
 
 enum ToneType {
-  Positive('Positive'),
-  Neutral('Neutral'),
-  Negative('Negative');
+  positive('Positive'),
+  neutral('Neutral'),
+  negative('Negative');
 
   final String value;
   const ToneType(this.value);
 }
 
 enum MediaType {
-  TextOnly('TextOnly'),
-  Image('Image'),
-  Video('Video');
+  textOnly('TextOnly'),
+  image('Image'),
+  video('Video');
 
   final String value;
   const MediaType(this.value);
+}
+
+enum ReactionType {
+  notFunny('NotFunny'),
+  meh('Meh'),
+  funny('Funny'),
+  hillarious('Hilarious');
+
+  final String value;
+  const ReactionType(this.value);
 }

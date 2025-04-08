@@ -43,10 +43,10 @@ class HumorProfile {
   HumorProfile updateFromReaction(Reaction reaction) {
     final delta =
         {
-          ReactionType.NotFunny: -0.1,
-          ReactionType.Meh: 0.0,
-          ReactionType.Funny: 0.2,
-          ReactionType.Hillarious: 0.4,
+          ReactionType.notFunny: -0.1,
+          ReactionType.meh: 0.0,
+          ReactionType.funny: 0.2,
+          ReactionType.hillarious: 0.4,
         }[reaction.reactionType] ??
         0.0;
 
@@ -54,16 +54,16 @@ class HumorProfile {
     if (content == null) return this;
 
     switch (content.humorType) {
-      case HumorType.Physical:
+      case HumorType.physical:
         physicalHumorPreference += delta;
         break;
-      case HumorType.Linguistic:
+      case HumorType.linguistic:
         linguisticHumorPreference += delta;
         break;
-      case HumorType.Situational:
+      case HumorType.situational:
         situationalHumorPreference += delta;
         break;
-      case HumorType.Critical:
+      case HumorType.critical:
         criticalHumorPreference += delta;
         break;
     }

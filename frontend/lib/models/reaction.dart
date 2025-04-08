@@ -1,4 +1,4 @@
-enum ReactionType { notFunny, meh, funny, hillarious }
+import 'constants.dart';
 
 class Reaction {
   String reactionId;
