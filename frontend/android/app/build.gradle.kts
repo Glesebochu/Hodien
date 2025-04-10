@@ -17,8 +17,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()    id("com.google.gms.google-services") version "4.4.2" apply false
-
+        jvmTarget = JavaVersion.VERSION_11.toString()    
     }
 
     defaultConfig {
