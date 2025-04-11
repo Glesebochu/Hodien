@@ -1,9 +1,14 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../main.dart';
+
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  final VoidCallback onClickedSignUp;
+
+  const LoginPage({super.key, required this.onClickedSignUp});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -26,6 +31,12 @@ class _LoginPageState extends State<LoginPage> {
   Future _submitForm() async {
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
+
+      showDialog(
+        context: context,
+        builder: (context) => const Center(child: CircularProgressIndicator()),
+      );
+
       try {
         await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: _emailController.text.trim(),
@@ -57,6 +68,9 @@ class _LoginPageState extends State<LoginPage> {
               ),
         );
       } finally {
+        // Close the loading dialog
+        navigatorKey.currentState!.popUntil((route) => route.isFirst);
+
         if (mounted) {
           setState(() => _isLoading = false);
         }
@@ -194,7 +208,18 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text("Don't have an account?"),
-                    TextButton(onPressed: () {}, child: const Text('Sign Up')),
+                    RichText(
+                      text: TextSpan(
+                        text: ' Sign Up',
+                        style: const TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        recognizer:
+                            TapGestureRecognizer()
+                              ..onTap = widget.onClickedSignUp,
+                      ),
+                    ),
                   ],
                 ),
                 //
