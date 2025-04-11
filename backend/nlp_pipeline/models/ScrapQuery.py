@@ -1,10 +1,14 @@
 class ScrapQuery:
-    def __init__(self, username="", hashtags="", textContains="", minLikes=0, minReposts=0):
+    def __init__(self, username="", hashtags="", mustContain="", canContain="", minLikes=0, minReposts=0, language="", fromDate=None, toDate=None):
         self.username = username
         self.hashtags = hashtags
-        self.textContains = textContains
+        self.mustContain = mustContain
+        self.canContain = canContain
         self.minLikes = minLikes
         self.minReposts = minReposts
+        self.language = language
+        self.fromDate = fromDate
+        self.toDate = toDate
 
     def getQuery(self):
         query_parts = []
