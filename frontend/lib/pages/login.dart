@@ -1,9 +1,9 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
+import '../utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
-import '../main.dart';
+// import '../main.dart';
 
 class LoginPage extends StatefulWidget {
   final VoidCallback onClickedSignUp;
@@ -29,51 +29,53 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future _submitForm() async {
-    if (_formKey.currentState!.validate()) {
-      setState(() => _isLoading = true);
+    final isValid = _formKey.currentState!.validate();
+    if (!isValid) return;
+    setState(() => _isLoading = true);
 
-      showDialog(
-        context: context,
-        builder: (context) => const Center(child: CircularProgressIndicator()),
+    // showDialog(
+    //   context: context,
+    //   builder: (context) => const Center(child: CircularProgressIndicator()),
+    // );
+
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
       );
+    } on FirebaseAuthException catch (e) {
+      setState(() => _isLoading = false);
+      // String errorMessage;
+      // if (e.code == 'user-not-found') {
+      //   errorMessage = 'No user found for that email.';
+      // } else if (e.code == 'wrong-password') {
+      //   errorMessage = 'Wrong password provided.';
+      // } else {
+      //   errorMessage = 'An error occurred. Please try again.';
+      //   //only use this message if the rest are insecure...
+      // }
+      // showDialog(
+      //   context: context,
+      //   builder:
+      //       (context) => AlertDialog(
+      //         title: const Text('Login Failed'),
+      //         content: Text(errorMessage),
+      //         actions: [
+      //           TextButton(
+      //             onPressed: () => Navigator.of(context).pop(),
+      //             child: const Text('OK'),
+      //           ),
+      //         ],
+      //       ),
+      // );
 
-      try {
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: _emailController.text.trim(),
-          password: _passwordController.text.trim(),
-        );
-      } on FirebaseAuthException catch (e) {
+      Utils.showSnackBar(e.message);
+    } finally {
+      // Close the loading dialog
+      // navigatorKey.currentState!.popUntil((route) => route.isFirst);
+
+      if (mounted) {
         setState(() => _isLoading = false);
-        String errorMessage;
-        if (e.code == 'user-not-found') {
-          errorMessage = 'No user found for that email.';
-        } else if (e.code == 'wrong-password') {
-          errorMessage = 'Wrong password provided.';
-        } else {
-          errorMessage = 'An error occurred. Please try again.';
-          //only use this message if the rest are insecure...
-        }
-        showDialog(
-          context: context,
-          builder:
-              (context) => AlertDialog(
-                title: const Text('Login Failed'),
-                content: Text(errorMessage),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: const Text('OK'),
-                  ),
-                ],
-              ),
-        );
-      } finally {
-        // Close the loading dialog
-        navigatorKey.currentState!.popUntil((route) => route.isFirst);
-
-        if (mounted) {
-          setState(() => _isLoading = false);
-        }
       }
     }
   }
