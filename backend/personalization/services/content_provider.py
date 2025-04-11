@@ -1,15 +1,16 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List
-from models.User import user
-from models.Content import content
+
+
 
 @dataclass
 class ContentProvider:
-    user_profile: user
-    content_pool: List[content]
+    user_profile: UserProfile
+    content_pool: List[Conten]
+    algorithm: str = "basic"
 
-    def generate_content(self) -> List[content]:
-        # Recommend items matching user’s preferred humor types
+    def generate_content(self) -> List[ContentItem]:
+        # Simulated recommendation logic based on preferred humor types
         recommendations = [
             item for item in self.content_pool
             if item.category in self.user_profile.preferred_humor_types
@@ -17,12 +18,12 @@ class ContentProvider:
         print("Generated personalized content.")
         return recommendations
 
-    def adjust_recommendations(self, user_reaction):
-        # Feedback logic can be expanded in the future
-        print(f"Adjusting recommendations based on reaction: {user_reaction}")
+    def adjust_recommendations(self, user_feedback):
+        # Placeholder for algorithm adjustment based on feedback
+        print(f"Adjusting recommendations based on feedback: {user_feedback}")
+        self.algorithm = "adjusted_based_on_feedback"
 
-    def generate_surprise_content(self) -> List[content]:
-        # Recommend content outside user preferences
+    def generate_surprise_content(self) -> List[ContentItem]:
         surprise_content = [
             item for item in self.content_pool
             if item.category not in self.user_profile.preferred_humor_types
@@ -31,7 +32,7 @@ class ContentProvider:
         return surprise_content
 
     def pass_content_to_view(self, content_ids: List[str]):
-        # Return content items by ID
+        # Just a stub to represent pushing data to the frontend
         selected_content = [
             item for item in self.content_pool if item.id in content_ids
         ]
