@@ -25,7 +25,7 @@ class UserService {
 
       // Write to Firestore with explicit error handling
       await FirebaseFirestore.instance
-          .collection('users')
+          .collection('user')
           .doc(uid)
           .set(user.toFirestore(), SetOptions(merge: false))
           .catchError((e) {
@@ -41,7 +41,7 @@ class UserService {
     final uid = firebase_auth.FirebaseAuth.instance.currentUser?.uid;
     if (uid == null) return Stream.value(null);
     return FirebaseFirestore.instance
-        .collection('users')
+        .collection('user')
         .doc(uid)
         .snapshots()
         .map((doc) {
@@ -54,7 +54,7 @@ class UserService {
 
   Future<void> updateUser(User user) async {
     await FirebaseFirestore.instance
-        .collection('users')
+        .collection('user')
         .doc(user.userId)
         .set(
           user.toFirestore(),
