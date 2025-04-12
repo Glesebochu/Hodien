@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import '../utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:frontend/services/user_service.dart';
 // import '../main.dart';
 
 class SignupPage extends StatefulWidget {
@@ -18,6 +19,8 @@ class _SignupPageState extends State<SignupPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _usernameController = TextEditingController();
+  final _userService = UserService();
   bool _obscurePassword = true;
   bool _isLoading = false;
 
@@ -40,10 +43,13 @@ class _SignupPageState extends State<SignupPage> {
     // );
 
     try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
+      await _userService.registerUser(
+        _emailController.text.trim(),
+        _passwordController.text.trim(),
+        _usernameController.text.trim(),
       );
+      // Navigate to humor test later on(unnecessary for now)...
+      // Navigator.pushReplacementNamed(context, '/home');
     } on FirebaseAuthException catch (e) {
       setState(() => _isLoading = false);
       // String errorMessage;
@@ -128,6 +134,23 @@ class _SignupPageState extends State<SignupPage> {
                     key: _formKey,
                     child: Column(
                       children: [
+                        TextFormField(
+                          controller: _usernameController,
+                          textInputAction: TextInputAction.next,
+                          decoration: const InputDecoration(
+                            labelText: 'Username',
+                            prefixIcon: Icon(Icons.person),
+                          ),
+                          keyboardType: TextInputType.name,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your username';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 16),
                         TextFormField(
                           controller: _emailController,
                           textInputAction: TextInputAction.next,
