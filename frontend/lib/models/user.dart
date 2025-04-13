@@ -1,28 +1,41 @@
 class User {
-  String userId;
-  String username;
-  String email;
-  String passwordHash;
-  String status;
+  final String userId;
+  final String username;
+  final String email;
+  final String status;
 
-  User(
-    this.userId,
-    this.username,
-    this.email,
-    this.passwordHash, {
-    this.status = "active",
+  User({
+    required this.userId,
+    required this.username,
+    required this.email,
+    this.status = 'active',
   });
 
-  void editAccount(User updatedUser) {
-    username = updatedUser.username;
-    email = updatedUser.email;
+  // Create a User from a Firestore document
+  factory User.fromFirestore(Map<String, dynamic> data, String id) {
+    return User(
+      userId: id,
+      username: data['username'] ?? '',
+      email: data['email'] ?? '',
+      status: data['status'] ?? 'active',
+    );
   }
 
-  void removeAccount() {
-    status = "deleted";
-  }
-
-  String getUsername() {
-    return username;
+  // Convert User to a Map for Firestore
+  Map<String, dynamic> toFirestore() {
+    return {'username': username, 'email': email, 'status': status};
   }
 }
+
+  // void editAccount(User updatedUser) {
+  //   username = updatedUser.username;
+  //   email = updatedUser.email;
+  // }
+
+  // void removeAccount() {
+  //   status = "deleted";
+  // }
+
+  // String getUsername() {
+  //   return username;
+  // }
