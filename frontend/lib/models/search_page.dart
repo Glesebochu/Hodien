@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart' as shadcn;
+import 'reusable_back_button.dart';
+import 'search_input_bar.dart';
 
 class SearchPage extends StatelessWidget {
   const SearchPage({super.key});
@@ -18,7 +19,7 @@ class SearchPage extends StatelessWidget {
               // Header Row
               Row(
                 children: [
-                  const BackButton(),
+                  ReusableBackButton(),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Center(
@@ -38,21 +39,7 @@ class SearchPage extends StatelessWidget {
               const SizedBox(height: 20),
 
               // SearchBar with Cancel (as suffix icon)
-              TextField(
-                decoration: InputDecoration(
-                  hintText: 'Search humor...',
-                  prefixIcon: const Icon(Icons.search),
-                  suffixIcon: TextButton(
-                    onPressed: () {},
-                    child: const Text('Cancel'),
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                ),
-              ),
-
+              SearchInputBar(),
               // Column(
               //   children: [
               //     shadcn.TextField(
