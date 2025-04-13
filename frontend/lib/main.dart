@@ -1,20 +1,28 @@
 import 'package:flutter/material.dart';
+import 'models/search_page.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(const MainApp(
+    home: SearchPage(),
+    debugShowCheckedModeBanner: false,
+  ));
 }
-
 class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+  final Widget home;
+  final bool debugShowCheckedModeBanner;
+
+  const MainApp({
+    super.key,
+    required this.home,
+    this.debugShowCheckedModeBanner = true,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
+    return MaterialApp(
+      home: home,
+      debugShowCheckedModeBanner: debugShowCheckedModeBanner,
     );
   }
 }
+
