@@ -95,6 +95,7 @@ class LeftDrawer extends StatelessWidget {
                 title: const Text('Settings'),
                 onTap: () {
                   Navigator.pop(context);
+                  Navigator.pushNamed(context, '/settings');
                 },
               ),
               ListTile(

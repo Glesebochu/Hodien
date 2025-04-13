@@ -52,6 +52,18 @@ class UserService {
         });
   }
 
+  // Get current user (snapshot)
+  Future<User?> getCurrentUser() async {
+    final firebaseUser = firebase_auth.FirebaseAuth.instance.currentUser;
+    if (firebaseUser == null) return null;
+    final doc =
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(firebaseUser.uid)
+            .get();
+    return User.fromFirestore(doc.data()!, firebaseUser.uid);
+  }
+
   Future<void> updateUser(User user) async {
     await FirebaseFirestore.instance
         .collection('user')
@@ -60,5 +72,51 @@ class UserService {
           user.toFirestore(),
           SetOptions(merge: true), // Merge to avoid overwriting fields
         );
+  }
+
+  // Update email with reauthentication
+  Future<void> updateEmail(String newEmail, String password) async {
+    final user = firebase_auth.FirebaseAuth.instance.currentUser;
+    if (user == null) throw Exception('No user signed in');
+
+    final credential = firebase_auth.EmailAuthProvider.credential(
+      email: user.email!,
+      password: password,
+    );
+    await user.reauthenticateWithCredential(credential);
+    await user.updateEmail(newEmail);
+    await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
+      'email': newEmail,
+    });
+  }
+
+  // Update password with reauthentication
+  Future<void> updatePassword(
+    String currentPassword,
+    String newPassword,
+  ) async {
+    final user = firebase_auth.FirebaseAuth.instance.currentUser;
+    if (user == null) throw Exception('No user signed in');
+
+    final credential = firebase_auth.EmailAuthProvider.credential(
+      email: user.email!,
+      password: currentPassword,
+    );
+    await user.reauthenticateWithCredential(credential);
+    await user.updatePassword(newPassword);
+  }
+
+  // Delete account with reauthentication
+  Future<void> deleteAccount(String password) async {
+    final user = firebase_auth.FirebaseAuth.instance.currentUser;
+    if (user == null) throw Exception('No user signed in');
+
+    final credential = firebase_auth.EmailAuthProvider.credential(
+      email: user.email!,
+      password: password,
+    );
+    await user.reauthenticateWithCredential(credential);
+    await FirebaseFirestore.instance.collection('users').doc(user.uid).delete();
+    await user.delete();
   }
 }

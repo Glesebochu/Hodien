@@ -215,7 +215,9 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                             child:
                                 _isLoading
-                                    ? const CircularProgressIndicator()
+                                    ? const CircularProgressIndicator(
+                                      strokeWidth: 1.0,
+                                    )
                                     : const Text(
                                       'Sign Up',
                                       style: TextStyle(fontSize: 16),
