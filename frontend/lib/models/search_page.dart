@@ -8,6 +8,7 @@ class SearchPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 24),
@@ -17,26 +18,21 @@ class SearchPage extends StatelessWidget {
               const SizedBox(height: 12),
 
               // Header Row
-              Row(
+              Stack(
+                alignment: Alignment.center,
                 children: [
-                  ReusableBackButton(),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Center(
-                      child: Text(
-                        'Explore',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: ReusableBackButton(),
+                  ),
+                  const Text(
+                    'Explore',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 25),
 
               // SearchBar with Cancel (as suffix icon)
               SearchInputBar(),
@@ -87,8 +83,22 @@ class SearchPage extends StatelessWidget {
               ),
 
               // Optional: Uncomment one of these for loading/empty state previews
-              // const Center(child: CircularProgressIndicator()),
-              // const Center(child: Text('No results found')),
+              const Center(
+                child: SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    color: Color.fromARGB(255, 225, 204, 15),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              const Center(
+                child: Text(
+                  'No results found',
+                  style: TextStyle(color: Colors.grey),
+                ),
+              ),
             ],
           ),
         ),

@@ -15,16 +15,37 @@ class SearchInputBar extends StatelessWidget {
       onChanged: onChanged,
       decoration: InputDecoration(
         hintText: 'Search',
-        prefixIcon: const Icon(Icons.search),
+        hintStyle: TextStyle(
+          color: const Color.fromARGB(255, 152, 152, 152),
+        ), // 🔹 Hint text style
+        prefixIcon: const Icon(
+          Icons.search,
+          color: Colors.grey,
+          size: 20,
+        ), // 🔹 Search icon
         suffixIcon: TextButton(
           onPressed: () {
             controller.clear();
             if (onCancel != null) onCancel!();
           },
-          child: const Text('Cancel'),
+          style: TextButton.styleFrom(
+            foregroundColor: Colors.black,
+            overlayColor: Colors.transparent, // disables hover/press ripple
+            padding: EdgeInsets.zero, // remove extra space if needed
+          ),
+          child: const Icon(Icons.cancel, color: Colors.grey),
         ),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+        filled: true, // 🔹 Fills the background
+        fillColor: Colors.grey[200], // 🔹 Soft grey background
+        // border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        border: OutlineInputBorder(
+          borderSide: BorderSide.none,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          vertical: 14, // 🔹 Adjust this for vertical centering
+          horizontal: 16,
+        ),
       ),
     );
   }
