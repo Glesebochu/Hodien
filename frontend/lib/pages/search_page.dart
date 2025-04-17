@@ -35,37 +35,8 @@ class SearchPage extends StatelessWidget {
               const SizedBox(height: 25),
 
               // SearchBar with Cancel (as suffix icon)
-              SearchInputBar(),
-              // Column(
-              //   children: [
-              //     shadcn.TextField(
-              //       placeholder: const Text('Enter your name'),
-              //       features: [
-              //         const shadcn.InputFeature.clear(),
-              //         shadcn.InputFeature.hint(
-              //           popupBuilder: (context) {
-              //             return const shadcn.TooltipContainer(
-              //               child: Text('This is for your username'),
-              //             );
-              //           },
-              //         ),
-              //         const shadcn.InputFeature.copy(),
-              //         const shadcn.InputFeature.paste(),
-              //       ],
-              //     ),
-              //     const shadcn.Gap(24),
-              //     const shadcn.TextField(
-              //       placeholder: Text('Enter your password'),
-              //       features: [
-              //         shadcn.InputFeature.clear(),
-              //         shadcn.InputFeature.passwordToggle(
-              //           mode: shadcn.PasswordPeekMode.hold,
-              //         ),
-              //       ],
-              //     ),
-              //   ],
-              // ),
-              const SizedBox(height: 20),
+              const SearchInputBar(),
+              const SizedBox(height: 10),
               const Divider(),
               const SizedBox(height: 12),
 
@@ -82,7 +53,7 @@ class SearchPage extends StatelessWidget {
                 ),
               ),
 
-              // Optional: Uncomment one of these for loading/empty state previews
+              // loading/empty state previews
               const Center(
                 child: SizedBox(
                   width: 20,
