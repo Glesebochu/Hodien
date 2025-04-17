@@ -19,7 +19,7 @@ Future main() async {
       title: 'My App',
       home: const MainApp(),
       theme: shadcn.ThemeData(
-        colorScheme: shadcn.ColorSchemes.lightSlate(),
+        colorScheme: shadcn.ColorSchemes.lightYellow(),
         radius: 0.5,
       ),
     ),

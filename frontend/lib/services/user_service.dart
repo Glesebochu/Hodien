@@ -3,6 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:frontend/models/user.dart';
 
 class UserService {
+  final _auth = firebase_auth.FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
+
   Future<void> registerUser(
     String email,
     String password,
@@ -58,65 +61,124 @@ class UserService {
     if (firebaseUser == null) return null;
     final doc =
         await FirebaseFirestore.instance
-            .collection('users')
+            .collection('user')
             .doc(firebaseUser.uid)
             .get();
     return User.fromFirestore(doc.data()!, firebaseUser.uid);
   }
 
-  Future<void> updateUser(User user) async {
-    await FirebaseFirestore.instance
-        .collection('user')
-        .doc(user.userId)
-        .set(
-          user.toFirestore(),
-          SetOptions(merge: true), // Merge to avoid overwriting fields
-        );
-  }
+  // Future<void> updateUser(User user) async {
+  //   await FirebaseFirestore.instance
+  //       .collection('user')
+  //       .doc(user.userId)
+  //       .set(
+  //         user.toFirestore(),
+  //         SetOptions(merge: true), // Merge to avoid overwriting fields
+  //       );
+  // }
 
-  // Update email with reauthentication
-  Future<void> updateEmail(String newEmail, String password) async {
-    final user = firebase_auth.FirebaseAuth.instance.currentUser;
-    if (user == null) throw Exception('No user signed in');
+  Future<String> updateProfileInfo({
+    required String newUsername,
+    // required String newEmail,
+  }) async {
+    final currentUser = _auth.currentUser;
+    if (currentUser == null) throw Exception('User not logged in');
 
-    final credential = firebase_auth.EmailAuthProvider.credential(
-      email: user.email!,
-      password: password,
-    );
-    await user.reauthenticateWithCredential(credential);
-    await user.updateEmail(newEmail);
-    await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
-      'email': newEmail,
+    // Check if email is already in use
+    // final emailMethods = await _auth.fetchSignInMethodsForEmail(newEmail);
+    // if (newEmail != currentUser.email && emailMethods.isNotEmpty) {
+    //   throw Exception('Email already in use');
+    // }
+    // print(emailMethods);
+
+    // final existingEmailSnapshot =
+    //     await FirebaseFirestore.instance
+    //         .collection('user')
+    //         .where('email', isEqualTo: newEmail)
+    //         .limit(1)
+    //         .get();
+
+    // if (existingEmailSnapshot.docs.isNotEmpty &&
+    //     existingEmailSnapshot.docs.first.id != currentUser.uid) {
+    //   throw Exception('Email already in use');
+    // }
+
+    // print(existingEmailSnapshot);
+
+    // Check if username exists
+    final usernameSnapshot =
+        await _firestore
+            .collection('user')
+            .where('username', isEqualTo: newUsername)
+            .get();
+    // print(usernameSnapshot.docs);
+    if (usernameSnapshot.docs.isNotEmpty &&
+        usernameSnapshot.docs.first.id != currentUser.uid) {
+      return 'Username already taken';
+    }
+
+    // Update Firebase Auth Email
+    // if (newEmail != currentUser.email) {
+    //   await currentUser.updateEmail(newEmail);
+    // }
+
+    // Update Firestore user document
+    await _firestore.collection('user').doc(currentUser.uid).update({
+      'username': newUsername,
+      // 'email': newEmail,
     });
+
+    return 'success';
   }
 
-  // Update password with reauthentication
-  Future<void> updatePassword(
-    String currentPassword,
-    String newPassword,
-  ) async {
-    final user = firebase_auth.FirebaseAuth.instance.currentUser;
-    if (user == null) throw Exception('No user signed in');
+  Future<String> updatePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    final user = _auth.currentUser;
+    if (user == null || user.email == null) {
+      throw Exception('User not logged in');
+    }
 
-    final credential = firebase_auth.EmailAuthProvider.credential(
+    final cred = firebase_auth.EmailAuthProvider.credential(
       email: user.email!,
       password: currentPassword,
     );
-    await user.reauthenticateWithCredential(credential);
-    await user.updatePassword(newPassword);
+
+    try {
+      await user.reauthenticateWithCredential(cred);
+      await user.updatePassword(newPassword);
+      return 'success';
+    } catch (e) {
+      return 'Incorrect password or network issue';
+      // throw Exception('Incorrect password or network issue');
+    }
   }
 
-  // Delete account with reauthentication
-  Future<void> deleteAccount(String password) async {
-    final user = firebase_auth.FirebaseAuth.instance.currentUser;
-    if (user == null) throw Exception('No user signed in');
+  Future<String> deleteAccount(String password) async {
+    final user = _auth.currentUser;
+    if (user == null || user.email == null) {
+      throw Exception('User not logged in');
+    }
 
-    final credential = firebase_auth.EmailAuthProvider.credential(
+    final cred = firebase_auth.EmailAuthProvider.credential(
       email: user.email!,
       password: password,
     );
-    await user.reauthenticateWithCredential(credential);
-    await FirebaseFirestore.instance.collection('users').doc(user.uid).delete();
-    await user.delete();
+
+    try {
+      await user.reauthenticateWithCredential(cred);
+      await _firestore.collection('user').doc(user.uid).delete();
+      await user.delete();
+      await _auth.signOut();
+      return 'success';
+    } catch (e) {
+      // return '$e';
+      return 'Password incorrect or failed to delete account';
+    }
+  }
+
+  Future<void> logout() async {
+    await _auth.signOut();
   }
 }
