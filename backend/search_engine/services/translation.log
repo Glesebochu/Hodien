@@ -1,0 +1,17 @@
+2025-04-17 11:25:53,391 - INFO - [INPUT] Raw user input: '///'
+2025-04-17 11:25:53,391 - INFO - [SKIPPED] Symbols only.
+2025-04-17 11:26:10,860 - INFO - [INPUT] Raw user input: ''
+2025-04-17 11:26:10,860 - INFO - [SKIPPED] Empty or whitespace-only input.
+2025-04-17 11:27:08,739 - INFO - [INPUT] Raw user input: '123'
+2025-04-17 11:27:08,755 - INFO - [SKIPPED] Numbers-only input.
+2025-04-17 11:27:46,010 - INFO - [INPUT] Raw user input: '#'
+2025-04-17 11:27:46,010 - INFO - [SKIPPED] Symbols only.
+2025-04-17 11:28:08,086 - INFO - [INPUT] Raw user input: '\u12a5\u1263\u12ad\u1205 \u121d\u130d\u1265 \u12a0\u121d\u1323\u120d\u129d'
+2025-04-17 11:28:08,679 - INFO - [INFO] Detected language: am
+2025-04-17 11:28:09,086 - INFO - [SUCCESS] Translated to: 'Please bring me food'
+2025-04-17 11:28:55,546 - INFO - [INPUT] Raw user input: '\u12a5\u1263'
+2025-04-17 11:28:57,115 - INFO - [INFO] Detected language: ti
+2025-04-17 11:28:57,115 - INFO - [SKIPPED] Non-Amharic input. Language: ti
+2025-04-17 11:29:22,589 - INFO - [INPUT] Raw user input: '\u12a5'
+2025-04-17 11:29:23,023 - INFO - [INFO] Detected language: am
+2025-04-17 11:29:23,570 - INFO - [SUCCESS] Translated to: 'Here'

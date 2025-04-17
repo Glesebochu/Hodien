@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'reusable_back_button.dart';
-import 'search_input_bar.dart';
+import '../models/reusable_back_button.dart';
+import '../models/search_input_bar.dart';
 
 class SearchPage extends StatelessWidget {
   const SearchPage({super.key});

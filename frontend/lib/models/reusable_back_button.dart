@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'search_page.dart';
+import '../pages/search_page.dart';
 
 class ReusableBackButton extends StatelessWidget {
   final Widget? redirectTo;
