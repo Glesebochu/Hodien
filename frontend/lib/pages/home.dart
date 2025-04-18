@@ -99,6 +99,14 @@ class LeftDrawer extends StatelessWidget {
                 },
               ),
               ListTile(
+                leading: const Icon(Icons.question_answer),
+                title: const Text('Humor test'),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/humorTest');
+                },
+              ),
+              ListTile(
                 leading: const Icon(Icons.logout),
                 title: const Text('Logout'),
                 onTap: () {

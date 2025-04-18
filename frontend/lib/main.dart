@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'pages/authpage.dart';
 import 'pages/home.dart';
+import 'pages/humorTest.dart';
 import 'pages/settings.dart';
 import 'utils/utils.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart' as shadcn;
@@ -37,6 +38,7 @@ class MainApp extends StatelessWidget {
       routes: {
         '/home': (context) => HomePage(),
         '/settings': (context) => const SettingsPage(),
+        '/humorTest': (context) => HumorTestScreen(),
       },
       debugShowCheckedModeBanner: false,
       navigatorKey: navigatorKey,
