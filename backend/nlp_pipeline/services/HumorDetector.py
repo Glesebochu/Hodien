@@ -1,6 +1,3 @@
-# Install necessary libraries (only run this once per environment)
-# %pip install transformers
-
 # Import necessary libraries
 import numpy as np  # linear algebra
 import pandas as pd  # data processing, CSV file I/O (e.g. pd.read_csv)
@@ -16,7 +13,7 @@ from nltk.tokenize import regexp_tokenize
 import os
 from sklearn.metrics import classification_report
 
-class HumorClassifier:
+class HumorDetector:
     def __init__(self):
         # Initialize tokenizer and model
         self.tokenizer = ppb.AutoTokenizer.from_pretrained("bert-base-uncased")
@@ -67,7 +64,7 @@ class HumorClassifier:
         test_y = test_data["humorous"]
 
         # Initialize classifier
-        classifier = HumorClassifier()
+        classifier = HumorDetector()
 
         # Process training and testing data
         train_batch = classifier.process(train_x)
@@ -103,12 +100,3 @@ class HumorClassifier:
         # Save predictions to a CSV file
         submission = pd.DataFrame({"Prediction": y_pred_bool})
         submission.to_csv("predictions.csv", index=True, index_label="Id")
-
-def main():
-    HumorClassifier.train_classifier()
-    classifier = HumorClassifier()
-    
-    classifier.classify_content("This just in.")
-
-if __name__ == "__main__":
-    main()
