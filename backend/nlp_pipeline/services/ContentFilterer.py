@@ -34,7 +34,7 @@ class ContentFilterer:
             reader = csv.DictReader(infile)
             for row in reader:
                 # Make everything upper case
-                text = row["text"].upper()
+                text = row["text"].lower()
 
                 # Check if there are any emojis and save that value as a boolean
                 emoji_presence = any(char in emoji.EMOJI_DATA for char in text)
