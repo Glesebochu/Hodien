@@ -47,15 +47,25 @@ class HumorDetector:
         return np.argmax(prediction[0], axis=1)
 
     @staticmethod
-    def train_classifier(train_data, test_data):
+    def train_classifier():
         # List all files under the input directory (for Kaggle environments)
         for dirname, _, filenames in os.walk('/kaggle/input'):
             for filename in filenames:
                 print(os.path.join(dirname, filename))
 
         # Load training and testing data from CSV files
-        train_data = pd.read_csv("../input/train.csv")
-        test_data = pd.read_csv("../input/test.csv")
+        train_data = pd.read_csv("backend/nlp_pipeline/data/train_detector.csv", delimiter=',', quotechar='"', on_bad_lines='skip')
+        test_data = pd.read_csv("backend/nlp_pipeline/data/test_detector.csv", delimiter=',', quotechar='"', on_bad_lines='skip')
+
+        # Debug: Print column names to verify structure
+        print("Train Data Columns:", train_data.columns)
+        print("Test Data Columns:", test_data.columns)
+
+        # Ensure correct column names
+        if "text" not in train_data.columns or "humorous" not in train_data.columns:
+            raise KeyError("Expected columns 'text' and 'humorous' not found in train_detector.csv")
+        if "text" not in test_data.columns or "humorous" not in test_data.columns:
+            raise KeyError("Expected columns 'text' and 'humorous' not found in test_detector.csv")
 
         # Separate features and labels
         train_x = train_data["text"]
