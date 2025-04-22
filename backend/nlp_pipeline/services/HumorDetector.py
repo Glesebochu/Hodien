@@ -68,7 +68,7 @@ class HumorDetector:
         cleaned = self.clean(data)
         return self.tokenize(cleaned)
 
-    def classify_content(self, content):
+    def predict(self, content):
         tokenized_content = self.tokenize(content)
         prediction = self.model.predict(x=tokenized_content.input_ids)
         humor_score = tf.nn.softmax(prediction[0], axis=1).numpy()
@@ -76,7 +76,7 @@ class HumorDetector:
         return predicted_label, humor_score
 
     @staticmethod
-    def train_classifier():
+    def train():
         # List all files under the input directory (for Kaggle environments)
         for dirname, _, filenames in os.walk('/kaggle/input'):
             for filename in filenames:
@@ -146,7 +146,7 @@ class HumorDetector:
         print(classification_report(test_y, y_pred_bool))
 
         # Test the model with a sample input
-        result = classifier.classify_content("When my son told me to stop impersonating a flamingo, I had to put my foot down.")
+        result = classifier.predict("When my son told me to stop impersonating a flamingo, I had to put my foot down.")
         print("Result: ", result)
 
         # Save predictions and probabilities to a CSV file
@@ -157,7 +157,7 @@ class HumorDetector:
         })
         submission.to_csv("predictions.csv", index=True, index_label="Id")
         
-    def predict_and_score(self, input_csv_path, output_csv_path="scored_jokes.csv"):
+    def predict_score_bulk(self, input_csv_path, output_csv_path="scored_jokes.csv"):
         # Read the input CSV file
         input_data = pd.read_csv(input_csv_path)
 
@@ -175,7 +175,7 @@ class HumorDetector:
         # Process each row in the input file
         for idx, text in enumerate(input_data["text"]):
             # Call the classify_content() function
-            predicted_label, humor_score = self.classify_content([text])
+            predicted_label, humor_score = self.predict([text])
 
             # Add the humorous (prediction) and humor_score to the corresponding columns
             scored_data.at[idx, "humorous"] = predicted_label[0]
