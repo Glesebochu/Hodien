@@ -33,9 +33,9 @@ class HumorDetector:
             print("Downloading NLTK WordNet resource...")
             nltk.download('wordnet')
 
-        # Initialize tokenizer and model
-        self.tokenizer = ppb.AutoTokenizer.from_pretrained("bert-base-uncased")
-        self.model = ppb.TFBertForSequenceClassification.from_pretrained("bert-base-uncased")
+        # Use a smaller, faster model
+        self.tokenizer = ppb.AutoTokenizer.from_pretrained("distilbert-base-uncased")
+        self.model = ppb.TFDistilBertForSequenceClassification.from_pretrained("distilbert-base-uncased")
 
     def lemmatize(self, s):
         wordnet_lemmatizer = WordNetLemmatizer()
