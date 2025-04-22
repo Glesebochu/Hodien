@@ -25,7 +25,7 @@ else:
     print("\nGPU is not available. Using CPU for training.\n")
 
 class HumorDetector:
-    def __init__(self):
+    def __init__(self, load_finetuned=False, model_path="finetuned_distilbert"):
         # Download NLTK WordNet resource if not already available
         try:
             nltk.data.find('corpora/wordnet.zip')
@@ -35,7 +35,11 @@ class HumorDetector:
 
         # Use a smaller, faster model
         self.tokenizer = ppb.AutoTokenizer.from_pretrained("distilbert-base-uncased")
-        self.model = ppb.TFDistilBertForSequenceClassification.from_pretrained("distilbert-base-uncased")
+        if load_finetuned and os.path.exists(model_path):
+            print(f"Loading fine-tuned model from {model_path}")
+            self.model = ppb.TFDistilBertForSequenceClassification.from_pretrained(model_path)
+        else:
+            self.model = ppb.TFDistilBertForSequenceClassification.from_pretrained("distilbert-base-uncased")
 
     def lemmatize(self, s):
         wordnet_lemmatizer = WordNetLemmatizer()
@@ -125,6 +129,9 @@ class HumorDetector:
             batch_size=batch_size,  # Add batch size
             validation_data=(test_batch.input_ids, np.array(test_y))  # Add validation data
         )
+
+        # Save the fine-tuned model
+        classifier.model.save_pretrained("finetuned_distilbert")
 
         # Evaluate the model
         classifier.model.evaluate(x=test_batch.input_ids, y=np.array(test_y))
