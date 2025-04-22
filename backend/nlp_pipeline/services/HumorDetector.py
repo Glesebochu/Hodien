@@ -2,7 +2,6 @@
 import numpy as np  # linear algebra
 import pandas as pd  # data processing, CSV file I/O (e.g. pd.read_csv)
 import transformers as ppb  # BERT Model
-import pickle  # decode pickled data
 import tensorflow as tf
 from sklearn.neural_network import MLPClassifier
 from sklearn.model_selection import GridSearchCV
@@ -13,6 +12,17 @@ from nltk.tokenize import regexp_tokenize
 import os
 from sklearn.metrics import classification_report
 import nltk  # Add this import for downloading NLTK resources
+
+os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
+os.environ["OMP_NUM_THREADS"] = "4"
+os.environ["TF_NUM_INTRAOP_THREADS"] = "4"
+os.environ["TF_NUM_INTEROP_THREADS"] = "2"
+
+# Enable GPU usage if available
+if tf.config.list_physical_devices('GPU'):
+    print("\nGPU is available. Using GPU for training.\n")
+else:
+    print("\nGPU is not available. Using CPU for training.\n")
 
 class HumorDetector:
     def __init__(self):
