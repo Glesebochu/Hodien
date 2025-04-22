@@ -12,9 +12,17 @@ from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import regexp_tokenize
 import os
 from sklearn.metrics import classification_report
+import nltk  # Add this import for downloading NLTK resources
 
 class HumorDetector:
     def __init__(self):
+        # Download NLTK WordNet resource if not already available
+        try:
+            nltk.data.find('corpora/wordnet.zip')
+        except LookupError:
+            print("Downloading NLTK WordNet resource...")
+            nltk.download('wordnet')
+
         # Initialize tokenizer and model
         self.tokenizer = ppb.AutoTokenizer.from_pretrained("bert-base-uncased")
         self.model = ppb.TFBertForSequenceClassification.from_pretrained("bert-base-uncased")
