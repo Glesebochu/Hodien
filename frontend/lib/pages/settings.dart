@@ -315,7 +315,6 @@ class _SettingsPageState extends State<SettingsPage> {
                         shadcn.PrimaryButton(
                           onPressed: _handlePasswordChange,
                           child: const Text('Update profile'),
-                          // text: 'Change Password',
                         ),
                       ],
                     ),
@@ -334,18 +333,34 @@ class _SettingsPageState extends State<SettingsPage> {
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 8),
-                        shadcn.OutlineButton(
-                          // variant: shadcn.ButtonVariant.outline,
-                          onPressed: _handleLogout,
-                          child: const Text('Logout'),
-                          // text: 'Logout',
+                        SizedBox(
+                          width: double.infinity,
+                          child: shadcn.OutlineButton(
+                            onPressed: _handleLogout,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Icon(Icons.logout),
+                                SizedBox(width: 8),
+                                Text('Logout'),
+                              ],
+                            ),
+                          ),
                         ),
                         const SizedBox(height: 12),
-                        shadcn.DestructiveButton(
-                          // variant: shadcn.ButtonVariant.destructive,
-                          onPressed: _handleDeleteAccount,
-                          child: const Text('Delete Account'),
-                          // text: 'Delete Account',
+                        SizedBox(
+                          width: double.infinity,
+                          child: shadcn.DestructiveButton(
+                            onPressed: _handleDeleteAccount,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Icon(Icons.delete),
+                                SizedBox(width: 8),
+                                Text('Delete Account'),
+                              ],
+                            ),
+                          ),
                         ),
                       ],
                     ),

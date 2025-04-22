@@ -113,17 +113,28 @@ class _WelcomeScreen extends StatelessWidget {
           const SizedBox(height: 10),
           shadcn.Text(
             'Let\'s find Out What Makes You Laugh',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              decoration: TextDecoration.none,
+            ),
           ),
           const SizedBox(height: 10),
-          shadcn.Text(
+          Text(
             'A few questions to create your humor profile.',
-            style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey[600],
+              decoration: TextDecoration.none,
+            ),
           ),
           const SizedBox(height: 20),
           shadcn.PrimaryButton(
             onPressed: () => context.read<HumorTestProvider>().selectOption(''),
-            child: const Text('Start'),
+            child: const Text(
+              'Start',
+              style: TextStyle(decoration: TextDecoration.none),
+            ),
           ),
           //add a bit more description in smaller and neutral font
         ],
@@ -270,9 +281,15 @@ void _showSuccessDialog(BuildContext context) {
             child: shadcn.AlertDialog(
               title: shadcn.Text(
                 'Success',
-                style: const TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  decoration: TextDecoration.none,
+                ),
               ),
-              content: const Text('Your humor profile has been saved!'),
+              content: const Text(
+                'Your humor profile has been saved!',
+                style: TextStyle(decoration: TextDecoration.none),
+              ),
               actions: [
                 // TextButton(
                 //   onPressed: () => Navigator.pop(context),
@@ -282,9 +299,12 @@ void _showSuccessDialog(BuildContext context) {
                   onPressed: () {
                     Navigator.pop(context); // Close the dialog
                     Navigator.pop(context); // Close the spinner
-                    Navigator.pushNamed(context, '/home');
+                    Navigator.pushNamed(context, '/');
                   },
-                  child: Text("Get Started"),
+                  child: Text(
+                    "Get Started",
+                    style: TextStyle(decoration: TextDecoration.none),
+                  ),
                 ),
               ],
             ),
