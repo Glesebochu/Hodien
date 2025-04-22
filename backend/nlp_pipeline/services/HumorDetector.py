@@ -147,7 +147,7 @@ class HumorDetector:
 
         # Test the model with a sample input
         result = classifier.classify_content("When my son told me to stop impersonating a flamingo, I had to put my foot down.")
-        print(result)
+        print("Result: ", result)
 
         # Save predictions and probabilities to a CSV file
         humor_scores = np.max(tf.nn.softmax(y_pred[0], axis=1).numpy(), axis=1)  # Calculate humor scores (probabilities)
@@ -156,3 +156,33 @@ class HumorDetector:
             "HumorScore": humor_scores
         })
         submission.to_csv("predictions.csv", index=True, index_label="Id")
+        
+    def predict_and_score(self, input_csv_path, output_csv_path="scored_jokes.csv"):
+        # Read the input CSV file
+        input_data = pd.read_csv(input_csv_path)
+
+        # Ensure the input CSV has a 'text' column
+        if "text" not in input_data.columns:
+            raise KeyError("Expected column 'text' not found in the input CSV file")
+
+        # Create a data structure to hold the new data
+        scored_data = {
+            "text": [],
+            "humorous": [],
+            "humor_score": []
+        }
+
+        # Process each row in the input file
+        for text in input_data["text"]:
+            # Call the classify_content() function
+            predicted_label, humor_score = self.classify_content([text])
+
+            # Add the text, humorous (prediction), and humor_score to the data structure
+            scored_data["text"].append(text)
+            scored_data["humorous"].append(predicted_label[0])
+            scored_data["humor_score"].append(humor_score[0][predicted_label[0]])
+
+        # Save the data structure to a CSV file
+        scored_df = pd.DataFrame(scored_data)
+        scored_df.to_csv(output_csv_path, index=False)
+        print(f"Scored data saved to {output_csv_path}")
