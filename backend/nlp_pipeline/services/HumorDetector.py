@@ -165,24 +165,22 @@ class HumorDetector:
         if "text" not in input_data.columns:
             raise KeyError("Expected column 'text' not found in the input CSV file")
 
-        # Create a data structure to hold the new data
-        scored_data = {
-            "text": [],
-            "humorous": [],
-            "humor_score": []
-        }
+        # Create a copy of the input data to preserve all existing columns
+        scored_data = input_data.copy()
+
+        # Add new columns for predictions and humor scores
+        scored_data["humorous"] = None
+        scored_data["humor_score"] = None
 
         # Process each row in the input file
-        for text in input_data["text"]:
+        for idx, text in enumerate(input_data["text"]):
             # Call the classify_content() function
             predicted_label, humor_score = self.classify_content([text])
 
-            # Add the text, humorous (prediction), and humor_score to the data structure
-            scored_data["text"].append(text)
-            scored_data["humorous"].append(predicted_label[0])
-            scored_data["humor_score"].append(humor_score[0][predicted_label[0]])
+            # Add the humorous (prediction) and humor_score to the corresponding columns
+            scored_data.at[idx, "humorous"] = predicted_label[0]
+            scored_data.at[idx, "humor_score"] = humor_score[0][predicted_label[0]]
 
-        # Save the data structure to a CSV file
-        scored_df = pd.DataFrame(scored_data)
-        scored_df.to_csv(output_csv_path, index=False)
+        # Save the updated data to a CSV file
+        scored_data.to_csv(output_csv_path, index=False)
         print(f"Scored data saved to {output_csv_path}")
