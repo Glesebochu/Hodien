@@ -1,7 +1,16 @@
 from ..services.ContentFilterer import ContentFilterer
+from ..services.HumorDetector import HumorDetector
 
-content_filterer = ContentFilterer()
+# * Normalization
+# content_filterer = ContentFilterer()
+# file = "backend/nlp_pipeline/data/shortjokes.csv"
+# content_filterer.normalize(file)
 
-file = "backend/nlp_pipeline/data/shortjokes.csv"
+# * Humor Detection
+HumorDetector.train()
+classifier = HumorDetector()
 
-content_filterer.normalize(file)
+classifier.predict("This just in.")
+
+
+# * Humor type classification
