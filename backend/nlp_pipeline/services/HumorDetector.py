@@ -95,6 +95,9 @@ class HumorDetector:
         train_y = train_data["humorous"]
         test_x = test_data["text"]
         test_y = test_data["humorous"]
+        
+        train_x = train_x[:200]  # Use fewer samples for quick testing
+        train_y = train_y[:200]
 
         # Initialize classifier
         classifier = HumorDetector()
@@ -105,7 +108,8 @@ class HumorDetector:
 
         # Set up TensorFlow model for fine-tuning BERT
         learning_rate = 2e-5
-        epochs = 10
+        epochs = 1  # Fewer epochs for speed
+        batch_size = 8  # Smaller batch size for less memory usage
         optimizer = tf.keras.optimizers.Adam(learning_rate=learning_rate, epsilon=1e-8)
         loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
         metric1 = tf.keras.metrics.SparseCategoricalAccuracy('accuracy')
@@ -113,8 +117,14 @@ class HumorDetector:
         metric3 = tf.keras.metrics.Recall(name="recall")
         classifier.model.compile(optimizer=optimizer, loss=loss, metrics=[metric1])
 
-        # Train the model
-        history = classifier.model.fit(x=train_batch.input_ids, y=np.array(train_y), epochs=epochs)
+        # Train the model with batch size
+        history = classifier.model.fit(
+            x=train_batch.input_ids,
+            y=np.array(train_y),
+            epochs=epochs,
+            batch_size=batch_size,  # Add batch size
+            validation_data=(test_batch.input_ids, np.array(test_y))  # Add validation data
+        )
 
         # Evaluate the model
         classifier.model.evaluate(x=test_batch.input_ids, y=np.array(test_y))
