@@ -45,14 +45,19 @@ class HumorDetector:
         return s.lower()
 
     def clean(self, data):
+        cleaned_data = []
         for item in data:
-            self.lemmatize(item)
-            self.lower(item)
-            re.sub(r'\d+', '', item)  # remove numbers
-        return data
+            item = self.lemmatize(item)
+            item = self.lower(item)
+            item = re.sub(r'\d+', '', item)  # remove numbers
+            cleaned_data.append(item)
+        return cleaned_data
 
     def tokenize(self, text):
-        tokenized = self.tokenizer(text, padding=True, truncation=True, return_tensors="tf")
+        # Reduce max_length for faster processing
+        tokenized = self.tokenizer(
+            text, padding=True, truncation=True, max_length=64, return_tensors="tf"
+        )
         return tokenized
 
     def process(self, data):
