@@ -71,7 +71,9 @@ class HumorDetector:
     def classify_content(self, content):
         tokenized_content = self.tokenize(content)
         prediction = self.model.predict(x=tokenized_content.input_ids)
-        return np.argmax(prediction[0], axis=1)
+        humor_score = tf.nn.softmax(prediction[0], axis=1).numpy()
+        predicted_label = np.argmax(humor_score, axis=1)
+        return predicted_label, humor_score
 
     @staticmethod
     def train_classifier():
@@ -147,6 +149,10 @@ class HumorDetector:
         result = classifier.classify_content("When my son told me to stop impersonating a flamingo, I had to put my foot down.")
         print(result)
 
-        # Save predictions to a CSV file
-        submission = pd.DataFrame({"Prediction": y_pred_bool})
+        # Save predictions and probabilities to a CSV file
+        humor_scores = np.max(tf.nn.softmax(y_pred[0], axis=1).numpy(), axis=1)  # Calculate humor scores (probabilities)
+        submission = pd.DataFrame({
+            "Prediction": y_pred_bool,
+            "HumorScore": humor_scores
+        })
         submission.to_csv("predictions.csv", index=True, index_label="Id")
