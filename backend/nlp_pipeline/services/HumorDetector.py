@@ -34,7 +34,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 class HumorDetector:
-    def __init__(self, config_path="config.yaml", load_finetuned=False):
+    def __init__(self, config_path="backend/nlp_pipeline/config.yaml", load_finetuned=False):
         """
         Initialize the HumorDetector class.
 
@@ -261,7 +261,11 @@ class HumorDetector:
         text_column = config.get("text_column", "text")
         label_column = config.get("label_column", "humorous")
         batch_size = self.batch_size
-        learning_rate = config.get("learning_rate", 2e-5)
+        learning_rate = float(config.get("learning_rate", 2e-5))  # Ensure learning_rate is a float
+
+        # Define a callable for the learning rate schedule
+        def lr_schedule(epoch):
+            return learning_rate * (0.1 ** (epoch // 2))
 
         # Check for Kaggle-specific directory and log files if present
         kaggle_input_dir = "/kaggle/input"
@@ -310,9 +314,7 @@ class HumorDetector:
         early_stopping = tf.keras.callbacks.EarlyStopping(
             monitor='val_loss', patience=2, restore_best_weights=True
         )
-        lr_scheduler = tf.keras.callbacks.LearningRateScheduler(
-            lambda epoch: learning_rate * (0.1 ** (epoch // 2))
-        )
+        lr_scheduler = tf.keras.callbacks.LearningRateScheduler(lr_schedule)
 
         # Train the model
         logger.info("Starting model training...")
