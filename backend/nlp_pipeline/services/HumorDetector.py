@@ -16,6 +16,7 @@ from nltk.corpus import stopwords  # Import stopwords
 import matplotlib.pyplot as plt
 import yaml  # For configuration file parsing
 from tensorflow.keras.backend import clear_session
+import logging  # For logging
 
 os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 os.environ["OMP_NUM_THREADS"] = "4"
@@ -27,6 +28,10 @@ if tf.config.list_physical_devices('GPU'):
     print("\nGPU is available. Using GPU for training.\n")
 else:
     print("\nGPU is not available. Using CPU for training.\n")
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logger = logging.getLogger(__name__)
 
 class HumorDetector:
     def __init__(self, config_path="config.yaml", load_finetuned=False):
@@ -152,28 +157,31 @@ class HumorDetector:
         dataset = dataset.batch(batch_size).prefetch(tf.data.AUTOTUNE)
         return dataset
 
-    @staticmethod
-    def train(sample_limit=None, config_path="config.yaml"):
-        # Load configuration from YAML file
-        with open(config_path, "r") as file:
-            config = yaml.safe_load(file)
-
+    def train(self, sample_limit=None):
+        """
+        Train the HumorDetector model.
+        """
+        # Load configuration
+        config = self.config
         epochs = config.get("epochs", 3)
         text_column = config.get("text_column", "text")
         label_column = config.get("label_column", "humorous")
-        batch_size = config.get("batch_size", 32)
+        batch_size = self.batch_size
         learning_rate = config.get("learning_rate", 2e-5)
 
-        # List all files under the input directory (for Kaggle environments)
-        for dirname, _, filenames in os.walk('/kaggle/input'):
-            for filename in filenames:
-                print(os.path.join(dirname, filename))
+        # Check for Kaggle-specific directory and log files if present
+        kaggle_input_dir = "/kaggle/input"
+        if os.path.exists(kaggle_input_dir):
+            logger.info("Kaggle environment detected. Listing input files:")
+            for dirname, _, filenames in os.walk(kaggle_input_dir):
+                for filename in filenames:
+                    logger.info(os.path.join(dirname, filename))
 
         # Load and validate training and testing data
-        train_data = HumorDetector().validate_csv(
+        train_data = self.validate_csv(
             "backend/nlp_pipeline/data/train_detector.csv", required_columns=[text_column, label_column]
         )
-        test_data = HumorDetector().validate_csv(
+        test_data = self.validate_csv(
             "backend/nlp_pipeline/data/test_detector.csv", required_columns=[text_column, label_column]
         )
 
@@ -182,22 +190,19 @@ class HumorDetector:
         train_y = train_data[label_column]
         test_x = test_data[text_column].fillna("")  # Handle missing text values
         test_y = test_data[label_column]
-        
+
         # Apply sample limit if provided
         if sample_limit:
             train_x = train_x[:sample_limit]
             train_y = train_y[:sample_limit]
 
-        # Initialize classifier
-        classifier = HumorDetector(config_path=config_path)
-
         # Process training and testing data
-        train_batch = classifier.process(train_x)
-        test_batch = classifier.process(test_x)
+        train_batch = self.process(train_x)
+        test_batch = self.process(test_x)
 
         # Convert to tf.data.Dataset for efficient batching
-        train_dataset = HumorDetector.create_tf_dataset(train_batch.input_ids, np.array(train_y), batch_size=batch_size)
-        test_dataset = HumorDetector.create_tf_dataset(test_batch.input_ids, np.array(test_y), batch_size=batch_size)
+        train_dataset = self.create_tf_dataset(train_batch.input_ids, np.array(train_y), batch_size=batch_size)
+        test_dataset = self.create_tf_dataset(test_batch.input_ids, np.array(test_y), batch_size=batch_size)
 
         # Set up TensorFlow model for fine-tuning BERT
         optimizer = tf.keras.optimizers.Adam(learning_rate=learning_rate, epsilon=1e-8)
@@ -205,7 +210,7 @@ class HumorDetector:
         metric1 = tf.keras.metrics.SparseCategoricalAccuracy('accuracy')
         metric2 = tf.keras.metrics.Precision(name="precision")
         metric3 = tf.keras.metrics.Recall(name="recall")
-        classifier.model.compile(optimizer=optimizer, loss=loss, metrics=[metric1, metric2, metric3])
+        self.model.compile(optimizer=optimizer, loss=loss, metrics=[metric1, metric2, metric3])
 
         # Add early stopping and learning rate scheduling
         early_stopping = tf.keras.callbacks.EarlyStopping(
@@ -216,25 +221,29 @@ class HumorDetector:
         )
 
         # Train the model
-        history = classifier.model.fit(
+        logger.info("Starting model training...")
+        history = self.model.fit(
             train_dataset,
             epochs=epochs,
             validation_data=test_dataset,
             callbacks=[early_stopping, lr_scheduler]
         )
+        logger.info("Model training completed.")
 
         # Save the fine-tuned model
-        classifier.model.save_pretrained(classifier.model_path)
+        self.model.save_pretrained(self.model_path)
+        logger.info(f"Fine-tuned model saved to {self.model_path}.")
 
         # Evaluate the model
-        evaluation_results = classifier.model.evaluate(test_dataset)
+        evaluation_results = self.model.evaluate(test_dataset)
+        logger.info(f"Evaluation results: {evaluation_results}")
 
         # Perform memory cleanup
         clear_session()
-        print("Memory cleared after training.")
+        logger.info("Memory cleared after training.")
 
         # Generate predictions
-        y_pred = classifier.model.predict(x=test_batch.input_ids)
+        y_pred = self.model.predict(x=test_batch.input_ids)
         y_pred_bool = np.argmax(y_pred[0], axis=1)
 
         # Save classification report to a file
@@ -242,7 +251,7 @@ class HumorDetector:
         with open("classification_report.json", "w") as f:
             import json
             json.dump(report, f, indent=4)
-        print("Classification report saved to classification_report.json")
+        logger.info("Classification report saved to classification_report.json.")
 
         # Visualize confusion matrix
         cm = confusion_matrix(test_y, y_pred_bool)
@@ -251,7 +260,7 @@ class HumorDetector:
         plt.title("Confusion Matrix")
         plt.savefig("confusion_matrix.png")
         plt.show()
-        print("Confusion matrix saved to confusion_matrix.png")
+        logger.info("Confusion matrix saved to confusion_matrix.png.")
 
         # Perform hyperparameter tuning using Hugging Face's hyperparameter_search
         def model_init():
@@ -283,7 +292,7 @@ class HumorDetector:
                 "per_device_train_batch_size": [8, 16],
             },
         )
-        print("Best hyperparameters found:", best_run.hyperparameters)
+        logger.info(f"Best hyperparameters found: {best_run.hyperparameters}")
 
         # Save predictions and probabilities to a CSV file
         humor_scores = np.max(tf.nn.softmax(y_pred[0], axis=1).numpy(), axis=1)  # Calculate humor scores (probabilities)
@@ -292,7 +301,7 @@ class HumorDetector:
             "HumorScore": humor_scores
         })
         submission.to_csv("predictions.csv", index=True, index_label="Id")
-        print("Predictions saved to predictions.csv")
+        logger.info("Predictions saved to predictions.csv.")
         
     def predict_score_bulk(self, input_csv_path, output_csv_path="scored_jokes.csv", batch_size=32):
         # Read the input CSV file
