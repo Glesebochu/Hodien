@@ -14,6 +14,8 @@ from sklearn.metrics import classification_report, confusion_matrix, ConfusionMa
 import nltk  # Add this import for downloading NLTK resources
 from nltk.corpus import stopwords  # Import stopwords
 import matplotlib.pyplot as plt
+import yaml  # For configuration file parsing
+from tensorflow.keras.backend import clear_session
 
 os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 os.environ["OMP_NUM_THREADS"] = "4"
@@ -27,7 +29,14 @@ else:
     print("\nGPU is not available. Using CPU for training.\n")
 
 class HumorDetector:
-    def __init__(self, load_finetuned=False, model_path="finetuned_distilbert"):
+    def __init__(self, config_path="config.yaml", load_finetuned=False):
+        # Load configuration from YAML file
+        with open(config_path, "r") as file:
+            self.config = yaml.safe_load(file)
+
+        self.model_path = self.config.get("model_path", "finetuned_distilbert")
+        self.batch_size = self.config.get("batch_size", 32)
+
         # Download NLTK WordNet resource if not already available
         try:
             nltk.data.find('corpora/wordnet.zip')
@@ -42,9 +51,9 @@ class HumorDetector:
 
         # Use a smaller, faster model
         self.tokenizer = ppb.AutoTokenizer.from_pretrained("distilbert-base-uncased")
-        if load_finetuned and os.path.exists(model_path):
-            print(f"Loading fine-tuned model from {model_path}")
-            self.model = ppb.TFDistilBertForSequenceClassification.from_pretrained(model_path)
+        if load_finetuned and os.path.exists(self.model_path):
+            print(f"Loading fine-tuned model from {self.model_path}")
+            self.model = ppb.TFDistilBertForSequenceClassification.from_pretrained(self.model_path)
         else:
             self.model = ppb.TFDistilBertForSequenceClassification.from_pretrained("distilbert-base-uncased")
 
@@ -135,7 +144,26 @@ class HumorDetector:
         print(f"Scored data saved to {output_csv_path}")
 
     @staticmethod
-    def train(sample_limit=None, epochs=3, text_column="text", label_column="humorous"):
+    def create_tf_dataset(features, labels=None, batch_size=32):
+        """
+        Create a tf.data.Dataset for efficient data loading and batching.
+        """
+        dataset = tf.data.Dataset.from_tensor_slices((features, labels)) if labels is not None else tf.data.Dataset.from_tensor_slices(features)
+        dataset = dataset.batch(batch_size).prefetch(tf.data.AUTOTUNE)
+        return dataset
+
+    @staticmethod
+    def train(sample_limit=None, config_path="config.yaml"):
+        # Load configuration from YAML file
+        with open(config_path, "r") as file:
+            config = yaml.safe_load(file)
+
+        epochs = config.get("epochs", 3)
+        text_column = config.get("text_column", "text")
+        label_column = config.get("label_column", "humorous")
+        batch_size = config.get("batch_size", 32)
+        learning_rate = config.get("learning_rate", 2e-5)
+
         # List all files under the input directory (for Kaggle environments)
         for dirname, _, filenames in os.walk('/kaggle/input'):
             for filename in filenames:
@@ -161,15 +189,17 @@ class HumorDetector:
             train_y = train_y[:sample_limit]
 
         # Initialize classifier
-        classifier = HumorDetector()
+        classifier = HumorDetector(config_path=config_path)
 
         # Process training and testing data
         train_batch = classifier.process(train_x)
         test_batch = classifier.process(test_x)
 
+        # Convert to tf.data.Dataset for efficient batching
+        train_dataset = HumorDetector.create_tf_dataset(train_batch.input_ids, np.array(train_y), batch_size=batch_size)
+        test_dataset = HumorDetector.create_tf_dataset(test_batch.input_ids, np.array(test_y), batch_size=batch_size)
+
         # Set up TensorFlow model for fine-tuning BERT
-        learning_rate = 2e-5
-        batch_size = 8  # Smaller batch size for less memory usage
         optimizer = tf.keras.optimizers.Adam(learning_rate=learning_rate, epsilon=1e-8)
         loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
         metric1 = tf.keras.metrics.SparseCategoricalAccuracy('accuracy')
@@ -185,21 +215,23 @@ class HumorDetector:
             lambda epoch: learning_rate * (0.1 ** (epoch // 2))
         )
 
-        # Train the model with batch size
+        # Train the model
         history = classifier.model.fit(
-            x=train_batch.input_ids,
-            y=np.array(train_y),
+            train_dataset,
             epochs=epochs,
-            batch_size=batch_size,
-            validation_data=(test_batch.input_ids, np.array(test_y)),
+            validation_data=test_dataset,
             callbacks=[early_stopping, lr_scheduler]
         )
 
         # Save the fine-tuned model
-        classifier.model.save_pretrained("finetuned_distilbert")
+        classifier.model.save_pretrained(classifier.model_path)
 
         # Evaluate the model
-        evaluation_results = classifier.model.evaluate(x=test_batch.input_ids, y=np.array(test_y))
+        evaluation_results = classifier.model.evaluate(test_dataset)
+
+        # Perform memory cleanup
+        clear_session()
+        print("Memory cleared after training.")
 
         # Generate predictions
         y_pred = classifier.model.predict(x=test_batch.input_ids)

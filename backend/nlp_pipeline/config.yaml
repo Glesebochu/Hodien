@@ -1,0 +1,6 @@
+model_path: "finetuned_distilbert"
+batch_size: 32
+epochs: 3
+learning_rate: 2e-5
+text_column: "text"
+label_column: "humorous"
