@@ -83,6 +83,9 @@ class HumorDetector:
         return self.tokenize(cleaned)
 
     def predict(self, content):
+        # Handle single input explicitly
+        if isinstance(content, str):
+            content = [content]  # Convert single string to a list
         tokenized_content = self.tokenize(content)
         prediction = self.model.predict(x=tokenized_content.input_ids)
         humor_score = tf.nn.softmax(prediction[0], axis=1).numpy()
@@ -189,7 +192,7 @@ class HumorDetector:
         })
         submission.to_csv("predictions.csv", index=True, index_label="Id")
         
-    def predict_score_bulk(self, input_csv_path, output_csv_path="scored_jokes.csv"):
+    def predict_score_bulk(self, input_csv_path, output_csv_path="scored_jokes.csv", batch_size=32):
         # Read the input CSV file
         input_data = pd.read_csv(input_csv_path)
 
@@ -204,14 +207,16 @@ class HumorDetector:
         scored_data["humorous"] = None
         scored_data["humor_score"] = None
 
-        # Process each row in the input file
-        for idx, text in enumerate(input_data["text"]):
-            # Call the classify_content() function
-            predicted_label, humor_score = self.predict([text])
+        # Process texts in batches
+        texts = input_data["text"].tolist()
+        for start_idx in range(0, len(texts), batch_size):
+            batch_texts = texts[start_idx:start_idx + batch_size]
+            predicted_labels, humor_scores = self.predict(batch_texts)
 
-            # Add the humorous (prediction) and humor_score to the corresponding columns
-            scored_data.at[idx, "humorous"] = predicted_label[0]
-            scored_data.at[idx, "humor_score"] = humor_score[0][predicted_label[0]]
+            # Update the scored_data DataFrame
+            for idx, (label, score) in enumerate(zip(predicted_labels, humor_scores)):
+                scored_data.at[start_idx + idx, "humorous"] = label
+                scored_data.at[start_idx + idx, "humor_score"] = score[label]
 
         # Save the updated data to a CSV file
         scored_data.to_csv(output_csv_path, index=False)
