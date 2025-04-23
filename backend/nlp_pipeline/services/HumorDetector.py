@@ -90,7 +90,7 @@ class HumorDetector:
         return predicted_label, humor_score
 
     @staticmethod
-    def train():
+    def train(sample_limit=None, epochs=3):
         # List all files under the input directory (for Kaggle environments)
         for dirname, _, filenames in os.walk('/kaggle/input'):
             for filename in filenames:
@@ -116,8 +116,10 @@ class HumorDetector:
         test_x = test_data["text"]
         test_y = test_data["humorous"]
         
-        train_x = train_x[:200]  # Use fewer samples for quick testing
-        train_y = train_y[:200]
+        # Apply sample limit if provided
+        if sample_limit:
+            train_x = train_x[:sample_limit]
+            train_y = train_y[:sample_limit]
 
         # Initialize classifier
         classifier = HumorDetector()
@@ -128,22 +130,30 @@ class HumorDetector:
 
         # Set up TensorFlow model for fine-tuning BERT
         learning_rate = 2e-5
-        epochs = 1  # Fewer epochs for speed
         batch_size = 8  # Smaller batch size for less memory usage
         optimizer = tf.keras.optimizers.Adam(learning_rate=learning_rate, epsilon=1e-8)
         loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
         metric1 = tf.keras.metrics.SparseCategoricalAccuracy('accuracy')
         metric2 = tf.keras.metrics.Precision(name="precision")
         metric3 = tf.keras.metrics.Recall(name="recall")
-        classifier.model.compile(optimizer=optimizer, loss=loss, metrics=[metric1])
+        classifier.model.compile(optimizer=optimizer, loss=loss, metrics=[metric1, metric2, metric3])
+
+        # Add early stopping and learning rate scheduling
+        early_stopping = tf.keras.callbacks.EarlyStopping(
+            monitor='val_loss', patience=2, restore_best_weights=True
+        )
+        lr_scheduler = tf.keras.callbacks.LearningRateScheduler(
+            lambda epoch: learning_rate * (0.1 ** (epoch // 2))
+        )
 
         # Train the model with batch size
         history = classifier.model.fit(
             x=train_batch.input_ids,
             y=np.array(train_y),
             epochs=epochs,
-            batch_size=batch_size,  # Add batch size
-            validation_data=(test_batch.input_ids, np.array(test_y))  # Add validation data
+            batch_size=batch_size,
+            validation_data=(test_batch.input_ids, np.array(test_y)),
+            callbacks=[early_stopping, lr_scheduler]
         )
 
         # Save the fine-tuned model
@@ -158,6 +168,14 @@ class HumorDetector:
 
         # Print classification report
         print(classification_report(test_y, y_pred_bool))
+
+        # Perform cross-validation
+        print("Performing cross-validation...")
+        cross_val_scores = cross_val_score(
+            MLPClassifier(), train_batch.input_ids.numpy(), train_y, cv=5, scoring='accuracy'
+        )
+        print(f"Cross-validation scores: {cross_val_scores}")
+        print(f"Mean cross-validation accuracy: {np.mean(cross_val_scores)}")
 
         # Test the model with a sample input
         result = classifier.predict("When my son told me to stop impersonating a flamingo, I had to put my foot down.")
