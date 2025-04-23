@@ -46,7 +46,7 @@ class HumorDetector:
         with open(config_path, "r") as file:
             self.config = yaml.safe_load(file)
 
-        self.model_path = self.config.get("model_path", "finetuned_distilbert")
+        self.model_path = self.config.get("model_path", "finetuned_minilm")
         self.batch_size = self.config.get("batch_size", 32)
 
         # Download NLTK WordNet resource if not already available
@@ -61,13 +61,13 @@ class HumorDetector:
             print("Downloading NLTK Stopwords resource...")
             nltk.download('stopwords')
 
-        # Use a smaller, faster model
-        self.tokenizer = ppb.AutoTokenizer.from_pretrained("distilbert-base-uncased")
+        # Use MiniLM for faster training
+        self.tokenizer = ppb.AutoTokenizer.from_pretrained("microsoft/MiniLM-L12-H384-uncased")
         if load_finetuned and os.path.exists(self.model_path):
             print(f"Loading fine-tuned model from {self.model_path}")
-            self.model = ppb.TFDistilBertForSequenceClassification.from_pretrained(self.model_path)
+            self.model = ppb.TFAutoModelForSequenceClassification.from_pretrained(self.model_path)
         else:
-            self.model = ppb.TFDistilBertForSequenceClassification.from_pretrained("distilbert-base-uncased")
+            self.model = ppb.TFAutoModelForSequenceClassification.from_pretrained("microsoft/MiniLM-L12-H384-uncased")
 
     def lemmatize(self, s):
         """
