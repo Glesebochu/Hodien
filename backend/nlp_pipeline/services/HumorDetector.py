@@ -17,6 +17,7 @@ import matplotlib.pyplot as plt
 import yaml  # For configuration file parsing
 from tensorflow.keras.backend import clear_session
 import logging  # For logging
+import time  # For measuring execution time
 
 os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 os.environ["OMP_NUM_THREADS"] = "4"
@@ -255,6 +256,9 @@ class HumorDetector:
         Returns:
             None
         """
+        # Start timing
+        start_time = time.time()
+
         # Load configuration
         config = self.config
         epochs = config.get("epochs", 3)
@@ -325,6 +329,11 @@ class HumorDetector:
             callbacks=[early_stopping, lr_scheduler]
         )
         logger.info("Model training completed.")
+
+        # End timing
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        logger.info(f"Training completed in {elapsed_time:.2f} seconds.")
 
         # Save the fine-tuned model
         self.model.save_pretrained(self.model_path)
