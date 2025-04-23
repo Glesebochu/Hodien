@@ -12,6 +12,7 @@ from nltk.tokenize import regexp_tokenize
 import os
 from sklearn.metrics import classification_report
 import nltk  # Add this import for downloading NLTK resources
+from nltk.corpus import stopwords  # Import stopwords
 
 os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 os.environ["OMP_NUM_THREADS"] = "4"
@@ -32,6 +33,11 @@ class HumorDetector:
         except LookupError:
             print("Downloading NLTK WordNet resource...")
             nltk.download('wordnet')
+        try:
+            nltk.data.find('corpora/stopwords.zip')
+        except LookupError:
+            print("Downloading NLTK Stopwords resource...")
+            nltk.download('stopwords')
 
         # Use a smaller, faster model
         self.tokenizer = ppb.AutoTokenizer.from_pretrained("distilbert-base-uncased")
@@ -43,17 +49,25 @@ class HumorDetector:
 
     def lemmatize(self, s):
         wordnet_lemmatizer = WordNetLemmatizer()
-        return " ".join([wordnet_lemmatizer.lemmatize(w, 'v') for w in s.split(" ")])
+        return " ".join([
+            wordnet_lemmatizer.lemmatize(w, pos) 
+            for w in s.split(" ") 
+            for pos in ['v', 'n', 'a']  # Lemmatize as verb, noun, and adjective
+        ])
 
     def lower(self, s):
         return s.lower()
 
     def clean(self, data):
+        stop_words = set(stopwords.words('english'))
         cleaned_data = []
         for item in data:
             item = self.lemmatize(item)
             item = self.lower(item)
-            item = re.sub(r'\d+', '', item)  # remove numbers
+            item = re.sub(r'https?://\S+|www\.\S+', '', item)  # Remove URLs
+            item = re.sub(r'[^\w\s]', '', item)  # Remove punctuation and special characters
+            item = re.sub(r'\d+', '', item)  # Remove numbers
+            item = " ".join([word for word in item.split() if word not in stop_words])  # Remove stopwords
             cleaned_data.append(item)
         return cleaned_data
 
