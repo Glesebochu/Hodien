@@ -92,32 +92,67 @@ class HumorDetector:
         predicted_label = np.argmax(humor_score, axis=1)
         return predicted_label, humor_score
 
+    def validate_csv(self, csv_path, required_columns):
+        """
+        Validate the CSV file format and ensure required columns are present.
+        """
+        try:
+            data = pd.read_csv(csv_path)
+        except Exception as e:
+            raise ValueError(f"Error reading CSV file at {csv_path}: {e}")
+
+        missing_columns = [col for col in required_columns if col not in data.columns]
+        if missing_columns:
+            raise KeyError(f"Missing required columns in {csv_path}: {missing_columns}")
+
+        return data
+
+    def predict_score_bulk(self, input_csv_path, output_csv_path="scored_jokes.csv", batch_size=32, text_column="text"):
+        # Validate the input CSV file
+        input_data = self.validate_csv(input_csv_path, required_columns=[text_column])
+
+        # Create a copy of the input data to preserve all existing columns
+        scored_data = input_data.copy()
+
+        # Add new columns for predictions and humor scores
+        scored_data["humorous"] = None
+        scored_data["humor_score"] = None
+
+        # Process texts in batches
+        texts = input_data[text_column].fillna("").tolist()  # Handle missing text values
+        for start_idx in range(0, len(texts), batch_size):
+            batch_texts = texts[start_idx:start_idx + batch_size]
+            predicted_labels, humor_scores = self.predict(batch_texts)
+
+            # Update the scored_data DataFrame
+            for idx, (label, score) in enumerate(zip(predicted_labels, humor_scores)):
+                scored_data.at[start_idx + idx, "humorous"] = label
+                scored_data.at[start_idx + idx, "humor_score"] = score[label]
+
+        # Save the updated data to a CSV file
+        scored_data.to_csv(output_csv_path, index=False)
+        print(f"Scored data saved to {output_csv_path}")
+
     @staticmethod
-    def train(sample_limit=None, epochs=3):
+    def train(sample_limit=None, epochs=3, text_column="text", label_column="humorous"):
         # List all files under the input directory (for Kaggle environments)
         for dirname, _, filenames in os.walk('/kaggle/input'):
             for filename in filenames:
                 print(os.path.join(dirname, filename))
 
-        # Load training and testing data from CSV files
-        train_data = pd.read_csv("backend/nlp_pipeline/data/train_detector.csv", delimiter=',', quotechar='"', on_bad_lines='skip')
-        test_data = pd.read_csv("backend/nlp_pipeline/data/test_detector.csv", delimiter=',', quotechar='"', on_bad_lines='skip')
-
-        # Debug: Print column names to verify structure
-        print("Train Data Columns:", train_data.columns)
-        print("Test Data Columns:", test_data.columns)
-
-        # Ensure correct column names
-        if "text" not in train_data.columns or "humorous" not in train_data.columns:
-            raise KeyError("Expected columns 'text' and 'humorous' not found in train_detector.csv")
-        if "text" not in test_data.columns or "humorous" not in test_data.columns:
-            raise KeyError("Expected columns 'text' and 'humorous' not found in test_detector.csv")
+        # Load and validate training and testing data
+        train_data = HumorDetector().validate_csv(
+            "backend/nlp_pipeline/data/train_detector.csv", required_columns=[text_column, label_column]
+        )
+        test_data = HumorDetector().validate_csv(
+            "backend/nlp_pipeline/data/test_detector.csv", required_columns=[text_column, label_column]
+        )
 
         # Separate features and labels
-        train_x = train_data["text"]
-        train_y = train_data["humorous"]
-        test_x = test_data["text"]
-        test_y = test_data["humorous"]
+        train_x = train_data[text_column].fillna("")  # Handle missing text values
+        train_y = train_data[label_column]
+        test_x = test_data[text_column].fillna("")  # Handle missing text values
+        test_y = test_data[label_column]
         
         # Apply sample limit if provided
         if sample_limit:
