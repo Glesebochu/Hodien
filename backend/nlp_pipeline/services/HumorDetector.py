@@ -10,9 +10,10 @@ import re
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import regexp_tokenize
 import os
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, confusion_matrix, ConfusionMatrixDisplay
 import nltk  # Add this import for downloading NLTK resources
 from nltk.corpus import stopwords  # Import stopwords
+import matplotlib.pyplot as plt
 
 os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 os.environ["OMP_NUM_THREADS"] = "4"
@@ -198,26 +199,59 @@ class HumorDetector:
         classifier.model.save_pretrained("finetuned_distilbert")
 
         # Evaluate the model
-        classifier.model.evaluate(x=test_batch.input_ids, y=np.array(test_y))
+        evaluation_results = classifier.model.evaluate(x=test_batch.input_ids, y=np.array(test_y))
 
         # Generate predictions
         y_pred = classifier.model.predict(x=test_batch.input_ids)
         y_pred_bool = np.argmax(y_pred[0], axis=1)
 
-        # Print classification report
-        print(classification_report(test_y, y_pred_bool))
+        # Save classification report to a file
+        report = classification_report(test_y, y_pred_bool, output_dict=True)
+        with open("classification_report.json", "w") as f:
+            import json
+            json.dump(report, f, indent=4)
+        print("Classification report saved to classification_report.json")
 
-        # Perform cross-validation
-        print("Performing cross-validation...")
-        cross_val_scores = cross_val_score(
-            MLPClassifier(), train_batch.input_ids.numpy(), train_y, cv=5, scoring='accuracy'
+        # Visualize confusion matrix
+        cm = confusion_matrix(test_y, y_pred_bool)
+        disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=["Not Humorous", "Humorous"])
+        disp.plot(cmap=plt.cm.Blues)
+        plt.title("Confusion Matrix")
+        plt.savefig("confusion_matrix.png")
+        plt.show()
+        print("Confusion matrix saved to confusion_matrix.png")
+
+        # Perform hyperparameter tuning using Hugging Face's hyperparameter_search
+        def model_init():
+            return ppb.TFDistilBertForSequenceClassification.from_pretrained("distilbert-base-uncased")
+
+        from transformers import Trainer, TrainingArguments
+        training_args = TrainingArguments(
+            output_dir="./results",
+            evaluation_strategy="epoch",
+            save_strategy="epoch",
+            learning_rate=2e-5,
+            per_device_train_batch_size=8,
+            num_train_epochs=epochs,
+            weight_decay=0.01,
+            logging_dir="./logs",
         )
-        print(f"Cross-validation scores: {cross_val_scores}")
-        print(f"Mean cross-validation accuracy: {np.mean(cross_val_scores)}")
-
-        # Test the model with a sample input
-        result = classifier.predict("When my son told me to stop impersonating a flamingo, I had to put my foot down.")
-        print("Result: ", result)
+        trainer = Trainer(
+            model_init=model_init,
+            args=training_args,
+            train_dataset=train_batch,
+            eval_dataset=test_batch,
+        )
+        best_run = trainer.hyperparameter_search(
+            direction="maximize",
+            n_trials=10,
+            hp_space=lambda _: {
+                "learning_rate": [1e-5, 2e-5, 3e-5],
+                "num_train_epochs": [2, 3, 4],
+                "per_device_train_batch_size": [8, 16],
+            },
+        )
+        print("Best hyperparameters found:", best_run.hyperparameters)
 
         # Save predictions and probabilities to a CSV file
         humor_scores = np.max(tf.nn.softmax(y_pred[0], axis=1).numpy(), axis=1)  # Calculate humor scores (probabilities)
@@ -226,6 +260,7 @@ class HumorDetector:
             "HumorScore": humor_scores
         })
         submission.to_csv("predictions.csv", index=True, index_label="Id")
+        print("Predictions saved to predictions.csv")
         
     def predict_score_bulk(self, input_csv_path, output_csv_path="scored_jokes.csv", batch_size=32):
         # Read the input CSV file
