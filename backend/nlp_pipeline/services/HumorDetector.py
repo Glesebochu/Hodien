@@ -35,6 +35,13 @@ logger = logging.getLogger(__name__)
 
 class HumorDetector:
     def __init__(self, config_path="config.yaml", load_finetuned=False):
+        """
+        Initialize the HumorDetector class.
+
+        Args:
+            config_path (str): Path to the YAML configuration file.
+            load_finetuned (bool): Whether to load a fine-tuned model from the specified path.
+        """
         # Load configuration from YAML file
         with open(config_path, "r") as file:
             self.config = yaml.safe_load(file)
@@ -63,6 +70,15 @@ class HumorDetector:
             self.model = ppb.TFDistilBertForSequenceClassification.from_pretrained("distilbert-base-uncased")
 
     def lemmatize(self, s):
+        """
+        Lemmatize a given string.
+
+        Args:
+            s (str): Input string to lemmatize.
+
+        Returns:
+            str: Lemmatized string.
+        """
         wordnet_lemmatizer = WordNetLemmatizer()
         return " ".join([
             wordnet_lemmatizer.lemmatize(w, pos) 
@@ -71,9 +87,27 @@ class HumorDetector:
         ])
 
     def lower(self, s):
+        """
+        Convert a string to lowercase.
+
+        Args:
+            s (str): Input string.
+
+        Returns:
+            str: Lowercased string.
+        """
         return s.lower()
 
     def clean(self, data):
+        """
+        Clean a list of text data by removing stopwords, punctuation, URLs, and numbers.
+
+        Args:
+            data (list): List of strings to clean.
+
+        Returns:
+            list: List of cleaned strings.
+        """
         stop_words = set(stopwords.words('english'))
         cleaned_data = []
         for item in data:
@@ -87,6 +121,15 @@ class HumorDetector:
         return cleaned_data
 
     def tokenize(self, text):
+        """
+        Tokenize text using the BERT tokenizer.
+
+        Args:
+            text (list or str): Input text or list of texts.
+
+        Returns:
+            dict: Tokenized text as tensors.
+        """
         # Reduce max_length for faster processing
         tokenized = self.tokenizer(
             text, padding=True, truncation=True, max_length=64, return_tensors="tf"
@@ -94,10 +137,28 @@ class HumorDetector:
         return tokenized
 
     def process(self, data):
+        """
+        Clean and tokenize input data.
+
+        Args:
+            data (list): List of strings to process.
+
+        Returns:
+            dict: Tokenized tensors.
+        """
         cleaned = self.clean(data)
         return self.tokenize(cleaned)
 
     def predict(self, content):
+        """
+        Predict humor labels and scores for input text.
+
+        Args:
+            content (str or list): Input text or list of texts.
+
+        Returns:
+            tuple: Predicted labels and humor scores.
+        """
         # Handle single input explicitly
         if isinstance(content, str):
             content = [content]  # Convert single string to a list
@@ -110,6 +171,13 @@ class HumorDetector:
     def validate_csv(self, csv_path, required_columns):
         """
         Validate the CSV file format and ensure required columns are present.
+
+        Args:
+            csv_path (str): Path to the CSV file.
+            required_columns (list): List of required column names.
+
+        Returns:
+            pd.DataFrame: Loaded and validated DataFrame.
         """
         try:
             data = pd.read_csv(csv_path)
@@ -123,6 +191,18 @@ class HumorDetector:
         return data
 
     def predict_score_bulk(self, input_csv_path, output_csv_path="scored_jokes.csv", batch_size=32, text_column="text"):
+        """
+        Predict humor scores for a bulk of text data from a CSV file.
+
+        Args:
+            input_csv_path (str): Path to the input CSV file.
+            output_csv_path (str): Path to save the output CSV file with predictions.
+            batch_size (int): Batch size for processing.
+            text_column (str): Name of the column containing text data.
+
+        Returns:
+            None
+        """
         # Validate the input CSV file
         input_data = self.validate_csv(input_csv_path, required_columns=[text_column])
 
@@ -152,6 +232,14 @@ class HumorDetector:
     def create_tf_dataset(features, labels=None, batch_size=32):
         """
         Create a tf.data.Dataset for efficient data loading and batching.
+
+        Args:
+            features (np.array): Input features.
+            labels (np.array, optional): Input labels. Defaults to None.
+            batch_size (int): Batch size for batching.
+
+        Returns:
+            tf.data.Dataset: TensorFlow dataset object.
         """
         dataset = tf.data.Dataset.from_tensor_slices((features, labels)) if labels is not None else tf.data.Dataset.from_tensor_slices(features)
         dataset = dataset.batch(batch_size).prefetch(tf.data.AUTOTUNE)
@@ -160,6 +248,12 @@ class HumorDetector:
     def train(self, sample_limit=None):
         """
         Train the HumorDetector model.
+
+        Args:
+            sample_limit (int, optional): Limit the number of training samples. Defaults to None.
+
+        Returns:
+            None
         """
         # Load configuration
         config = self.config
