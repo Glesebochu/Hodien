@@ -33,13 +33,13 @@ class HumorTypeClassifier:
         ]
 
         # Initialize tokenizer and model
-        self.tokenizer = ppb.AutoTokenizer.from_pretrained("distilbert-base-uncased")
+        self.tokenizer = ppb.AutoTokenizer.from_pretrained("microsoft/MiniLM-L12-H384-uncased")
         if load_finetuned and os.path.exists(model_path):
             print(f"Loading fine-tuned model from {model_path}")
-            self.model = ppb.TFDistilBertForSequenceClassification.from_pretrained(model_path)
+            self.model = ppb.TFAutoModelForSequenceClassification.from_pretrained(model_path)
         else:
-            self.model = ppb.TFDistilBertForSequenceClassification.from_pretrained(
-                "distilbert-base-uncased", num_labels=len(self.humor_categories)
+            self.model = ppb.TFAutoModelForSequenceClassification.from_pretrained(
+                "microsoft/MiniLM-L12-H384-uncased", num_labels=len(self.humor_categories)
             )
 
     def lemmatize(self, s):
