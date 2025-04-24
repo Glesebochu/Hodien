@@ -1,30 +1,41 @@
 import 'dart:async'; // For Timer (debounce)
 import 'package:flutter/material.dart';
-import '../services/translator_service.dart'; // Importing the service that handles backend translation
+import '../services/translator_service.dart';
+import 'dart:developer'; // For using the log() function instead of print
+import 'package:firebase_auth/firebase_auth.dart'; // For Firebase authentication
 
 class SearchInputBar extends StatefulWidget {
-  const SearchInputBar({super.key});
+  // Callbacks for empty and valid search
+  final VoidCallback? onEmptySearch;
+  final VoidCallback? onValidSearch;
+  const SearchInputBar({super.key, this.onEmptySearch, this.onValidSearch});
 
   @override
   State<SearchInputBar> createState() => _SearchInputBarState();
 }
 
+// --- STATE CLASS FOR SEARCH INPUT BAR ---
 class _SearchInputBarState extends State<SearchInputBar> {
   final TextEditingController _controller = TextEditingController();
   final TranslatorService _translatorService = TranslatorService();
 
+  // --- STATE VARIABLES ---
   String? translatedText; // Final translation result
+  String? language; // Detected language (if needed)
   String? error; // Any error message (connection, failure, etc.)
   bool isLoading = false; // Tracks loading spinner state
+  String? userId; // User ID for logging
+  String? originalText; // Original text input by the user
   Timer? _debounce; // Timer for debounce control
 
-  // --- INPUT VALIDATION ---
-  // bool _isValidInput(String input) {
-  //   final cleaned = input.trim();
-  //   final isSymbolsOnly = RegExp(r'^[^\w\s]+$').hasMatch(cleaned);
-  //   final isNumbersOnly = RegExp(r'^\d+$').hasMatch(cleaned);
-  //   return cleaned.isNotEmpty && !isSymbolsOnly && !isNumbersOnly;
-  // }
+  // --- INITIALIZE USER ID ---
+  @override
+  void initState() {
+    super.initState();
+    userId = FirebaseAuth.instance.currentUser?.uid ?? 'anonymous';
+  }
+
+  // --- INPUT VALIDATION for translator---
   bool _isValidInput(String input) {
     final cleaned = input.trim();
 
@@ -40,27 +51,40 @@ class _SearchInputBarState extends State<SearchInputBar> {
   void _onTextChanged(String input) {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
 
-    _debounce = Timer(const Duration(milliseconds: 500), () async {
+    _debounce = Timer(const Duration(milliseconds: 200), () async {
       setState(() {
         translatedText = null;
+        language = null;
         error = null;
         isLoading = true;
       });
 
+      // Check if the input is valid before making the API call
       if (!_isValidInput(input)) {
         setState(() {
           isLoading = false;
         });
         return;
       }
-
-      final result = await _translatorService.translate(input);
-
-      setState(() {
-        translatedText = result.translatedText;
-        error = result.error;
-        isLoading = false;
-      });
+      try {
+        // Call the translation service
+        final result = await _translatorService.translate(input);
+        setState(() {
+          translatedText = result.translatedText;
+          language = result.language;
+          error = result.error;
+          isLoading = false;
+        });
+      } catch (e) {
+        // Handle any exceptions that may occur during the API call
+        setState(() {
+          log("Translation Exception: $e");
+          error = "Translation request Failed";
+          translatedText = null;
+          language = null;
+          isLoading = false;
+        });
+      }
     });
   }
 
@@ -73,6 +97,49 @@ class _SearchInputBarState extends State<SearchInputBar> {
         TextField(
           controller: _controller,
           onChanged: _onTextChanged,
+          textInputAction: TextInputAction.search,
+          // When user presses enter or search button on keyboard it will call this function
+          // and pass the current value of the text field to it
+          onSubmitted: (value) async {
+            // Only run if the input not empty and user is logged in
+            try {
+              if (value.trim().isNotEmpty &&
+                  userId != 'anonymous' &&
+                  error != null) {
+                log(
+                  "Original Text: $value |"
+                  "Translated Text: $translatedText |"
+                  "Language: $language |"
+                  "User ID: $userId",
+                );
+                if (error != null && language != null) {
+                  await _translatorService.sendQueryToController(
+                    originalText: value,
+                    translatedText: translatedText!,
+                    language: language!,
+                    userId: userId!, // fetch from Firebase
+                  );
+                }
+                log("Query sent to controller successfully");
+
+                widget.onValidSearch!(); // Send signal up to parent
+              } else if (userId == 'anonymous' || error == null) {
+                // If the input is empty or user is not logged in, call the empty search callback
+                if (widget.onEmptySearch != null) {
+                  widget.onEmptySearch!(); // Send signal up to parent
+                }
+              }
+            } catch (e) {
+              log(
+                "Error submitting query: $e"
+                "User ID: userId"
+                "Original Text: $value",
+              );
+              setState(() {
+                error = "Failed to submit reuquest";
+              });
+            }
+          },
           decoration: InputDecoration(
             hintText: 'Search',
             hintStyle: TextStyle(color: Colors.grey[600], fontSize: 17),
@@ -116,17 +183,20 @@ class _SearchInputBarState extends State<SearchInputBar> {
             ),
           )
         // --- TRANSLATED TEXT ---
-        else if (translatedText != null && error == null)
+        else if (error == null)
           Padding(
             padding: const EdgeInsets.only(left: 8.0),
             child: Text(
-              translatedText!,
+              translatedText ?? '',
               style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
             ),
           )
         // --- ERROR TEXT ---
         else if (error != null)
-          Text(error!, style: const TextStyle(color: Colors.red, fontSize: 14)),
+          Text(
+            error ?? '',
+            style: const TextStyle(color: Colors.red, fontSize: 14),
+          ),
       ],
     );
   }

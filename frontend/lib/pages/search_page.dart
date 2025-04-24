@@ -2,8 +2,14 @@ import 'package:flutter/material.dart';
 import '../models/reusable_back_button.dart';
 import '../models/search_input_bar.dart';
 
-class SearchPage extends StatelessWidget {
+class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
+  @override
+  State<SearchPage> createState() => _SearchPageState();
+}
+
+class _SearchPageState extends State<SearchPage> {
+  bool showNoResults = false; // 🟡 Flag to toggle "No results found"
 
   @override
   Widget build(BuildContext context) {
@@ -32,44 +38,62 @@ class SearchPage extends StatelessWidget {
                 ],
               ),
 
-              const SizedBox(height: 25),
+              const SizedBox(height: 100),
 
-              // SearchBar with Cancel (as suffix icon)
-              const SearchInputBar(),
+              // SearchInputBar with empty callback
+              SearchInputBar(
+                // Callback to handle search input
+                onEmptySearch: () {
+                  setState(() {
+                    showNoResults = true;
+                  });
+                },
+                onValidSearch: () {
+                  setState(() {
+                    showNoResults = false;
+                  });
+                },
+              ),
               const SizedBox(height: 10),
               const Divider(),
               const SizedBox(height: 12),
 
-              // Placeholder for Conditional Content
-              Expanded(
-                child: Center(
-                  child: Text(
-                    'Search results will appear here.',
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontStyle: FontStyle.italic,
+              // Conditional display based on input
+              if (showNoResults)
+                const Expanded(
+                  child: Center(
+                    child: Text(
+                      'No Results Found',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  ),
+                )
+              else
+                const Expanded(
+                  child: Center(
+                    child: Text(
+                      'Search results will appear here.',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontStyle: FontStyle.italic,
+                      ),
                     ),
                   ),
                 ),
-              ),
-
               // loading/empty state previews
-              const Center(
-                child: SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(
-                    color: Color.fromARGB(255, 225, 204, 15),
-                  ),
-                ),
-              ),
+              // const Center(
+              //   child: SizedBox(
+              //     width: 20,
+              //     height: 20,
+              //     child: CircularProgressIndicator(
+              //       color: Color.fromARGB(255, 225, 204, 15),
+              //     ),
+              //   ),
+              // ),
               SizedBox(height: 20),
-              const Center(
-                child: Text(
-                  'No results found',
-                  style: TextStyle(color: Colors.grey),
-                ),
-              ),
             ],
           ),
         ),
