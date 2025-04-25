@@ -79,7 +79,7 @@ class Indexer:
             idf = math.log(self.doc_count / (self.term_doc_count[term] + 1))  # Avoid division by zero
             for doc_id in self.term_freq[term]:
                 tf = self.term_freq[term][doc_id]
-                weight = tf * idf
+                weight = round(tf * idf,4)
                 # Find record for metadata
                 record = next(r for r in records if r['id'] == doc_id)
                 self.inverted_index[term].append({
