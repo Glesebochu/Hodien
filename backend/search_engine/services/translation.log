@@ -1,0 +1,1255 @@
+2025-04-17 11:25:53,391 - INFO - [INPUT] Raw user input: '///'
+2025-04-17 11:25:53,391 - INFO - [SKIPPED] Symbols only.
+2025-04-17 11:26:10,860 - INFO - [INPUT] Raw user input: ''
+2025-04-17 11:26:10,860 - INFO - [SKIPPED] Empty or whitespace-only input.
+2025-04-17 11:27:08,739 - INFO - [INPUT] Raw user input: '123'
+2025-04-17 11:27:08,755 - INFO - [SKIPPED] Numbers-only input.
+2025-04-17 11:27:46,010 - INFO - [INPUT] Raw user input: '#'
+2025-04-17 11:27:46,010 - INFO - [SKIPPED] Symbols only.
+2025-04-17 11:28:08,086 - INFO - [INPUT] Raw user input: '\u12a5\u1263\u12ad\u1205 \u121d\u130d\u1265 \u12a0\u121d\u1323\u120d\u129d'
+2025-04-17 11:28:08,679 - INFO - [INFO] Detected language: am
+2025-04-17 11:28:09,086 - INFO - [SUCCESS] Translated to: 'Please bring me food'
+2025-04-17 11:28:55,546 - INFO - [INPUT] Raw user input: '\u12a5\u1263'
+2025-04-17 11:28:57,115 - INFO - [INFO] Detected language: ti
+2025-04-17 11:28:57,115 - INFO - [SKIPPED] Non-Amharic input. Language: ti
+2025-04-17 11:29:22,589 - INFO - [INPUT] Raw user input: '\u12a5'
+2025-04-17 11:29:23,023 - INFO - [INFO] Detected language: am
+2025-04-17 11:29:23,570 - INFO - [SUCCESS] Translated to: 'Here'
+2025-04-17 16:06:59,666 - INFO - [INPUT] Raw user input: '\u1230\u120b\u121d'
+2025-04-17 16:07:00,253 - INFO - [INFO] Detected language: am
+2025-04-17 16:07:00,698 - INFO - [SUCCESS] Translated to: 'Hello'
+2025-04-17 16:07:14,788 - INFO - [INPUT] Raw user input: ''
+2025-04-17 16:07:14,788 - INFO - [SKIPPED] Empty or whitespace-only input.
+2025-04-17 17:55:41,063 - INFO - [INPUT] Raw user input: '\u1230\u120b\u121d'
+2025-04-17 17:55:41,589 - INFO - [INFO] Detected language: am
+2025-04-17 17:55:42,025 - INFO - [SUCCESS] Translated to: 'Hello'
+2025-04-17 18:10:05,002 - INFO - [INPUT] Raw user input: 'h'
+2025-04-17 18:10:05,605 - INFO - [INFO] Detected language: en
+2025-04-17 18:10:05,605 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:10:06,004 - INFO - [INPUT] Raw user input: 'h'
+2025-04-17 18:10:06,419 - INFO - [INFO] Detected language: en
+2025-04-17 18:10:06,419 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:10:06,419 - INFO - [INPUT] Raw user input: 'hi'
+2025-04-17 18:10:06,818 - INFO - [INFO] Detected language: en
+2025-04-17 18:10:06,818 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:10:09,601 - INFO - [INPUT] Raw user input: 'h'
+2025-04-17 18:10:10,019 - INFO - [INFO] Detected language: en
+2025-04-17 18:10:10,020 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:10:12,682 - INFO - [INPUT] Raw user input: 'http POST http://127.0.0.1:8000/translate text="\u1230\u120b\u121d"'
+2025-04-17 18:10:13,783 - INFO - [INFO] Detected language: am
+2025-04-17 18:10:14,366 - INFO - [SUCCESS] Translated to: 'http POST http://127.0.0.1:8000/translate Text = "hi"'
+2025-04-17 18:10:14,649 - INFO - [INPUT] Raw user input: 'http POST http://127.0.0.1:8000/translate text="\u1230\u120b\u121d'
+2025-04-17 18:10:15,199 - INFO - [INFO] Detected language: am
+2025-04-17 18:10:15,599 - INFO - [SUCCESS] Translated to: 'http Post http://127.0.0.1:8000/translate Text = "hi'
+2025-04-17 18:10:16,199 - INFO - [INPUT] Raw user input: 'http POST http://127.0.0.1:8000/translate text=\u1230\u120b\u121d'
+2025-04-17 18:10:17,531 - INFO - [INFO] Detected language: am
+2025-04-17 18:10:17,968 - INFO - [SUCCESS] Translated to: 'http Post http://127.0.0.1:8000/translate Text = hi'
+2025-04-17 18:10:17,972 - INFO - [INPUT] Raw user input: 'http POST http://127.0.0.1:8000/translate\u1230\u120b\u121d'
+2025-04-17 18:10:18,382 - INFO - [INFO] Detected language: en
+2025-04-17 18:10:18,382 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:10:18,382 - INFO - [INPUT] Raw user input: 'http POST http://127.0.0.1:8000/translate text\u1230\u120b\u121d'
+2025-04-17 18:10:20,199 - INFO - [INFO] Detected language: am
+2025-04-17 18:10:20,764 - INFO - [SUCCESS] Translated to: 'http Post http://127.0.0.1:8000/translate Text Hi'
+2025-04-17 18:10:20,764 - INFO - [INPUT] Raw user input: 'http POST http://127.0.0.1:8000/translate t\u1230\u120b\u121d'
+2025-04-17 18:10:22,330 - INFO - [INFO] Detected language: am
+2025-04-17 18:10:22,747 - INFO - [SUCCESS] Translated to: 'http Post http://127.0.0.1:8000/translate t peace'
+2025-04-17 18:10:22,747 - INFO - [INPUT] Raw user input: 'http POST http://127.0.0.1:8000/translate te\u1230\u120b\u121d'
+2025-04-17 18:10:23,130 - INFO - [INFO] Detected language: en
+2025-04-17 18:10:23,130 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:10:23,130 - INFO - [INPUT] Raw user input: 'http POST http://127.0.0.1:8000/translate \u1230\u120b\u121d'
+2025-04-17 18:10:23,998 - INFO - [INFO] Detected language: am
+2025-04-17 18:10:24,449 - INFO - [SUCCESS] Translated to: 'http POST http://127.0.0.1:8000/translat Hi'
+2025-04-17 18:10:24,449 - INFO - [INPUT] Raw user input: 'http POST http://127.0.0.1:8000/translate tex\u1230\u120b\u121d'
+2025-04-17 18:10:24,862 - INFO - [INFO] Detected language: en
+2025-04-17 18:10:24,862 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:10:24,862 - INFO - [INPUT] Raw user input: 'http POST http://127.0.0.1:8000/translat\u1230\u120b\u121d'
+2025-04-17 18:10:25,379 - INFO - [INFO] Detected language: en
+2025-04-17 18:10:25,379 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:10:25,379 - INFO - [INPUT] Raw user input: 'http POST http://127.0.0.1:8000/transla\u1230\u120b\u121d'
+2025-04-17 18:10:25,931 - INFO - [INFO] Detected language: en
+2025-04-17 18:10:25,931 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:10:25,935 - INFO - [INPUT] Raw user input: 'http POST http://127.0.0.1:8000/tran\u1230\u120b\u121d'
+2025-04-17 18:10:26,328 - INFO - [INFO] Detected language: en
+2025-04-17 18:10:26,328 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:10:26,328 - INFO - [INPUT] Raw user input: 'http POST http://127.0.0.1:8000/trans\u1230\u120b\u121d'
+2025-04-17 18:10:26,762 - INFO - [INFO] Detected language: en
+2025-04-17 18:10:26,762 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:10:26,762 - INFO - [INPUT] Raw user input: 'http POST http://127.0.0.1:8000/transl\u1230\u120b\u121d'
+2025-04-17 18:10:27,162 - INFO - [INFO] Detected language: en
+2025-04-17 18:10:27,162 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:10:27,162 - INFO - [INPUT] Raw user input: 'http POST http://127.0.0.1:8000/tr\u1230\u120b\u121d'
+2025-04-17 18:10:27,563 - INFO - [INFO] Detected language: en
+2025-04-17 18:10:27,563 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:10:27,563 - INFO - [INPUT] Raw user input: 'http POST http://127.0.0.1:8000/tra\u1230\u120b\u121d'
+2025-04-17 18:10:27,996 - INFO - [INFO] Detected language: en
+2025-04-17 18:10:27,996 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:10:27,996 - INFO - [INPUT] Raw user input: 'http POST http://127.0.0.1:8000/t\u1230\u120b\u121d'
+2025-04-17 18:10:28,395 - INFO - [INFO] Detected language: en
+2025-04-17 18:10:28,395 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:10:28,395 - INFO - [INPUT] Raw user input: 'http POST http://127.0.0.1:8000/\u1230\u120b\u121d'
+2025-04-17 18:10:28,828 - INFO - [INFO] Detected language: en
+2025-04-17 18:10:28,828 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:10:28,828 - INFO - [INPUT] Raw user input: 'http POST http://127.0.0.1:8000\u1230\u120b\u121d'
+2025-04-17 18:10:29,344 - INFO - [INFO] Detected language: en
+2025-04-17 18:10:29,344 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:10:29,344 - INFO - [INPUT] Raw user input: 'http POST http://127.0.0.1:80\u1230\u120b\u121d'
+2025-04-17 18:10:29,727 - INFO - [INFO] Detected language: en
+2025-04-17 18:10:29,727 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:10:29,727 - INFO - [INPUT] Raw user input: 'http POST http://127.0.0.1:8\u1230\u120b\u121d'
+2025-04-17 18:10:30,460 - INFO - [INFO] Detected language: en
+2025-04-17 18:10:30,460 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:10:30,460 - INFO - [INPUT] Raw user input: 'http POST http://127.0.0.1:800\u1230\u120b\u121d'
+2025-04-17 18:10:31,110 - INFO - [INFO] Detected language: en
+2025-04-17 18:10:31,110 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:10:31,110 - INFO - [INPUT] Raw user input: 'http POST http://127.0.0.1:\u1230\u120b\u121d'
+2025-04-17 18:10:31,677 - INFO - [INFO] Detected language: en
+2025-04-17 18:10:31,677 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:10:31,693 - INFO - [INPUT] Raw user input: 'http POST http://127.0.0.1\u1230\u120b\u121d'
+2025-04-17 18:10:32,097 - INFO - [INFO] Detected language: en
+2025-04-17 18:10:32,097 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:10:32,097 - INFO - [INPUT] Raw user input: 'http POST http://127.0.0.\u1230\u120b\u121d'
+2025-04-17 18:10:32,487 - INFO - [INFO] Detected language: en
+2025-04-17 18:10:32,487 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:10:32,503 - INFO - [INPUT] Raw user input: 'http POST http://127.0.0\u1230\u120b\u121d'
+2025-04-17 18:10:32,907 - INFO - [INFO] Detected language: en
+2025-04-17 18:10:32,907 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:10:32,907 - INFO - [INPUT] Raw user input: 'http POST http://127.0.\u1230\u120b\u121d'
+2025-04-17 18:10:33,504 - INFO - [INFO] Detected language: en
+2025-04-17 18:10:33,504 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:10:33,504 - INFO - [INPUT] Raw user input: 'http POST http://127.0\u1230\u120b\u121d'
+2025-04-17 18:10:34,005 - INFO - [INFO] Detected language: en
+2025-04-17 18:10:34,005 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:10:34,005 - INFO - [INPUT] Raw user input: 'http POST http://127.\u1230\u120b\u121d'
+2025-04-17 18:10:34,658 - INFO - [INFO] Detected language: en
+2025-04-17 18:10:34,658 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:10:34,658 - INFO - [INPUT] Raw user input: 'http POST http://127\u1230\u120b\u121d'
+2025-04-17 18:10:35,059 - INFO - [INFO] Detected language: en
+2025-04-17 18:10:35,059 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:10:35,059 - INFO - [INPUT] Raw user input: 'http POST http://12\u1230\u120b\u121d'
+2025-04-17 18:10:35,492 - INFO - [INFO] Detected language: en
+2025-04-17 18:10:35,492 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:10:35,492 - INFO - [INPUT] Raw user input: 'http POST http://1\u1230\u120b\u121d'
+2025-04-17 18:10:35,925 - INFO - [INFO] Detected language: en
+2025-04-17 18:10:35,925 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:10:35,925 - INFO - [INPUT] Raw user input: 'http POST http://\u1230\u120b\u121d'
+2025-04-17 18:10:36,442 - INFO - [INFO] Detected language: en
+2025-04-17 18:10:36,442 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:10:36,442 - INFO - [INPUT] Raw user input: 'http POST http:/\u1230\u120b\u121d'
+2025-04-17 18:10:37,012 - INFO - [INFO] Detected language: en
+2025-04-17 18:10:37,012 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:10:37,012 - INFO - [INPUT] Raw user input: 'http POST http:\u1230\u120b\u121d'
+2025-04-17 18:10:37,546 - INFO - [INFO] Detected language: en
+2025-04-17 18:10:37,546 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:10:37,548 - INFO - [INPUT] Raw user input: 'http POST http\u1230\u120b\u121d'
+2025-04-17 18:10:38,058 - INFO - [INFO] Detected language: en
+2025-04-17 18:10:38,058 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:10:38,058 - INFO - [INPUT] Raw user input: 'http POST htt\u1230\u120b\u121d'
+2025-04-17 18:10:38,658 - INFO - [INFO] Detected language: en
+2025-04-17 18:10:38,658 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:10:38,658 - INFO - [INPUT] Raw user input: 'http POST ht\u1230\u120b\u121d'
+2025-04-17 18:10:40,175 - INFO - [INFO] Detected language: am
+2025-04-17 18:10:40,607 - INFO - [SUCCESS] Translated to: 'http Post HT H.'
+2025-04-17 18:10:40,607 - INFO - [INPUT] Raw user input: 'http POST h\u1230\u120b\u121d'
+2025-04-17 18:10:41,008 - INFO - [INFO] Detected language: en
+2025-04-17 18:10:41,008 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:10:41,008 - INFO - [INPUT] Raw user input: 'http POST \u1230\u120b\u121d'
+2025-04-17 18:10:43,040 - INFO - [INFO] Detected language: am
+2025-04-17 18:10:43,589 - INFO - [SUCCESS] Translated to: 'http Post peace'
+2025-04-17 18:10:43,589 - INFO - [INPUT] Raw user input: 'http POST\u1230\u120b\u121d'
+2025-04-17 18:10:45,139 - INFO - [INFO] Detected language: am
+2025-04-17 18:10:46,723 - INFO - [SUCCESS] Translated to: 'http Post peace'
+2025-04-17 18:10:46,723 - INFO - [INPUT] Raw user input: 'http POS\u1230\u120b\u121d'
+2025-04-17 18:10:52,686 - INFO - [INFO] Detected language: en
+2025-04-17 18:10:52,686 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:10:52,686 - INFO - [INPUT] Raw user input: 'http PO\u1230\u120b\u121d'
+2025-04-17 18:10:53,241 - INFO - [INFO] Detected language: en
+2025-04-17 18:10:53,241 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:10:53,244 - INFO - [INPUT] Raw user input: 'http P\u1230\u120b\u121d'
+2025-04-17 18:10:54,053 - INFO - [INFO] Detected language: am
+2025-04-17 18:10:55,352 - INFO - [SUCCESS] Translated to: 'http p peace'
+2025-04-17 18:10:55,352 - INFO - [INPUT] Raw user input: 'http \u1230\u120b\u121d'
+2025-04-17 18:10:56,220 - INFO - [INFO] Detected language: am
+2025-04-17 18:10:56,655 - INFO - [SUCCESS] Translated to: 'http peace'
+2025-04-17 18:10:56,655 - INFO - [INPUT] Raw user input: 'htt\u1230\u120b\u121d'
+2025-04-17 18:10:58,700 - INFO - [INFO] Detected language: am
+2025-04-17 18:10:59,117 - INFO - [SUCCESS] Translated to: 'htti'
+2025-04-17 18:10:59,117 - INFO - [INPUT] Raw user input: 'ht\u1230\u120b\u121d'
+2025-04-17 18:11:00,821 - INFO - [INFO] Detected language: am
+2025-04-17 18:11:01,250 - INFO - [SUCCESS] Translated to: 'ht peace'
+2025-04-17 18:11:01,250 - INFO - [INPUT] Raw user input: 'h\u1230\u120b\u121d'
+2025-04-17 18:11:02,683 - INFO - [INFO] Detected language: am
+2025-04-17 18:11:03,117 - INFO - [SUCCESS] Translated to: 'Hi'
+2025-04-17 18:11:03,117 - INFO - [INPUT] Raw user input: 'http\u1230\u120b\u121d'
+2025-04-17 18:11:04,116 - INFO - [INFO] Detected language: am
+2025-04-17 18:11:04,682 - INFO - [SUCCESS] Translated to: 'http peace'
+2025-04-17 18:12:31,830 - INFO - [INPUT] Raw user input: 'h'
+2025-04-17 18:12:32,235 - INFO - [INFO] Detected language: en
+2025-04-17 18:12:32,235 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:12:32,235 - INFO - [INPUT] Raw user input: 'hi'
+2025-04-17 18:12:32,635 - INFO - [INFO] Detected language: en
+2025-04-17 18:12:32,635 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:12:34,278 - INFO - [INPUT] Raw user input: 'h'
+2025-04-17 18:12:34,785 - INFO - [INFO] Detected language: en
+2025-04-17 18:12:34,785 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:13:35,582 - INFO - [INPUT] Raw user input: 'h'
+2025-04-17 18:13:35,981 - INFO - [INFO] Detected language: en
+2025-04-17 18:13:35,981 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:13:35,981 - INFO - [INPUT] Raw user input: 'hi'
+2025-04-17 18:13:36,398 - INFO - [INFO] Detected language: en
+2025-04-17 18:13:36,398 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:13:38,331 - INFO - [INPUT] Raw user input: 'h'
+2025-04-17 18:13:38,731 - INFO - [INFO] Detected language: en
+2025-04-17 18:13:38,731 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:13:41,963 - INFO - [INPUT] Raw user input: 'h'
+2025-04-17 18:13:42,497 - INFO - [INFO] Detected language: en
+2025-04-17 18:13:42,497 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:13:42,497 - INFO - [INPUT] Raw user input: 'he'
+2025-04-17 18:13:43,048 - INFO - [INFO] Detected language: en
+2025-04-17 18:13:43,048 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:13:43,048 - INFO - [INPUT] Raw user input: 'hel'
+2025-04-17 18:13:43,586 - INFO - [INFO] Detected language: en
+2025-04-17 18:13:43,586 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:13:43,586 - INFO - [INPUT] Raw user input: 'hell'
+2025-04-17 18:13:44,149 - INFO - [INFO] Detected language: en
+2025-04-17 18:13:44,149 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:13:44,149 - INFO - [INPUT] Raw user input: 'hello'
+2025-04-17 18:13:44,549 - INFO - [INFO] Detected language: en
+2025-04-17 18:13:44,549 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:13:46,861 - INFO - [INPUT] Raw user input: 'hell'
+2025-04-17 18:13:47,261 - INFO - [INFO] Detected language: en
+2025-04-17 18:13:47,261 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:13:47,276 - INFO - [INPUT] Raw user input: 'hel'
+2025-04-17 18:13:47,677 - INFO - [INFO] Detected language: en
+2025-04-17 18:13:47,677 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:13:47,677 - INFO - [INPUT] Raw user input: 'h'
+2025-04-17 18:13:48,077 - INFO - [INFO] Detected language: en
+2025-04-17 18:13:48,077 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:13:48,094 - INFO - [INPUT] Raw user input: 'he'
+2025-04-17 18:13:48,494 - INFO - [INFO] Detected language: en
+2025-04-17 18:13:48,510 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:14:51,838 - INFO - [INPUT] Raw user input: 'h'
+2025-04-17 18:14:52,354 - INFO - [INFO] Detected language: en
+2025-04-17 18:14:52,354 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:14:52,355 - INFO - [INPUT] Raw user input: 'hi'
+2025-04-17 18:14:52,855 - INFO - [INFO] Detected language: en
+2025-04-17 18:14:52,855 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:14:53,854 - INFO - [INPUT] Raw user input: 'h'
+2025-04-17 18:14:54,255 - INFO - [INFO] Detected language: en
+2025-04-17 18:14:54,255 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:14:58,869 - INFO - [INPUT] Raw user input: 'e'
+2025-04-17 18:14:59,419 - INFO - [INFO] Detected language: en
+2025-04-17 18:14:59,419 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:14:59,853 - INFO - [INPUT] Raw user input: 'en'
+2025-04-17 18:15:00,303 - INFO - [INFO] Detected language: es
+2025-04-17 18:15:00,303 - INFO - [SKIPPED] Non-Amharic input. Language: es
+2025-04-17 18:15:00,785 - INFO - [INPUT] Raw user input: 'ene'
+2025-04-17 18:15:01,218 - INFO - [INFO] Detected language: en
+2025-04-17 18:15:01,218 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:15:09,949 - INFO - [INPUT] Raw user input: 'en'
+2025-04-17 18:15:10,483 - INFO - [INFO] Detected language: es
+2025-04-17 18:15:10,483 - INFO - [SKIPPED] Non-Amharic input. Language: es
+2025-04-17 18:15:10,483 - INFO - [INPUT] Raw user input: 'e'
+2025-04-17 18:15:10,866 - INFO - [INFO] Detected language: en
+2025-04-17 18:15:10,866 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:15:12,084 - INFO - [INPUT] Raw user input: 'w'
+2025-04-17 18:15:12,498 - INFO - [INFO] Detected language: en
+2025-04-17 18:15:12,498 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:15:13,032 - INFO - [INPUT] Raw user input: 'wh'
+2025-04-17 18:15:13,515 - INFO - [INFO] Detected language: en
+2025-04-17 18:15:13,515 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:15:14,131 - INFO - [INPUT] Raw user input: 'wha'
+2025-04-17 18:15:14,997 - INFO - [INFO] Detected language: en
+2025-04-17 18:15:14,997 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:15:15,981 - INFO - [INPUT] Raw user input: 'what'
+2025-04-17 18:15:16,498 - INFO - [INFO] Detected language: en
+2025-04-17 18:15:16,498 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:15:16,498 - INFO - [INPUT] Raw user input: 'whats'
+2025-04-17 18:15:16,997 - INFO - [INFO] Detected language: en
+2025-04-17 18:15:16,997 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:15:18,025 - INFO - [INPUT] Raw user input: 'whats'
+2025-04-17 18:15:18,562 - INFO - [INFO] Detected language: en
+2025-04-17 18:15:18,563 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:15:18,563 - INFO - [INPUT] Raw user input: 'whats u'
+2025-04-17 18:15:18,947 - INFO - [INFO] Detected language: en
+2025-04-17 18:15:18,947 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:15:18,964 - INFO - [INPUT] Raw user input: 'whats up'
+2025-04-17 18:15:19,347 - INFO - [INFO] Detected language: en
+2025-04-17 18:15:19,347 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:15:19,385 - INFO - [INPUT] Raw user input: 'whats up'
+2025-04-17 18:15:20,048 - INFO - [INFO] Detected language: en
+2025-04-17 18:15:20,048 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:15:20,048 - INFO - [INPUT] Raw user input: 'whats up y'
+2025-04-17 18:15:20,461 - INFO - [INFO] Detected language: en
+2025-04-17 18:15:20,461 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:15:20,462 - INFO - [INPUT] Raw user input: 'whats up yo'
+2025-04-17 18:15:20,979 - INFO - [INFO] Detected language: en
+2025-04-17 18:15:20,979 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:15:20,979 - INFO - [INPUT] Raw user input: 'whats up you'
+2025-04-17 18:15:21,496 - INFO - [INFO] Detected language: en
+2025-04-17 18:15:21,496 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:15:21,929 - INFO - [INPUT] Raw user input: 'whats up yo'
+2025-04-17 18:15:22,345 - INFO - [INFO] Detected language: en
+2025-04-17 18:15:22,345 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:15:22,414 - INFO - [INPUT] Raw user input: 'whats up y'
+2025-04-17 18:15:22,811 - INFO - [INFO] Detected language: en
+2025-04-17 18:15:22,811 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:15:22,811 - INFO - [INPUT] Raw user input: 'whats up'
+2025-04-17 18:15:23,211 - INFO - [INFO] Detected language: en
+2025-04-17 18:15:23,211 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:15:23,211 - INFO - [INPUT] Raw user input: 'whats up'
+2025-04-17 18:15:23,628 - INFO - [INFO] Detected language: en
+2025-04-17 18:15:23,628 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:15:23,628 - INFO - [INPUT] Raw user input: 'what'
+2025-04-17 18:15:24,061 - INFO - [INFO] Detected language: en
+2025-04-17 18:15:24,061 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:15:24,061 - INFO - [INPUT] Raw user input: 'wha'
+2025-04-17 18:15:24,615 - INFO - [INFO] Detected language: en
+2025-04-17 18:15:24,615 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:15:24,615 - INFO - [INPUT] Raw user input: 'wh'
+2025-04-17 18:15:25,195 - INFO - [INFO] Detected language: en
+2025-04-17 18:15:25,195 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:15:25,211 - INFO - [INPUT] Raw user input: 'whats u'
+2025-04-17 18:15:25,911 - INFO - [INFO] Detected language: en
+2025-04-17 18:15:25,911 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:15:25,911 - INFO - [INPUT] Raw user input: 'whats'
+2025-04-17 18:15:26,311 - INFO - [INFO] Detected language: en
+2025-04-17 18:15:26,311 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:15:26,311 - INFO - [INPUT] Raw user input: 'whats'
+2025-04-17 18:15:26,727 - INFO - [INFO] Detected language: en
+2025-04-17 18:15:26,727 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:15:26,727 - INFO - [INPUT] Raw user input: 'w'
+2025-04-17 18:15:27,244 - INFO - [INFO] Detected language: en
+2025-04-17 18:15:27,244 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:15:37,690 - INFO - [INPUT] Raw user input: 'u'
+2025-04-17 18:15:38,256 - INFO - [INFO] Detected language: en
+2025-04-17 18:15:38,256 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:15:38,824 - INFO - [INPUT] Raw user input: 'ui'
+2025-04-17 18:15:40,823 - INFO - [INFO] Detected language: en
+2025-04-17 18:15:40,823 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:15:43,038 - INFO - [INPUT] Raw user input: 'ui'
+2025-04-17 18:15:43,588 - INFO - [INFO] Detected language: en
+2025-04-17 18:15:43,588 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:15:44,954 - INFO - [INPUT] Raw user input: 'ui f'
+2025-04-17 18:15:46,554 - INFO - [INFO] Detected language: haw
+2025-04-17 18:15:46,554 - INFO - [SKIPPED] Non-Amharic input. Language: haw
+2025-04-17 18:15:46,554 - INFO - [INPUT] Raw user input: 'ui fe'
+2025-04-17 18:15:47,386 - INFO - [INFO] Detected language: en
+2025-04-17 18:15:47,386 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:15:49,570 - INFO - [INPUT] Raw user input: 'ui f'
+2025-04-17 18:15:50,136 - INFO - [INFO] Detected language: haw
+2025-04-17 18:15:50,136 - INFO - [SKIPPED] Non-Amharic input. Language: haw
+2025-04-17 18:15:50,902 - INFO - [INPUT] Raw user input: 'ui'
+2025-04-17 18:15:51,302 - INFO - [INFO] Detected language: en
+2025-04-17 18:15:51,302 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:15:51,802 - INFO - [INPUT] Raw user input: 'ui'
+2025-04-17 18:15:52,352 - INFO - [INFO] Detected language: en
+2025-04-17 18:15:52,352 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:15:53,669 - INFO - [INPUT] Raw user input: 'u'
+2025-04-17 18:15:54,085 - INFO - [INFO] Detected language: en
+2025-04-17 18:15:54,085 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:15:55,168 - INFO - [INPUT] Raw user input: 'f'
+2025-04-17 18:15:55,768 - INFO - [INFO] Detected language: en
+2025-04-17 18:15:55,768 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:15:55,768 - INFO - [INPUT] Raw user input: 'fef'
+2025-04-17 18:15:56,368 - INFO - [INFO] Detected language: en
+2025-04-17 18:15:56,368 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:15:56,368 - INFO - [INPUT] Raw user input: 'fe'
+2025-04-17 18:15:56,951 - INFO - [INFO] Detected language: en
+2025-04-17 18:15:56,951 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:15:57,034 - INFO - [INPUT] Raw user input: 'fe'
+2025-04-17 18:15:57,784 - INFO - [INFO] Detected language: en
+2025-04-17 18:15:57,784 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:15:57,784 - INFO - [INPUT] Raw user input: 'f'
+2025-04-17 18:15:58,300 - INFO - [INFO] Detected language: en
+2025-04-17 18:15:58,300 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:16:05,074 - INFO - [INPUT] Raw user input: 'v'
+2025-04-17 18:16:06,436 - INFO - [INFO] Detected language: en
+2025-04-17 18:16:06,436 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:16:06,451 - INFO - [INPUT] Raw user input: 'v'
+2025-04-17 18:16:07,061 - INFO - [INFO] Detected language: en
+2025-04-17 18:16:07,061 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:16:07,061 - INFO - [INPUT] Raw user input: 'vg'
+2025-04-17 18:16:07,347 - INFO - [INFO] Detected language: en
+2025-04-17 18:16:07,347 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:16:13,926 - INFO - [INPUT] Raw user input: 'f'
+2025-04-17 18:16:14,577 - INFO - [INFO] Detected language: en
+2025-04-17 18:16:14,577 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:16:16,337 - INFO - [INPUT] Raw user input: 'f'
+2025-04-17 18:16:17,215 - INFO - [INFO] Detected language: en
+2025-04-17 18:16:17,215 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:16:19,185 - INFO - [INPUT] Raw user input: 'h'
+2025-04-17 18:16:20,225 - INFO - [INFO] Detected language: en
+2025-04-17 18:16:20,225 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:16:20,225 - INFO - [INPUT] Raw user input: 'hgofg'
+2025-04-17 18:16:21,877 - INFO - [INFO] Detected language: cy
+2025-04-17 18:16:21,877 - INFO - [SKIPPED] Non-Amharic input. Language: cy
+2025-04-17 18:16:21,877 - INFO - [INPUT] Raw user input: 'hgo'
+2025-04-17 18:16:23,025 - INFO - [INFO] Detected language: es
+2025-04-17 18:16:23,025 - INFO - [SKIPPED] Non-Amharic input. Language: es
+2025-04-17 18:16:23,025 - INFO - [INPUT] Raw user input: 'hgofgs'
+2025-04-17 18:16:23,791 - INFO - [INFO] Detected language: en
+2025-04-17 18:16:23,791 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:16:23,791 - INFO - [INPUT] Raw user input: 'hg'
+2025-04-17 18:16:26,574 - INFO - [INFO] Detected language: en
+2025-04-17 18:16:26,574 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:16:26,574 - INFO - [INPUT] Raw user input: 'hgof'
+2025-04-17 18:16:27,606 - INFO - [INFO] Detected language: cy
+2025-04-17 18:16:27,606 - INFO - [SKIPPED] Non-Amharic input. Language: cy
+2025-04-17 18:16:27,606 - INFO - [INPUT] Raw user input: 'hgofg'
+2025-04-17 18:16:28,206 - INFO - [INFO] Detected language: cy
+2025-04-17 18:16:28,206 - INFO - [SKIPPED] Non-Amharic input. Language: cy
+2025-04-17 18:17:04,815 - INFO - [INPUT] Raw user input: 'hi'
+2025-04-17 18:17:05,676 - INFO - [INFO] Detected language: en
+2025-04-17 18:17:05,676 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:17:26,769 - INFO - [INPUT] Raw user input: 'hi'
+2025-04-17 18:17:27,269 - INFO - [INFO] Detected language: en
+2025-04-17 18:17:27,269 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:17:29,419 - INFO - [INPUT] Raw user input: 'hie'
+2025-04-17 18:17:29,951 - INFO - [INFO] Detected language: en
+2025-04-17 18:17:29,951 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:17:31,085 - INFO - [INPUT] Raw user input: 'hiel'
+2025-04-17 18:17:32,884 - INFO - [INFO] Detected language: fy
+2025-04-17 18:17:32,884 - INFO - [SKIPPED] Non-Amharic input. Language: fy
+2025-04-17 18:17:34,183 - INFO - [INPUT] Raw user input: 'hiell'
+2025-04-17 18:17:34,717 - INFO - [INFO] Detected language: en
+2025-04-17 18:17:34,717 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:17:37,732 - INFO - [INPUT] Raw user input: 'hiellowdshaf'
+2025-04-17 18:17:38,266 - INFO - [INFO] Detected language: en
+2025-04-17 18:17:38,266 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:17:40,415 - INFO - [INPUT] Raw user input: 'hiellowdshaffahfgj'
+2025-04-17 18:17:40,965 - INFO - [INFO] Detected language: en
+2025-04-17 18:17:40,965 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:17:43,132 - INFO - [INPUT] Raw user input: 'hiellowdshaffahfgjgashfgafgajf'
+2025-04-17 18:17:43,530 - INFO - [INFO] Detected language: en
+2025-04-17 18:17:43,530 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:19:35,292 - INFO - [INPUT] Raw user input: 'hi'
+2025-04-17 18:19:35,709 - INFO - [INFO] Detected language: en
+2025-04-17 18:19:35,709 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:19:37,076 - INFO - [INPUT] Raw user input: ''
+2025-04-17 18:19:37,575 - ERROR - [FAILURE] Translation error: the JSON object must be str, bytes or bytearray, not NoneType
+2025-04-17 18:19:39,091 - INFO - [INPUT] Raw user input: '\u1230\u120b\u121d'
+2025-04-17 18:19:39,640 - INFO - [INFO] Detected language: am
+2025-04-17 18:19:40,192 - INFO - [SUCCESS] Translated to: 'Hello'
+2025-04-17 18:19:43,790 - INFO - [INPUT] Raw user input: ''
+2025-04-17 18:19:44,289 - ERROR - [FAILURE] Translation error: the JSON object must be str, bytes or bytearray, not NoneType
+2025-04-17 18:19:44,539 - INFO - [INPUT] Raw user input: '//'
+2025-04-17 18:19:45,058 - INFO - [INFO] Detected language: en
+2025-04-17 18:19:45,058 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:19:46,221 - INFO - [INPUT] Raw user input: '////'
+2025-04-17 18:19:46,738 - INFO - [INFO] Detected language: en
+2025-04-17 18:19:46,738 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:19:48,872 - INFO - [INPUT] Raw user input: ''
+2025-04-17 18:19:49,271 - ERROR - [FAILURE] Translation error: the JSON object must be str, bytes or bytearray, not NoneType
+2025-04-17 18:20:57,780 - INFO - [INPUT] Raw user input: '\u1230\u120b\u121d'
+2025-04-17 18:20:58,948 - INFO - [INFO] Detected language: am
+2025-04-17 18:20:59,597 - INFO - [SUCCESS] Translated to: 'Hello'
+2025-04-17 18:21:10,160 - INFO - [INPUT] Raw user input: 'hi'
+2025-04-17 18:21:10,842 - INFO - [INFO] Detected language: en
+2025-04-17 18:21:10,842 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:21:41,515 - INFO - [INPUT] Raw user input: 'hi'
+2025-04-17 18:21:42,482 - INFO - [INFO] Detected language: en
+2025-04-17 18:21:42,482 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:23:33,012 - INFO - [INPUT] Raw user input: 'hi'
+2025-04-17 18:23:33,545 - INFO - [INFO] Detected language: en
+2025-04-17 18:23:33,545 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:23:37,476 - INFO - [INPUT] Raw user input: 'hi'
+2025-04-17 18:23:37,860 - INFO - [INFO] Detected language: en
+2025-04-17 18:23:37,860 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:24:01,751 - INFO - [INPUT] Raw user input: 'h'
+2025-04-17 18:24:02,252 - INFO - [INFO] Detected language: en
+2025-04-17 18:24:02,252 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:24:27,559 - INFO - [INPUT] Raw user input: 'hi'
+2025-04-17 18:24:28,124 - INFO - [INFO] Detected language: en
+2025-04-17 18:24:28,125 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:29:45,118 - INFO - [INPUT] Raw user input: 'hi'
+2025-04-17 18:29:45,552 - INFO - [INFO] Detected language: en
+2025-04-17 18:29:45,552 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:29:49,149 - INFO - [INPUT] Raw user input: 'hi'
+2025-04-17 18:29:49,699 - INFO - [INFO] Detected language: en
+2025-04-17 18:29:49,699 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:29:53,049 - INFO - [INPUT] Raw user input: 'hi'
+2025-04-17 18:29:53,715 - INFO - [INFO] Detected language: en
+2025-04-17 18:29:53,715 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:30:15,108 - INFO - [INPUT] Raw user input: 'hi'
+2025-04-17 18:30:15,674 - INFO - [INFO] Detected language: en
+2025-04-17 18:30:15,674 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:34:59,627 - INFO - [INPUT] Raw user input: 'hi'
+2025-04-17 18:35:00,044 - INFO - [INFO] Detected language: en
+2025-04-17 18:35:00,044 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:35:13,722 - INFO - [INPUT] Raw user input: 'hi'
+2025-04-17 18:35:14,245 - INFO - [INFO] Detected language: en
+2025-04-17 18:35:14,245 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:36:20,067 - INFO - [INPUT] Raw user input: 'hi'
+2025-04-17 18:36:20,484 - INFO - [INFO] Detected language: en
+2025-04-17 18:36:20,484 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:36:22,850 - INFO - [INPUT] Raw user input: 'hi'
+2025-04-17 18:36:23,250 - INFO - [INFO] Detected language: en
+2025-04-17 18:36:23,250 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:37:05,018 - INFO - [INPUT] Raw user input: 'hi'
+2025-04-17 18:37:05,402 - INFO - [INFO] Detected language: en
+2025-04-17 18:37:05,402 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:37:07,650 - INFO - [INPUT] Raw user input: 'hi'
+2025-04-17 18:37:08,170 - INFO - [INFO] Detected language: en
+2025-04-17 18:37:08,170 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:38:19,521 - INFO - [INPUT] Raw user input: 'hi'
+2025-04-17 18:38:19,922 - INFO - [INFO] Detected language: en
+2025-04-17 18:38:19,922 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:38:22,174 - INFO - [INPUT] Raw user input: 'hi'
+2025-04-17 18:38:22,559 - INFO - [INFO] Detected language: en
+2025-04-17 18:38:22,559 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:38:41,036 - INFO - [INPUT] Raw user input: 'hi'
+2025-04-17 18:38:41,442 - INFO - [INFO] Detected language: en
+2025-04-17 18:38:41,442 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:38:43,835 - INFO - [INPUT] Raw user input: 'hi'
+2025-04-17 18:38:44,385 - INFO - [INFO] Detected language: en
+2025-04-17 18:38:44,385 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:40:21,202 - INFO - [INPUT] Raw user input: 'hi'
+2025-04-17 18:40:21,735 - INFO - [INFO] Detected language: en
+2025-04-17 18:40:21,751 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:40:25,816 - INFO - [INPUT] Raw user input: 'hi hello'
+2025-04-17 18:40:26,367 - INFO - [INFO] Detected language: en
+2025-04-17 18:40:26,367 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:40:30,086 - INFO - [INPUT] Raw user input: 'hi hello how are u'
+2025-04-17 18:40:30,584 - INFO - [INFO] Detected language: en
+2025-04-17 18:40:30,584 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:41:10,301 - INFO - [INPUT] Raw user input: 'hi'
+2025-04-17 18:41:10,695 - INFO - [INFO] Detected language: en
+2025-04-17 18:41:10,695 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:41:48,289 - INFO - [INPUT] Raw user input: 'hi'
+2025-04-17 18:41:48,805 - INFO - [INFO] Detected language: en
+2025-04-17 18:41:48,809 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:41:50,571 - INFO - [INPUT] Raw user input: 'higjfg'
+2025-04-17 18:41:52,037 - INFO - [INFO] Detected language: gd
+2025-04-17 18:41:52,037 - INFO - [SKIPPED] Non-Amharic input. Language: gd
+2025-04-17 18:43:07,529 - INFO - [INPUT] Raw user input: 'hi'
+2025-04-17 18:43:07,946 - INFO - [INFO] Detected language: en
+2025-04-17 18:43:07,946 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:43:10,410 - INFO - [INPUT] Raw user input: 'hi'
+2025-04-17 18:43:10,811 - INFO - [INFO] Detected language: en
+2025-04-17 18:43:10,811 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:43:16,708 - INFO - [INPUT] Raw user input: 'ko'
+2025-04-17 18:43:17,260 - INFO - [INFO] Detected language: mi
+2025-04-17 18:43:17,260 - INFO - [SKIPPED] Non-Amharic input. Language: mi
+2025-04-17 18:43:20,207 - INFO - [INPUT] Raw user input: 'k'
+2025-04-17 18:43:20,707 - INFO - [INFO] Detected language: en
+2025-04-17 18:43:20,707 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:43:22,723 - INFO - [INPUT] Raw user input: 'kjgjdsghsjghgshgs'
+2025-04-17 18:43:24,223 - INFO - [INFO] Detected language: no
+2025-04-17 18:43:24,223 - INFO - [SKIPPED] Non-Amharic input. Language: no
+2025-04-17 18:49:31,036 - INFO - [INPUT] Raw user input: 'hi'
+2025-04-17 18:49:31,582 - INFO - [INFO] Detected language: en
+2025-04-17 18:49:31,582 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:55:24,711 - INFO - [INPUT] Raw user input: '\u1230\u120b\u121d'
+2025-04-17 18:55:25,144 - INFO - [INFO] Detected language: am
+2025-04-17 18:55:25,594 - INFO - [SUCCESS] Translated to: 'Hello'
+2025-04-17 18:58:52,990 - INFO - [INPUT] Raw user input: 'h'
+2025-04-17 18:58:53,389 - INFO - [INFO] Detected language: en
+2025-04-17 18:58:53,389 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:58:56,288 - INFO - [INPUT] Raw user input: 'he'
+2025-04-17 18:58:57,305 - INFO - [INFO] Detected language: en
+2025-04-17 18:58:57,305 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 18:59:59,250 - INFO - [INPUT] Raw user input: 'f'
+2025-04-17 18:59:59,667 - INFO - [INFO] Detected language: en
+2025-04-17 18:59:59,667 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-17 19:00:24,459 - INFO - [INPUT] Raw user input: '\u1205'
+2025-04-17 19:00:25,175 - INFO - [INFO] Detected language: am
+2025-04-17 19:00:25,708 - INFO - [SUCCESS] Translated to: 'In'
+2025-04-17 19:00:27,057 - INFO - [INPUT] Raw user input: '\u1205\u12dd'
+2025-04-17 19:00:27,945 - INFO - [INFO] Detected language: ti
+2025-04-17 19:00:27,945 - INFO - [SKIPPED] Non-Amharic input. Language: ti
+2025-04-17 19:00:28,959 - INFO - [INPUT] Raw user input: '\u1205\u12dd\u1265'
+2025-04-17 19:00:29,390 - INFO - [INFO] Detected language: am
+2025-04-17 19:00:29,806 - INFO - [SUCCESS] Translated to: 'Public'
+2025-04-17 19:04:09,440 - INFO - [INPUT] Raw user input: '\u1205'
+2025-04-17 19:04:09,941 - INFO - [INFO] Detected language: am
+2025-04-17 19:04:10,410 - INFO - [SUCCESS] Translated to: 'In'
+2025-04-17 19:04:11,240 - INFO - [INPUT] Raw user input: '\u1205\u12dd'
+2025-04-17 19:04:11,670 - INFO - [INFO] Detected language: ti
+2025-04-17 19:04:11,670 - INFO - [SKIPPED] Non-Amharic input. Language: ti
+2025-04-17 19:04:12,210 - INFO - [INPUT] Raw user input: '\u1205\u12dd\u1265'
+2025-04-17 19:04:12,634 - INFO - [INFO] Detected language: am
+2025-04-17 19:04:13,043 - INFO - [SUCCESS] Translated to: 'Public'
+2025-04-17 19:04:19,606 - INFO - [INPUT] Raw user input: '\u12a0'
+2025-04-17 19:04:20,504 - INFO - [INFO] Detected language: am
+2025-04-17 19:04:21,061 - INFO - [SUCCESS] Translated to: 'They are'
+2025-04-17 19:04:21,066 - INFO - [INPUT] Raw user input: '\u12a0\u121d'
+2025-04-17 19:04:21,655 - INFO - [INFO] Detected language: am
+2025-04-17 19:04:22,266 - INFO - [SUCCESS] Translated to: 'Am'
+2025-04-17 19:04:24,948 - INFO - [INPUT] Raw user input: '\u12a0\u121d\u122d'
+2025-04-17 19:04:26,221 - INFO - [INFO] Detected language: am
+2025-04-17 19:04:26,777 - INFO - [SUCCESS] Translated to: 'Am'
+2025-04-17 19:04:26,782 - INFO - [INPUT] Raw user input: '\u12a0\u121d\u122e'
+2025-04-17 19:04:28,163 - INFO - [INFO] Detected language: am
+2025-04-17 19:04:28,627 - INFO - [SUCCESS] Translated to: 'Amend'
+2025-04-17 19:04:37,679 - INFO - [INPUT] Raw user input: '\u12a5\u12ab'
+2025-04-17 19:04:39,717 - INFO - [INFO] Detected language: ti
+2025-04-17 19:04:39,717 - INFO - [SKIPPED] Non-Amharic input. Language: ti
+2025-04-17 19:04:40,303 - INFO - [INPUT] Raw user input: '\u12a5\u12ab\u12a0'
+2025-04-17 19:04:41,280 - INFO - [INFO] Detected language: am
+2025-04-17 19:04:41,715 - INFO - [SUCCESS] Translated to: 'Wa'
+2025-04-17 19:04:42,810 - INFO - [INPUT] Raw user input: '\u12a0\u1208\u1295'
+2025-04-17 19:04:44,009 - INFO - [INFO] Detected language: am
+2025-04-17 19:04:44,424 - INFO - [SUCCESS] Translated to: 'We have'
+2025-04-17 19:06:09,714 - INFO - [INPUT] Raw user input: '\u12a0'
+2025-04-17 19:06:10,204 - INFO - [INFO] Detected language: am
+2025-04-17 19:06:10,692 - INFO - [SUCCESS] Translated to: 'They are'
+2025-04-17 19:06:11,560 - INFO - [INPUT] Raw user input: '\u12a0\u1290'
+2025-04-17 19:06:12,100 - INFO - [INFO] Detected language: am
+2025-04-17 19:06:12,661 - INFO - [SUCCESS] Translated to: 'They'
+2025-04-17 19:06:15,334 - INFO - [INPUT] Raw user input: '\u12a0\u1290\u12f5'
+2025-04-17 19:06:16,300 - INFO - [INFO] Detected language: am
+2025-04-17 19:06:16,720 - INFO - [SUCCESS] Translated to: 'He'
+2025-04-17 19:06:16,881 - INFO - [INPUT] Raw user input: '\u12a0\u1290\u12f3'
+2025-04-17 19:06:18,583 - INFO - [INFO] Detected language: am
+2025-04-17 19:06:19,029 - INFO - [SUCCESS] Translated to: 'Down'
+2025-04-17 19:06:20,952 - INFO - [INPUT] Raw user input: '\u12a0\u1290\u12f3\u12f5'
+2025-04-17 19:06:22,413 - INFO - [INFO] Detected language: am
+2025-04-17 19:06:22,850 - INFO - [SUCCESS] Translated to: 'Drive'
+2025-04-17 19:06:29,764 - INFO - [INPUT] Raw user input: '\u1265'
+2025-04-17 19:06:30,201 - INFO - [INFO] Detected language: ti
+2025-04-17 19:06:30,201 - INFO - [SKIPPED] Non-Amharic input. Language: ti
+2025-04-17 19:06:30,342 - INFO - [INPUT] Raw user input: '\u1266'
+2025-04-17 19:06:31,626 - INFO - [INFO] Detected language: am
+2025-04-17 19:06:32,054 - INFO - [SUCCESS] Translated to: 'Bo'
+2025-04-17 19:06:32,791 - INFO - [INPUT] Raw user input: '\u1266\u122d'
+2025-04-17 19:06:34,246 - INFO - [INFO] Detected language: am
+2025-04-17 19:06:34,798 - INFO - [SUCCESS] Translated to: 'Boor'
+2025-04-17 19:06:34,936 - INFO - [INPUT] Raw user input: '\u1266\u122d\u1233'
+2025-04-17 19:06:36,242 - INFO - [INFO] Detected language: am
+2025-04-17 19:06:36,846 - INFO - [SUCCESS] Translated to: 'Bag'
+2025-04-17 19:07:45,531 - INFO - [INPUT] Raw user input: '\u12a5\u12ab'
+2025-04-17 19:07:46,101 - INFO - [INFO] Detected language: ti
+2025-04-17 19:07:46,101 - INFO - [SKIPPED] Non-Amharic input. Language: ti
+2025-04-17 19:07:52,432 - INFO - [INPUT] Raw user input: '\u1218'
+2025-04-17 19:07:53,009 - INFO - [INFO] Detected language: am
+2025-04-17 19:07:53,576 - INFO - [SUCCESS] Translated to: 'D'
+2025-04-17 19:07:53,579 - INFO - [INPUT] Raw user input: '\u1218\u1308'
+2025-04-17 19:07:54,859 - INFO - [INFO] Detected language: am
+2025-04-17 19:07:55,279 - INFO - [SUCCESS] Translated to: 'Ever'
+2025-04-17 19:07:55,285 - INFO - [INPUT] Raw user input: '\u1218'
+2025-04-17 19:07:55,772 - INFO - [INFO] Detected language: am
+2025-04-17 19:07:56,220 - INFO - [SUCCESS] Translated to: 'D'
+2025-04-17 19:07:56,223 - INFO - [INPUT] Raw user input: '\u1218\u130d'
+2025-04-17 19:07:57,982 - INFO - [INFO] Detected language: am
+2025-04-17 19:07:58,414 - INFO - [SUCCESS] Translated to: 'To figure'
+2025-04-17 19:07:58,416 - INFO - [INPUT] Raw user input: '\u1218\u130d\u1265'
+2025-04-17 19:07:59,863 - INFO - [INFO] Detected language: am
+2025-04-17 19:08:00,685 - INFO - [SUCCESS] Translated to: 'Ext'
+2025-04-17 19:08:01,014 - INFO - [INPUT] Raw user input: '\u130d\u1265'
+2025-04-17 19:08:02,755 - INFO - [INFO] Detected language: am
+2025-04-17 19:08:03,355 - INFO - [SUCCESS] Translated to: 'Goal'
+2025-04-17 19:08:03,358 - INFO - [INPUT] Raw user input: '\u121d\u130d\u1265'
+2025-04-17 19:08:03,949 - INFO - [INFO] Detected language: am
+2025-04-17 19:08:04,591 - INFO - [SUCCESS] Translated to: 'Food'
+2025-04-17 19:08:07,738 - INFO - [INPUT] Raw user input: '\u130d\u1265'
+2025-04-17 19:08:08,333 - INFO - [INFO] Detected language: am
+2025-04-17 19:08:08,843 - INFO - [SUCCESS] Translated to: 'Goal'
+2025-04-17 19:08:16,204 - INFO - [INPUT] Raw user input: '\u1275'
+2025-04-17 19:08:16,655 - INFO - [INFO] Detected language: am
+2025-04-17 19:08:17,104 - INFO - [SUCCESS] Translated to: 'Talk'
+2025-04-17 19:08:17,107 - INFO - [INPUT] Raw user input: '\u1270'
+2025-04-17 19:08:17,562 - INFO - [INFO] Detected language: am
+2025-04-17 19:08:18,205 - INFO - [SUCCESS] Translated to: 'The'
+2025-04-17 19:08:20,730 - INFO - [INPUT] Raw user input: '\u1270\u122d'
+2025-04-17 19:08:21,392 - INFO - [INFO] Detected language: ti
+2025-04-17 19:08:21,392 - INFO - [SKIPPED] Non-Amharic input. Language: ti
+2025-04-17 19:08:22,517 - INFO - [INPUT] Raw user input: '\u1270\u1228'
+2025-04-17 19:08:23,804 - INFO - [INFO] Detected language: am
+2025-04-17 19:08:24,260 - INFO - [SUCCESS] Translated to: 'He said'
+2025-04-17 19:08:24,716 - INFO - [INPUT] Raw user input: '\u1270\u1228\u12ad'
+2025-04-17 19:08:26,424 - INFO - [INFO] Detected language: am
+2025-04-17 19:08:26,853 - INFO - [SUCCESS] Translated to: 'Terminated'
+2025-04-17 19:08:26,858 - INFO - [INPUT] Raw user input: '\u1270\u1228\u12ad\u12dd'
+2025-04-17 19:08:27,604 - INFO - [INFO] Detected language: am
+2025-04-17 19:08:28,037 - INFO - [SUCCESS] Translated to: 'Thabe'
+2025-04-17 19:08:30,802 - INFO - [INPUT] Raw user input: '\u1270\u1228\u12dd'
+2025-04-17 19:08:31,785 - INFO - [INFO] Detected language: am
+2025-04-17 19:08:32,235 - INFO - [SUCCESS] Translated to: 'Tilling'
+2025-04-17 19:08:32,747 - INFO - [INPUT] Raw user input: '\u1270\u1228\u12a8\u12dd'
+2025-04-17 19:08:33,935 - INFO - [INFO] Detected language: am
+2025-04-17 19:08:34,504 - INFO - [SUCCESS] Translated to: 'Heel'
+2025-04-17 19:08:39,570 - INFO - [INPUT] Raw user input: '\u12a0'
+2025-04-17 19:08:40,129 - INFO - [INFO] Detected language: am
+2025-04-17 19:08:40,705 - INFO - [SUCCESS] Translated to: 'They are'
+2025-04-17 19:08:40,711 - INFO - [INPUT] Raw user input: '\u12a0\u12e8'
+2025-04-17 19:08:41,660 - INFO - [INFO] Detected language: am
+2025-04-17 19:08:42,226 - INFO - [SUCCESS] Translated to: 'He saw'
+2025-04-17 19:08:42,228 - INFO - [INPUT] Raw user input: '\u12a0\u12ed'
+2025-04-17 19:08:42,660 - INFO - [INFO] Detected language: am
+2025-04-17 19:08:43,697 - INFO - [SUCCESS] Translated to: 'No'
+2025-04-17 19:08:44,006 - INFO - [INPUT] Raw user input: '\u12a0\u12ed\u1270'
+2025-04-17 19:08:45,858 - INFO - [INFO] Detected language: am
+2025-04-17 19:08:46,336 - INFO - [SUCCESS] Translated to: 'Don't see'
+2025-04-17 19:08:46,342 - INFO - [INPUT] Raw user input: '\u12a0\u12ed'
+2025-04-17 19:08:46,784 - INFO - [INFO] Detected language: am
+2025-04-17 19:08:47,344 - INFO - [SUCCESS] Translated to: 'No'
+2025-04-17 19:08:48,924 - INFO - [INPUT] Raw user input: '\u12a0\u12ed\u1245'
+2025-04-17 19:08:50,682 - INFO - [INFO] Detected language: am
+2025-04-17 19:08:51,272 - INFO - [SUCCESS] Translated to: 'Don't be'
+2025-04-17 19:08:51,275 - INFO - [INPUT] Raw user input: '\u12a0\u12ed'
+2025-04-17 19:08:51,724 - INFO - [INFO] Detected language: am
+2025-04-17 19:08:52,180 - INFO - [SUCCESS] Translated to: 'No'
+2025-04-17 19:08:53,306 - INFO - [INPUT] Raw user input: '\u12a0\u12ed\u1270'
+2025-04-17 19:08:53,736 - INFO - [INFO] Detected language: am
+2025-04-17 19:08:54,308 - INFO - [SUCCESS] Translated to: 'Don't see'
+2025-04-17 19:08:54,312 - INFO - [INPUT] Raw user input: '\u12a0\u12ed'
+2025-04-17 19:08:54,883 - INFO - [INFO] Detected language: am
+2025-04-17 19:08:55,446 - INFO - [SUCCESS] Translated to: 'No'
+2025-04-17 19:08:59,171 - INFO - [INPUT] Raw user input: '\u12a0\u12ed\u1265'
+2025-04-17 19:09:00,021 - INFO - [INFO] Detected language: am
+2025-04-17 19:09:01,080 - INFO - [SUCCESS] Translated to: 'Cheese'
+2025-04-17 19:09:08,290 - INFO - [INPUT] Raw user input: '\u12a0'
+2025-04-17 19:09:08,738 - INFO - [INFO] Detected language: am
+2025-04-17 19:09:09,181 - INFO - [SUCCESS] Translated to: 'They are'
+2025-04-17 19:09:09,184 - INFO - [INPUT] Raw user input: '\u12a0\u12ed'
+2025-04-17 19:09:09,775 - INFO - [INFO] Detected language: am
+2025-04-17 19:09:10,329 - INFO - [SUCCESS] Translated to: 'No'
+2025-04-17 19:09:10,331 - INFO - [INPUT] Raw user input: '\u12a0\u12ed\u1265'
+2025-04-17 19:09:10,765 - INFO - [INFO] Detected language: am
+2025-04-17 19:09:11,216 - INFO - [SUCCESS] Translated to: 'Cheese'
+2025-04-17 19:09:14,699 - INFO - [INPUT] Raw user input: '\u1265'
+2025-04-17 19:09:15,188 - INFO - [INFO] Detected language: ti
+2025-04-17 19:09:15,188 - INFO - [SKIPPED] Non-Amharic input. Language: ti
+2025-04-17 19:09:15,416 - INFO - [INPUT] Raw user input: '\u1266'
+2025-04-17 19:09:15,868 - INFO - [INFO] Detected language: am
+2025-04-17 19:09:16,319 - INFO - [SUCCESS] Translated to: 'Bo'
+2025-04-17 19:09:16,790 - INFO - [INPUT] Raw user input: '\u1266\u122d'
+2025-04-17 19:09:17,214 - INFO - [INFO] Detected language: am
+2025-04-17 19:09:17,655 - INFO - [SUCCESS] Translated to: 'Boor'
+2025-04-17 19:09:18,284 - INFO - [INPUT] Raw user input: '\u1266\u122d\u1235'
+2025-04-17 19:09:18,854 - INFO - [INFO] Detected language: am
+2025-04-17 19:09:19,284 - INFO - [SUCCESS] Translated to: 'Boons'
+2025-04-17 19:09:19,698 - INFO - [INPUT] Raw user input: '\u1266\u122d\u1233'
+2025-04-17 19:09:20,202 - INFO - [INFO] Detected language: am
+2025-04-17 19:09:20,664 - INFO - [SUCCESS] Translated to: 'Bag'
+2025-04-17 19:11:50,014 - INFO - [INPUT] Raw user input: '\u1266'
+2025-04-17 19:11:50,587 - INFO - [INFO] Detected language: am
+2025-04-17 19:11:51,158 - INFO - [SUCCESS] Translated to: 'Bo'
+2025-04-17 19:11:51,645 - INFO - [INPUT] Raw user input: '\u1266\u122d'
+2025-04-17 19:11:52,108 - INFO - [INFO] Detected language: am
+2025-04-17 19:11:52,571 - INFO - [SUCCESS] Translated to: 'Boor'
+2025-04-17 19:11:53,689 - INFO - [INPUT] Raw user input: '\u1266\u122d\u1233'
+2025-04-17 19:11:54,116 - INFO - [INFO] Detected language: am
+2025-04-17 19:11:54,564 - INFO - [SUCCESS] Translated to: 'Bag'
+2025-04-17 19:11:57,770 - INFO - [INPUT] Raw user input: '\u1266'
+2025-04-17 19:11:58,210 - INFO - [INFO] Detected language: am
+2025-04-17 19:11:58,763 - INFO - [SUCCESS] Translated to: 'Bo'
+2025-04-17 19:12:02,697 - INFO - [INPUT] Raw user input: '\u121d'
+2025-04-17 19:12:03,289 - INFO - [INFO] Detected language: am
+2025-04-17 19:12:03,867 - INFO - [SUCCESS] Translated to: 'Whether'
+2025-04-17 19:12:03,872 - INFO - [INPUT] Raw user input: '\u121b'
+2025-04-17 19:12:04,622 - INFO - [INFO] Detected language: am
+2025-04-17 19:12:05,071 - INFO - [SUCCESS] Translated to: 'M'
+2025-04-17 19:12:05,407 - INFO - [INPUT] Raw user input: '\u121b\u1235'
+2025-04-17 19:12:07,300 - INFO - [INFO] Detected language: am
+2025-04-17 19:12:07,847 - INFO - [SUCCESS] Translated to: 'Making it'
+2025-04-17 19:12:07,850 - INFO - [INPUT] Raw user input: '\u121b\u1235\u1275'
+2025-04-17 19:12:08,925 - INFO - [INFO] Detected language: am
+2025-04-17 19:12:09,359 - INFO - [SUCCESS] Translated to: 'Mad'
+2025-04-17 19:12:09,362 - INFO - [INPUT] Raw user input: '\u121b\u1235\u1270'
+2025-04-17 19:12:10,858 - INFO - [INFO] Detected language: am
+2025-04-17 19:12:11,338 - INFO - [SUCCESS] Translated to: 'Master'
+2025-04-17 19:12:11,341 - INFO - [INPUT] Raw user input: '\u121b\u1235\u1270\u12a5'
+2025-04-17 19:12:12,217 - INFO - [INFO] Detected language: am
+2025-04-17 19:12:12,701 - INFO - [SUCCESS] Translated to: 'Master'
+2025-04-17 19:12:12,705 - INFO - [INPUT] Raw user input: '\u121b\u1235'
+2025-04-17 19:12:13,204 - INFO - [INFO] Detected language: am
+2025-04-17 19:12:13,766 - INFO - [SUCCESS] Translated to: 'Making it'
+2025-04-17 19:12:25,413 - INFO - [INPUT] Raw user input: '\u1265'
+2025-04-17 19:12:25,982 - INFO - [INFO] Detected language: ti
+2025-04-17 19:12:25,982 - INFO - [SKIPPED] Non-Amharic input. Language: ti
+2025-04-17 19:12:27,546 - INFO - [INPUT] Raw user input: '\u1266\u122d\u1233'
+2025-04-17 19:12:28,279 - INFO - [INFO] Detected language: am
+2025-04-17 19:12:28,715 - INFO - [SUCCESS] Translated to: 'Bag'
+2025-04-17 19:12:38,391 - INFO - [INPUT] Raw user input: '\u1266'
+2025-04-17 19:12:38,948 - INFO - [INFO] Detected language: am
+2025-04-17 19:12:39,408 - INFO - [SUCCESS] Translated to: 'Bo'
+2025-04-17 19:12:39,662 - INFO - [INPUT] Raw user input: '\u1266\u122d'
+2025-04-17 19:12:40,255 - INFO - [INFO] Detected language: am
+2025-04-17 19:12:40,773 - INFO - [SUCCESS] Translated to: 'Boor'
+2025-04-17 19:12:41,146 - INFO - [INPUT] Raw user input: '\u1266\u122d\u1233'
+2025-04-17 19:12:41,580 - INFO - [INFO] Detected language: am
+2025-04-17 19:12:42,072 - INFO - [SUCCESS] Translated to: 'Bag'
+2025-04-17 19:12:44,716 - INFO - [INPUT] Raw user input: '\u12a0'
+2025-04-17 19:12:45,283 - INFO - [INFO] Detected language: am
+2025-04-17 19:12:45,729 - INFO - [SUCCESS] Translated to: 'They are'
+2025-04-17 19:12:45,732 - INFO - [INPUT] Raw user input: '\u12a0\u12ed'
+2025-04-17 19:12:46,295 - INFO - [INFO] Detected language: am
+2025-04-17 19:12:46,887 - INFO - [SUCCESS] Translated to: 'No'
+2025-04-17 19:12:46,888 - INFO - [INPUT] Raw user input: '\u12a0\u12ed\u1265'
+2025-04-17 19:12:47,331 - INFO - [INFO] Detected language: am
+2025-04-17 19:12:47,770 - INFO - [SUCCESS] Translated to: 'Cheese'
+2025-04-17 19:14:17,549 - INFO - [INPUT] Raw user input: '\u12a0\u12ed\u1265 \u12a5\u1293'
+2025-04-17 19:14:18,606 - INFO - [INFO] Detected language: am
+2025-04-17 19:14:19,082 - INFO - [SUCCESS] Translated to: 'Cheese and'
+2025-04-17 19:14:19,082 - INFO - [INPUT] Raw user input: '\u12a0\u12ed\u1265 \u12a5\u1293'
+2025-04-17 19:14:19,652 - INFO - [INFO] Detected language: am
+2025-04-17 19:14:20,207 - INFO - [SUCCESS] Translated to: 'Cheese and'
+2025-04-17 19:14:20,207 - INFO - [INPUT] Raw user input: '\u12a0\u12ed\u1265 \u12a5\u1293 \u1266'
+2025-04-17 19:14:21,216 - INFO - [INFO] Detected language: am
+2025-04-17 19:14:21,774 - INFO - [SUCCESS] Translated to: 'Cheese and b'
+2025-04-17 19:14:21,774 - INFO - [INPUT] Raw user input: '\u12a0\u12ed\u1265 \u12a5\u1293 \u1266\u122d'
+2025-04-17 19:14:22,844 - INFO - [INFO] Detected language: am
+2025-04-17 19:14:23,395 - INFO - [SUCCESS] Translated to: 'Cheese and bown'
+2025-04-17 19:14:23,395 - INFO - [INPUT] Raw user input: '\u12a0\u12ed\u1265 \u12a5\u1293 \u1266\u122d\u1233'
+2025-04-17 19:14:25,094 - INFO - [INFO] Detected language: am
+2025-04-17 19:14:25,696 - INFO - [SUCCESS] Translated to: 'Cheese and bag'
+2025-04-23 14:01:02,558 - INFO - [INPUT] Raw user input: 'hi'
+2025-04-23 14:01:03,304 - INFO - [INFO] Detected language: en
+2025-04-23 14:01:03,304 - INFO - [SKIPPED] Non-Amharic input. Language: en
+2025-04-24 00:28:03,308 - INFO - [INPUT] Raw user input: 'hi'
+2025-04-24 00:28:04,075 - INFO - [INFO] Detected language: en
+2025-04-24 00:28:04,741 - INFO - [SUCCESS] Translated to: 'Hi'
+2025-04-24 00:29:12,437 - INFO - [INPUT] Raw user input: 'hi'
+2025-04-24 00:29:12,985 - INFO - [INFO] Detected language: en
+2025-04-24 00:29:13,407 - INFO - [SUCCESS] Translated to: 'Hi'
+2025-04-24 00:35:06,700 - INFO - [INPUT] Raw user input: 'hi'
+2025-04-24 00:35:07,249 - INFO - [INFO] Detected language: en
+2025-04-24 00:35:07,799 - INFO - [SUCCESS] Translated to: 'hi'
+2025-04-24 00:35:15,505 - INFO - [INPUT] Raw user input: 'uo'
+2025-04-24 00:35:18,378 - INFO - [INFO] Detected language: en
+2025-04-24 00:35:19,011 - INFO - [SUCCESS] Translated to: 'uo'
+2025-04-24 00:40:51,494 - INFO - [INPUT] Raw user input: 'hi'
+2025-04-24 00:40:51,982 - INFO - [INFO] Detected language: en
+2025-04-24 00:40:52,398 - INFO - [SUCCESS] Translated to: 'hi'
+2025-04-24 00:48:13,022 - INFO - [INPUT] Raw user input: 'hi'
+2025-04-24 00:48:13,587 - INFO - [INFO] Detected language: en
+2025-04-24 00:48:14,000 - INFO - [SUCCESS] Translated to: 'hi'
+2025-04-24 00:57:46,351 - INFO - [INPUT] Raw user input: 'hi'
+2025-04-24 00:57:46,955 - INFO - [INFO] Detected language: en
+2025-04-24 00:57:47,371 - INFO - [SUCCESS] Translated to: 'hi'
+2025-04-24 00:58:00,621 - INFO - [INPUT] Raw user input: '\u12a0'
+2025-04-24 00:58:02,499 - INFO - [INFO] Detected language: am
+2025-04-24 00:58:03,332 - INFO - [SUCCESS] Translated to: 'They are'
+2025-04-24 00:58:03,332 - INFO - [INPUT] Raw user input: '\u12a0\u121b\u122d'
+2025-04-24 00:58:04,075 - INFO - [INFO] Detected language: am
+2025-04-24 00:58:04,608 - INFO - [SUCCESS] Translated to: 'Amar'
+2025-04-24 00:58:04,608 - INFO - [INPUT] Raw user input: '\u12a0\u121b'
+2025-04-24 00:58:05,967 - INFO - [INFO] Detected language: am
+2025-04-24 00:58:06,565 - INFO - [SUCCESS] Translated to: 'Am'
+2025-04-24 00:58:06,565 - INFO - [INPUT] Raw user input: '\u12a0\u121b\u1228'
+2025-04-24 00:58:08,000 - INFO - [INFO] Detected language: am
+2025-04-24 00:58:09,466 - INFO - [SUCCESS] Translated to: 'He said'
+2025-04-24 00:58:41,859 - INFO - [INPUT] Raw user input: '\u1265'
+2025-04-24 00:58:42,469 - INFO - [INFO] Detected language: ti
+2025-04-24 00:58:43,269 - INFO - [SUCCESS] Translated to: 'by'
+2025-04-24 00:58:43,292 - INFO - [INPUT] Raw user input: '\u1266'
+2025-04-24 00:58:44,118 - INFO - [INFO] Detected language: am
+2025-04-24 00:58:44,551 - INFO - [SUCCESS] Translated to: 'Bo'
+2025-04-24 00:58:44,551 - INFO - [INPUT] Raw user input: '\u1266\u122d'
+2025-04-24 00:58:46,233 - INFO - [INFO] Detected language: am
+2025-04-24 00:58:46,651 - INFO - [SUCCESS] Translated to: 'Boor'
+2025-04-24 00:58:46,668 - INFO - [INPUT] Raw user input: '\u1266\u122d\u1233'
+2025-04-24 00:58:47,451 - INFO - [INFO] Detected language: am
+2025-04-24 00:58:48,251 - INFO - [SUCCESS] Translated to: 'Bag'
+2025-04-24 00:59:04,862 - INFO - [INPUT] Raw user input: '\u12a0'
+2025-04-24 00:59:06,278 - INFO - [INFO] Detected language: am
+2025-04-24 00:59:06,944 - INFO - [SUCCESS] Translated to: 'They are'
+2025-04-24 00:59:06,944 - INFO - [INPUT] Raw user input: '\u12a0\u12ed'
+2025-04-24 00:59:07,424 - INFO - [INFO] Detected language: am
+2025-04-24 00:59:08,094 - INFO - [SUCCESS] Translated to: 'No'
+2025-04-24 00:59:08,094 - INFO - [INPUT] Raw user input: '\u12a0\u12ed\u1265'
+2025-04-24 00:59:09,865 - INFO - [INFO] Detected language: am
+2025-04-24 00:59:10,407 - INFO - [SUCCESS] Translated to: 'Cheese'
+2025-04-24 00:59:28,234 - INFO - [INPUT] Raw user input: 'B'
+2025-04-24 00:59:28,620 - INFO - [INFO] Detected language: en
+2025-04-24 00:59:29,204 - INFO - [SUCCESS] Translated to: 'B'
+2025-04-24 00:59:33,444 - INFO - [INPUT] Raw user input: '\u1265'
+2025-04-24 00:59:33,868 - INFO - [INFO] Detected language: ti
+2025-04-24 00:59:34,402 - INFO - [SUCCESS] Translated to: 'by'
+2025-04-24 00:59:34,402 - INFO - [INPUT] Raw user input: '\u1266'
+2025-04-24 00:59:34,942 - INFO - [INFO] Detected language: am
+2025-04-24 00:59:35,351 - INFO - [SUCCESS] Translated to: 'Bo'
+2025-04-24 00:59:35,351 - INFO - [INPUT] Raw user input: '\u1266\u122d'
+2025-04-24 00:59:35,787 - INFO - [INFO] Detected language: am
+2025-04-24 00:59:36,236 - INFO - [SUCCESS] Translated to: 'Boor'
+2025-04-24 00:59:36,703 - INFO - [INPUT] Raw user input: '\u1266\u122d\u1233'
+2025-04-24 00:59:37,167 - INFO - [INFO] Detected language: am
+2025-04-24 00:59:37,701 - INFO - [SUCCESS] Translated to: 'Bag'
+2025-04-24 00:59:50,890 - INFO - [INPUT] Raw user input: '\u1205'
+2025-04-24 00:59:51,931 - INFO - [INFO] Detected language: am
+2025-04-24 00:59:52,347 - INFO - [SUCCESS] Translated to: 'In'
+2025-04-24 00:59:52,431 - INFO - [INPUT] Raw user input: '\u1202'
+2025-04-24 00:59:52,829 - INFO - [INFO] Detected language: am
+2025-04-24 00:59:53,262 - INFO - [SUCCESS] Translated to: 'He'
+2025-04-24 00:59:54,345 - INFO - [INPUT] Raw user input: '\u1202\u1235'
+2025-04-24 00:59:55,444 - INFO - [INFO] Detected language: am
+2025-04-24 00:59:55,995 - INFO - [SUCCESS] Translated to: 'Him'
+2025-04-24 01:00:04,173 - INFO - [INPUT] Raw user input: 'he'
+2025-04-24 01:00:04,675 - INFO - [INFO] Detected language: en
+2025-04-24 01:00:05,092 - INFO - [SUCCESS] Translated to: 'he'
+2025-04-24 01:00:05,211 - INFO - [INPUT] Raw user input: 'hel'
+2025-04-24 01:00:05,591 - INFO - [INFO] Detected language: en
+2025-04-24 01:00:06,007 - INFO - [SUCCESS] Translated to: 'hel'
+2025-04-24 01:00:07,021 - INFO - [INPUT] Raw user input: 'hell'
+2025-04-24 01:00:07,524 - INFO - [INFO] Detected language: en
+2025-04-24 01:00:08,075 - INFO - [SUCCESS] Translated to: 'hell'
+2025-04-24 01:00:08,478 - INFO - [INPUT] Raw user input: 'hello'
+2025-04-24 01:00:08,990 - INFO - [INFO] Detected language: en
+2025-04-24 01:00:09,390 - INFO - [SUCCESS] Translated to: 'hello'
+2025-04-24 01:00:18,024 - INFO - [INPUT] Raw user input: '\u12a0'
+2025-04-24 01:00:18,420 - INFO - [INFO] Detected language: am
+2025-04-24 01:00:18,820 - INFO - [SUCCESS] Translated to: 'They are'
+2025-04-24 01:00:21,392 - INFO - [INPUT] Raw user input: '\u12a0\u12ed'
+2025-04-24 01:00:22,123 - INFO - [INFO] Detected language: am
+2025-04-24 01:00:22,735 - INFO - [SUCCESS] Translated to: 'No'
+2025-04-24 01:00:23,143 - INFO - [INPUT] Raw user input: '\u12a0\u12ed\u1265'
+2025-04-24 01:00:23,685 - INFO - [INFO] Detected language: am
+2025-04-24 01:00:24,218 - INFO - [SUCCESS] Translated to: 'Cheese'
+2025-04-24 01:00:27,860 - INFO - [INPUT] Raw user input: '\u1275'
+2025-04-24 01:00:29,666 - INFO - [INFO] Detected language: am
+2025-04-24 01:00:30,235 - INFO - [SUCCESS] Translated to: 'Talk'
+2025-04-24 01:00:30,733 - INFO - [INPUT] Raw user input: '\u1275\u1205'
+2025-04-24 01:00:31,917 - INFO - [INFO] Detected language: am
+2025-04-24 01:00:32,316 - INFO - [SUCCESS] Translated to: 'Do you'
+2025-04-24 01:00:32,316 - INFO - [INPUT] Raw user input: '\u1275\u1206'
+2025-04-24 01:00:34,215 - INFO - [INFO] Detected language: am
+2025-04-24 01:00:34,615 - INFO - [SUCCESS] Translated to: 'To be'
+2025-04-24 01:00:34,631 - INFO - [INPUT] Raw user input: '\u1275\u1206\u12a6'
+2025-04-24 01:00:36,216 - INFO - [INFO] Detected language: am
+2025-04-24 01:00:36,663 - INFO - [SUCCESS] Translated to: 'To behoo'
+2025-04-24 01:00:36,663 - INFO - [INPUT] Raw user input: '\u1275\u1206\u12a6\u12a5'
+2025-04-24 01:00:37,720 - INFO - [INFO] Detected language: am
+2025-04-24 01:00:38,120 - INFO - [SUCCESS] Translated to: 'Thony'
+2025-04-24 01:00:53,672 - INFO - [INPUT] Raw user input: '\u1200\u120d'
+2025-04-24 01:00:55,008 - INFO - [INFO] Detected language: am
+2025-04-24 01:00:55,541 - INFO - [SUCCESS] Translated to: 'Hal'
+2025-04-24 01:00:56,087 - INFO - [INPUT] Raw user input: '\u1200\u120d\u120b\u134b \u134d\u1203\u1205'
+2025-04-24 01:00:58,040 - INFO - [INFO] Detected language: am
+2025-04-24 01:00:58,457 - INFO - [SUCCESS] Translated to: 'Hallafaf'
+2025-04-24 01:00:58,457 - INFO - [INPUT] Raw user input: '\u1200\u120d\u120b\u134b \u134d\u1203\u1205 \u12f5\u130d'
+2025-04-24 01:00:59,276 - INFO - [INFO] Detected language: am
+2025-04-24 01:01:00,168 - INFO - [SUCCESS] Translated to: 'Hallaiff Fit'
+2025-04-24 01:01:00,168 - INFO - [INPUT] Raw user input: '\u1200\u120d\u120b\u134b \u134d\u1203\u1205'
+2025-04-24 01:01:00,682 - INFO - [INFO] Detected language: am
+2025-04-24 01:01:01,090 - INFO - [SUCCESS] Translated to: 'Hallafaf'
+2025-04-24 01:01:10,329 - INFO - [INPUT] Raw user input: '\u1200\u120d\u120b\u134b \u134d\u1203\u1205 \u12f5'
+2025-04-24 01:01:11,851 - INFO - [INFO] Detected language: am
+2025-04-24 01:01:12,295 - INFO - [SUCCESS] Translated to: 'Hallafaf Fluid'
+2025-04-24 01:01:18,343 - INFO - [INPUT] Raw user input: 'I'
+2025-04-24 01:01:18,733 - INFO - [INFO] Detected language: en
+2025-04-24 01:01:19,133 - INFO - [SUCCESS] Translated to: 'I'
+2025-04-24 01:01:19,363 - INFO - [INPUT] Raw user input: 'I l'
+2025-04-24 01:01:19,883 - INFO - [INFO] Detected language: en
+2025-04-24 01:01:20,399 - INFO - [SUCCESS] Translated to: 'I l'
+2025-04-24 01:01:22,401 - INFO - [INPUT] Raw user input: 'I like'
+2025-04-24 01:01:22,815 - INFO - [INFO] Detected language: en
+2025-04-24 01:01:23,255 - INFO - [SUCCESS] Translated to: 'I like'
+2025-04-24 01:01:24,791 - INFO - [INPUT] Raw user input: 'I like Ice ad'
+2025-04-24 01:01:25,181 - INFO - [INFO] Detected language: en
+2025-04-24 01:01:25,598 - INFO - [SUCCESS] Translated to: 'I like Ice ad'
+2025-04-24 01:01:25,932 - INFO - [INPUT] Raw user input: 'I like Ice ad fha'
+2025-04-24 01:01:26,348 - INFO - [INFO] Detected language: en
+2025-04-24 01:01:26,747 - INFO - [SUCCESS] Translated to: 'I like Ice ad fha'
+2025-04-24 01:01:26,790 - INFO - [INPUT] Raw user input: 'I like Ice ad fhaahf'
+2025-04-24 01:01:27,330 - INFO - [INFO] Detected language: en
+2025-04-24 01:01:27,847 - INFO - [SUCCESS] Translated to: 'I like Ice ad fhaahf'
+2025-04-24 01:01:28,243 - INFO - [INPUT] Raw user input: 'I like Ice ad fhaahf fhda'
+2025-04-24 01:01:28,663 - INFO - [INFO] Detected language: en
+2025-04-24 01:01:29,063 - INFO - [SUCCESS] Translated to: 'I like Ice ad fhaahf fhda'
+2025-04-24 01:01:31,922 - INFO - [INPUT] Raw user input: 'I like Ice ad fhaahf fhda af'
+2025-04-24 01:01:32,313 - INFO - [INFO] Detected language: en
+2025-04-24 01:01:32,862 - INFO - [SUCCESS] Translated to: 'I like Ice ad fhaahf fhda af'
+2025-04-24 01:01:38,583 - INFO - [INPUT] Raw user input: 'I like Ice ad fhaahf fhda af edffffdhsfdhhfgd'
+2025-04-24 01:01:39,909 - INFO - [INFO] Detected language: ar
+2025-04-24 01:01:40,376 - INFO - [SUCCESS] Translated to: 'Like SD, so this is a good, so you can make it up?'
+2025-04-24 01:01:40,376 - INFO - [INPUT] Raw user input: 'I like Ice ad fhaahf fhda af edffffdhsfdhhfgddfg'
+2025-04-24 01:01:41,313 - INFO - [INFO] Detected language: ar
+2025-04-24 01:01:41,743 - INFO - [SUCCESS] Translated to: 'Lake SD, so this is a sake, and we will be saved'
+2025-04-24 01:01:45,232 - INFO - [INPUT] Raw user input: 'I like Ice ad fhaahf fhda af edffffdhsfdhhfgddfgfdsf'
+2025-04-24 01:01:45,624 - INFO - [INFO] Detected language: en
+2025-04-24 01:01:46,024 - INFO - [SUCCESS] Translated to: 'I like Ice ad fhaahf fhda af edffffdhsfdhhfgddfgfdsf'
+2025-04-24 01:01:49,261 - INFO - [INPUT] Raw user input: 'I like Ice ad fhaahf fhda af edffffdhsfdhhfgddfgfdsffdf'
+2025-04-24 01:01:50,305 - INFO - [INFO] Detected language: ar
+2025-04-24 01:01:50,889 - INFO - [SUCCESS] Translated to: 'Lake SD, so this is the addition of it, so I can find it, so you can see it'
+2025-04-24 01:02:15,383 - INFO - [INPUT] Raw user input: 'I'
+2025-04-24 01:02:15,903 - INFO - [INFO] Detected language: en
+2025-04-24 01:02:16,297 - INFO - [SUCCESS] Translated to: 'I'
+2025-04-24 01:02:18,578 - INFO - [INPUT] Raw user input: 'I like'
+2025-04-24 01:02:18,997 - INFO - [INFO] Detected language: en
+2025-04-24 01:02:19,413 - INFO - [SUCCESS] Translated to: 'I like'
+2025-04-24 01:02:19,967 - INFO - [INPUT] Raw user input: 'I likefhaf'
+2025-04-24 01:02:20,363 - INFO - [INFO] Detected language: en
+2025-04-24 01:02:20,829 - INFO - [SUCCESS] Translated to: 'I likefhaf'
+2025-04-24 01:02:20,851 - INFO - [INPUT] Raw user input: 'I likefhafh'
+2025-04-24 01:02:21,278 - INFO - [INFO] Detected language: en
+2025-04-24 01:02:21,693 - INFO - [SUCCESS] Translated to: 'I likefhafh'
+2025-04-24 01:02:23,556 - INFO - [INPUT] Raw user input: 'I likefhafhkashfka'
+2025-04-24 01:02:23,944 - INFO - [INFO] Detected language: en
+2025-04-24 01:02:24,345 - INFO - [SUCCESS] Translated to: 'I likefhafhkashfka'
+2025-04-24 01:02:24,702 - INFO - [INPUT] Raw user input: 'I likefhafhkashfkadh'
+2025-04-24 01:02:25,244 - INFO - [INFO] Detected language: en
+2025-04-24 01:02:25,760 - INFO - [SUCCESS] Translated to: 'I likefhafhkashfkadh'
+2025-04-24 01:02:29,992 - INFO - [INPUT] Raw user input: 'I likefhafhkashfkadhsdhajkfdhafhsfdhakfhsdka'
+2025-04-24 01:02:30,557 - INFO - [INFO] Detected language: en
+2025-04-24 01:02:30,959 - INFO - [SUCCESS] Translated to: 'I likefhafhkashfkadhsdhajkfdhafhsfdhakfhsdka'
+2025-04-24 01:02:35,090 - INFO - [INPUT] Raw user input: 'I likefhafhkashfkadhsdhajkfdhafhsfdhakfhsdk'
+2025-04-24 01:02:35,476 - INFO - [INFO] Detected language: en
+2025-04-24 01:02:35,993 - INFO - [SUCCESS] Translated to: 'I likefhafhkashfkadhsdhajkfdhafhsfdhakfhsdk'
+2025-04-24 01:02:36,409 - INFO - [INPUT] Raw user input: 'I likefhafhkashfk'
+2025-04-24 01:02:36,923 - INFO - [INFO] Detected language: en
+2025-04-24 01:02:37,474 - INFO - [SUCCESS] Translated to: 'I likefhafhkashfk'
+2025-04-24 01:02:37,625 - INFO - [INPUT] Raw user input: 'I likefhafhkashf'
+2025-04-24 01:02:38,123 - INFO - [INFO] Detected language: en
+2025-04-24 01:02:38,539 - INFO - [SUCCESS] Translated to: 'I likefhafhkashf'
+2025-04-24 01:02:38,539 - INFO - [INPUT] Raw user input: 'I lik'
+2025-04-24 01:02:39,072 - INFO - [INFO] Detected language: en
+2025-04-24 01:02:39,465 - INFO - [SUCCESS] Translated to: 'I lik'
+2025-04-24 01:02:39,857 - INFO - [INPUT] Raw user input: 'I like'
+2025-04-24 01:02:40,255 - INFO - [INFO] Detected language: en
+2025-04-24 01:02:40,655 - INFO - [SUCCESS] Translated to: 'I like'
+2025-04-24 01:02:42,303 - INFO - [INPUT] Raw user input: 'I like'
+2025-04-24 01:02:42,705 - INFO - [INFO] Detected language: en
+2025-04-24 01:02:43,108 - INFO - [SUCCESS] Translated to: 'I like'
+2025-04-24 01:02:43,111 - INFO - [INPUT] Raw user input: 'I like you'
+2025-04-24 01:02:43,638 - INFO - [INFO] Detected language: en
+2025-04-24 01:02:44,021 - INFO - [SUCCESS] Translated to: 'I like you'
+2025-04-24 01:02:44,037 - INFO - [INPUT] Raw user input: 'I like you'
+2025-04-24 01:02:44,587 - INFO - [INFO] Detected language: en
+2025-04-24 01:02:44,971 - INFO - [SUCCESS] Translated to: 'I like you'
+2025-04-24 01:02:44,971 - INFO - [INPUT] Raw user input: 'I like you so'
+2025-04-24 01:02:45,501 - INFO - [INFO] Detected language: en
+2025-04-24 01:02:46,120 - INFO - [SUCCESS] Translated to: 'I like you so'
+2025-04-24 01:02:46,120 - INFO - [INPUT] Raw user input: 'I like you so'
+2025-04-24 01:02:46,669 - INFO - [INFO] Detected language: en
+2025-04-24 01:02:47,202 - INFO - [SUCCESS] Translated to: 'I like you so'
+2025-04-24 01:02:47,433 - INFO - [INPUT] Raw user input: 'I like you so very'
+2025-04-24 01:02:47,853 - INFO - [INFO] Detected language: en
+2025-04-24 01:02:48,287 - INFO - [SUCCESS] Translated to: 'I like you so very'
+2025-04-24 01:02:48,287 - INFO - [INPUT] Raw user input: 'I like you so very'
+2025-04-24 01:02:48,722 - INFO - [INFO] Detected language: en
+2025-04-24 01:02:49,242 - INFO - [SUCCESS] Translated to: 'I like you so very'
+2025-04-24 01:02:49,683 - INFO - [INPUT] Raw user input: 'I like you so very much'
+2025-04-24 01:02:50,069 - INFO - [INFO] Detected language: en
+2025-04-24 01:02:50,468 - INFO - [SUCCESS] Translated to: 'I like you so very much'
+2025-04-24 01:05:26,419 - INFO - [INPUT] Raw user input: 'hi'
+2025-04-24 01:05:26,883 - INFO - [INFO] Detected language: en
+2025-04-24 01:05:26,883 - INFO - [SKIPPED] English input. Language: en
+2025-04-24 01:05:52,403 - INFO - [INPUT] Raw user input: 'hidfgdshgfsj'
+2025-04-24 01:05:53,124 - INFO - [INFO] Detected language: en
+2025-04-24 01:05:53,124 - INFO - [SKIPPED] English input. Language: en
+2025-04-24 01:07:56,331 - INFO - [INPUT] Raw user input: 'rfdhdh'
+2025-04-24 01:07:57,765 - INFO - [INFO] Detected language: gd
+2025-04-24 01:07:58,298 - INFO - [SUCCESS] Translated to: 'rfh'
+2025-04-24 01:08:43,571 - INFO - [INPUT] Raw user input: 'ghgfhj'
+2025-04-24 01:08:44,132 - INFO - [INFO] Detected language: en
+2025-04-24 01:08:44,533 - INFO - [SUCCESS] Translated to: 'ghgfhj'
+2025-04-24 01:11:31,975 - INFO - [INPUT] Raw user input: 'ghfgjhf'
+2025-04-24 01:11:33,476 - INFO - [INFO] Detected language: ga
+2025-04-24 01:11:34,046 - INFO - [SUCCESS] Translated to: 'GHFGJH'
+2025-04-24 01:12:52,931 - INFO - [INPUT] Raw user input: 'ujikjlj'
+2025-04-24 01:12:54,065 - INFO - [INFO] Detected language: sq
+2025-04-24 01:12:54,618 - INFO - [SUCCESS] Translated to: 'water'
+2025-04-24 01:13:11,783 - INFO - [INPUT] Raw user input: 'jjljlj'
+2025-04-24 01:13:12,309 - INFO - [INFO] Detected language: en
+2025-04-24 01:13:12,309 - INFO - [SKIPPED] English input. Language: en
+2025-04-24 01:13:32,715 - INFO - [INPUT] Raw user input: '\u12cd'
+2025-04-24 01:13:33,302 - INFO - [INFO] Detected language: am
+2025-04-24 01:13:33,851 - INFO - [SUCCESS] Translated to: 'Whether'
+2025-04-24 01:13:34,422 - INFO - [INPUT] Raw user input: '\u12cd\u1205'
+2025-04-24 01:13:36,467 - INFO - [INFO] Detected language: am
+2025-04-24 01:13:36,885 - INFO - [SUCCESS] Translated to: 'In your'
+2025-04-24 01:13:36,885 - INFO - [INPUT] Raw user input: '\u12cd\u1203'
+2025-04-24 01:13:39,230 - INFO - [INFO] Detected language: am
+2025-04-24 01:13:39,650 - INFO - [SUCCESS] Translated to: 'Water'
+2025-04-24 01:13:50,924 - INFO - [INPUT] Raw user input: '\u130d'
+2025-04-24 01:13:51,462 - INFO - [INFO] Detected language: am
+2025-04-24 01:13:51,914 - INFO - [SUCCESS] Translated to: 'G'
+2025-04-24 01:13:51,914 - INFO - [INPUT] Raw user input: '\u130b'
+2025-04-24 01:13:52,450 - INFO - [INFO] Detected language: am
+2025-04-24 01:13:52,995 - INFO - [SUCCESS] Translated to: 'G'
+2025-04-24 01:13:53,102 - INFO - [INPUT] Raw user input: '\u130b\u1265'
+2025-04-24 01:13:54,928 - INFO - [INFO] Detected language: am
+2025-04-24 01:13:55,328 - INFO - [SUCCESS] Translated to: 'Bab'
+2025-04-24 01:13:55,328 - INFO - [INPUT] Raw user input: '\u130b\u1260'
+2025-04-24 01:13:57,260 - INFO - [INFO] Detected language: am
+2025-04-24 01:13:57,677 - INFO - [SUCCESS] Translated to: 'Gab'
+2025-04-24 01:13:57,677 - INFO - [INPUT] Raw user input: '\u130b'
+2025-04-24 01:13:58,087 - INFO - [INFO] Detected language: am
+2025-04-24 01:13:58,493 - INFO - [SUCCESS] Translated to: 'G'
+2025-04-24 01:13:59,246 - INFO - [INPUT] Raw user input: '\u130b\u1260'
+2025-04-24 01:13:59,642 - INFO - [INFO] Detected language: am
+2025-04-24 01:14:00,076 - INFO - [SUCCESS] Translated to: 'Gab'
+2025-04-24 01:14:00,246 - INFO - [INPUT] Raw user input: '\u130b'
+2025-04-24 01:14:00,659 - INFO - [INFO] Detected language: am
+2025-04-24 01:14:01,076 - INFO - [SUCCESS] Translated to: 'G'
+2025-04-24 01:14:02,794 - INFO - [INPUT] Raw user input: '\u130b\u1265'
+2025-04-24 01:14:03,341 - INFO - [INFO] Detected language: am
+2025-04-24 01:14:03,793 - INFO - [SUCCESS] Translated to: 'Bab'
+2025-04-24 01:14:03,793 - INFO - [INPUT] Raw user input: '\u130b\u1265\u12ed'
+2025-04-24 01:14:05,908 - INFO - [INFO] Detected language: am
+2025-04-24 01:14:06,340 - INFO - [SUCCESS] Translated to: 'Gab'
+2025-04-24 01:14:10,497 - INFO - [INPUT] Raw user input: '\u130b\u1265'
+2025-04-24 01:14:11,044 - INFO - [INFO] Detected language: am
+2025-04-24 01:14:11,588 - INFO - [SUCCESS] Translated to: 'Bab'
+2025-04-24 01:14:12,794 - INFO - [INPUT] Raw user input: '\u130b'
+2025-04-24 01:14:13,188 - INFO - [INFO] Detected language: am
+2025-04-24 01:14:13,587 - INFO - [SUCCESS] Translated to: 'G'
+2025-04-24 01:14:14,673 - INFO - [INPUT] Raw user input: '\u1265'
+2025-04-24 01:14:15,220 - INFO - [INFO] Detected language: ti
+2025-04-24 01:14:15,637 - INFO - [SUCCESS] Translated to: 'by'
+2025-04-24 01:14:16,856 - INFO - [INPUT] Raw user input: '\u1266'
+2025-04-24 01:14:18,512 - INFO - [INFO] Detected language: am
+2025-04-24 01:14:18,953 - INFO - [SUCCESS] Translated to: 'Bo'
+2025-04-24 01:14:18,969 - INFO - [INPUT] Raw user input: '\u1266\u122d'
+2025-04-24 01:14:19,533 - INFO - [INFO] Detected language: am
+2025-04-24 01:14:20,053 - INFO - [SUCCESS] Translated to: 'Boor'
+2025-04-24 01:14:20,053 - INFO - [INPUT] Raw user input: '\u1266\u122d\u1235'
+2025-04-24 01:14:21,501 - INFO - [INFO] Detected language: am
+2025-04-24 01:14:21,952 - INFO - [SUCCESS] Translated to: 'Boons'
+2025-04-24 01:14:21,952 - INFO - [INPUT] Raw user input: '\u1266\u122d\u1233'
+2025-04-24 01:14:22,524 - INFO - [INFO] Detected language: am
+2025-04-24 01:14:22,935 - INFO - [SUCCESS] Translated to: 'Bag'
+2025-04-24 01:18:29,864 - INFO - [INPUT] Raw user input: '\u1265'
+2025-04-24 01:18:30,334 - INFO - [INFO] Detected language: ti
+2025-04-24 01:18:30,749 - INFO - [SUCCESS] Translated to: 'by'
+2025-04-24 01:18:30,920 - INFO - [INPUT] Raw user input: '\u1266'
+2025-04-24 01:18:31,354 - INFO - [INFO] Detected language: am
+2025-04-24 01:18:31,767 - INFO - [SUCCESS] Translated to: 'Bo'
+2025-04-24 01:18:31,888 - INFO - [INPUT] Raw user input: '\u1266\u122d'
+2025-04-24 01:18:32,284 - INFO - [INFO] Detected language: am
+2025-04-24 01:18:32,716 - INFO - [SUCCESS] Translated to: 'Boor'
+2025-04-24 01:18:33,270 - INFO - [INPUT] Raw user input: '\u1266\u122d\u1233'
+2025-04-24 01:18:33,700 - INFO - [INFO] Detected language: am
+2025-04-24 01:18:34,133 - INFO - [SUCCESS] Translated to: 'Bag'
+2025-04-24 01:18:40,825 - INFO - [INPUT] Raw user input: '\u12a0'
+2025-04-24 01:18:42,282 - INFO - [INFO] Detected language: am
+2025-04-24 01:18:42,708 - INFO - [SUCCESS] Translated to: 'They are'
+2025-04-24 01:18:42,716 - INFO - [INPUT] Raw user input: '\u12a0\u12ed'
+2025-04-24 01:18:43,143 - INFO - [INFO] Detected language: am
+2025-04-24 01:18:43,596 - INFO - [SUCCESS] Translated to: 'No'
+2025-04-24 01:18:43,596 - INFO - [INPUT] Raw user input: '\u12a0\u12ed\u1265'
+2025-04-24 01:18:44,125 - INFO - [INFO] Detected language: am
+2025-04-24 01:18:44,531 - INFO - [SUCCESS] Translated to: 'Cheese'
+2025-04-24 01:18:56,653 - INFO - [INPUT] Raw user input: '\u1265'
+2025-04-24 01:18:57,191 - INFO - [INFO] Detected language: ti
+2025-04-24 01:18:57,758 - INFO - [SUCCESS] Translated to: 'by'
+2025-04-24 01:18:59,092 - INFO - [INPUT] Raw user input: '\u1266'
+2025-04-24 01:18:59,508 - INFO - [INFO] Detected language: am
+2025-04-24 01:19:00,041 - INFO - [SUCCESS] Translated to: 'Bo'
+2025-04-24 01:19:00,390 - INFO - [INPUT] Raw user input: '\u1266\u122d'
+2025-04-24 01:19:00,847 - INFO - [INFO] Detected language: am
+2025-04-24 01:19:01,276 - INFO - [SUCCESS] Translated to: 'Boor'
+2025-04-24 01:19:01,747 - INFO - [INPUT] Raw user input: '\u1266\u122d\u1235'
+2025-04-24 01:19:02,275 - INFO - [INFO] Detected language: am
+2025-04-24 01:19:02,793 - INFO - [SUCCESS] Translated to: 'Boons'
+2025-04-24 01:19:02,807 - INFO - [INPUT] Raw user input: '\u1266\u122d\u1233'
+2025-04-24 01:19:03,344 - INFO - [INFO] Detected language: am
+2025-04-24 01:19:03,752 - INFO - [SUCCESS] Translated to: 'Bag'
+2025-04-24 01:19:08,383 - INFO - [INPUT] Raw user input: '\u1266\u122d'
+2025-04-24 01:19:08,800 - INFO - [INFO] Detected language: am
+2025-04-24 01:19:09,221 - INFO - [SUCCESS] Translated to: 'Boor'
+2025-04-24 01:19:10,936 - INFO - [INPUT] Raw user input: '\u1266\u122d\u1233'
+2025-04-24 01:19:11,471 - INFO - [INFO] Detected language: am
+2025-04-24 01:19:12,004 - INFO - [SUCCESS] Translated to: 'Bag'
+2025-04-24 01:19:15,080 - INFO - [INPUT] Raw user input: '\u12a0'
+2025-04-24 01:19:15,519 - INFO - [INFO] Detected language: am
+2025-04-24 01:19:15,919 - INFO - [SUCCESS] Translated to: 'They are'
+2025-04-24 01:19:16,661 - INFO - [INPUT] Raw user input: '\u12a0\u12ed'
+2025-04-24 01:19:17,102 - INFO - [INFO] Detected language: am
+2025-04-24 01:19:17,668 - INFO - [SUCCESS] Translated to: 'No'
+2025-04-24 01:19:18,757 - INFO - [INPUT] Raw user input: '\u12a0\u12ed\u1265'
+2025-04-24 01:19:19,185 - INFO - [INFO] Detected language: am
+2025-04-24 01:19:19,601 - INFO - [SUCCESS] Translated to: 'Cheese'
+2025-04-24 01:19:24,954 - INFO - [INPUT] Raw user input: '\u12a0'
+2025-04-24 01:19:25,350 - INFO - [INFO] Detected language: am
+2025-04-24 01:19:25,749 - INFO - [SUCCESS] Translated to: 'They are'
+2025-04-24 01:19:25,779 - INFO - [INPUT] Raw user input: '\u12a0\u12ed'
+2025-04-24 01:19:26,195 - INFO - [INFO] Detected language: am
+2025-04-24 01:19:26,632 - INFO - [SUCCESS] Translated to: 'No'
+2025-04-24 01:19:26,632 - INFO - [INPUT] Raw user input: '\u12a0\u12ed\u1265'
+2025-04-24 01:19:27,070 - INFO - [INFO] Detected language: am
+2025-04-24 01:19:27,477 - INFO - [SUCCESS] Translated to: 'Cheese'
+2025-04-24 01:19:32,893 - INFO - [INPUT] Raw user input: '\u12a0'
+2025-04-24 01:19:33,296 - INFO - [INFO] Detected language: am
+2025-04-24 01:19:33,729 - INFO - [SUCCESS] Translated to: 'They are'
+2025-04-24 01:19:33,729 - INFO - [INPUT] Raw user input: '\u12a0\u12ed'
+2025-04-24 01:19:34,213 - INFO - [INFO] Detected language: am
+2025-04-24 01:19:34,595 - INFO - [SUCCESS] Translated to: 'No'
+2025-04-24 01:19:34,612 - INFO - [INPUT] Raw user input: '\u12a0\u12ed\u1265'
+2025-04-24 01:19:35,045 - INFO - [INFO] Detected language: am
+2025-04-24 01:19:35,490 - INFO - [SUCCESS] Translated to: 'Cheese'
+2025-04-24 01:21:13,850 - INFO - [INPUT] Raw user input: '\u1265'
+2025-04-24 01:21:14,245 - INFO - [INFO] Detected language: ti
+2025-04-24 01:21:14,729 - INFO - [SUCCESS] Translated to: 'by'
+2025-04-24 01:21:15,124 - INFO - [INPUT] Raw user input: '\u1266'
+2025-04-24 01:21:15,678 - INFO - [INFO] Detected language: am
+2025-04-24 01:21:16,279 - INFO - [SUCCESS] Translated to: 'Bo'
+2025-04-24 01:21:16,279 - INFO - [INPUT] Raw user input: '\u1266\u122d'
+2025-04-24 01:21:16,710 - INFO - [INFO] Detected language: am
+2025-04-24 01:21:17,121 - INFO - [SUCCESS] Translated to: 'Boor'
+2025-04-24 01:21:17,121 - INFO - [INPUT] Raw user input: '\u1266\u122d\u1233'
+2025-04-24 01:21:17,550 - INFO - [INFO] Detected language: am
+2025-04-24 01:21:17,978 - INFO - [SUCCESS] Translated to: 'Bag'
+2025-04-24 01:23:20,944 - INFO - [INPUT] Raw user input: '\u1202'
+2025-04-24 01:23:21,536 - INFO - [INFO] Detected language: am
+2025-04-24 01:23:21,952 - INFO - [SUCCESS] Translated to: 'He'
+2025-04-24 01:23:23,633 - INFO - [INPUT] Raw user input: '\u1202\u12a0\u1235'
+2025-04-24 01:23:25,185 - INFO - [INFO] Detected language: am
+2025-04-24 01:23:25,334 - INFO - [SUCCESS] Translated to: 'Hable'
+2025-04-24 01:23:27,739 - INFO - [INPUT] Raw user input: '\u1202\u12a0\u1235'
+2025-04-24 01:23:27,967 - INFO - [INFO] Detected language: am
+2025-04-24 01:23:28,550 - INFO - [SUCCESS] Translated to: 'Hable'
+2025-04-24 01:23:28,704 - INFO - [INPUT] Raw user input: '\u1202\u12a0\u1235'
+2025-04-24 01:23:29,133 - INFO - [INFO] Detected language: am
+2025-04-24 01:23:29,631 - INFO - [SUCCESS] Translated to: 'Hable'
+2025-04-24 01:23:30,272 - INFO - [INPUT] Raw user input: '\u1265'
+2025-04-24 01:23:30,818 - INFO - [INFO] Detected language: ti
+2025-04-24 01:23:31,217 - INFO - [SUCCESS] Translated to: 'by'
+2025-04-24 01:23:31,217 - INFO - [INPUT] Raw user input: '\u1266'
+2025-04-24 01:23:31,656 - INFO - [INFO] Detected language: am
+2025-04-24 01:23:32,132 - INFO - [SUCCESS] Translated to: 'Bo'
+2025-04-24 01:23:32,132 - INFO - [INPUT] Raw user input: '\u1266\u122d'
+2025-04-24 01:23:32,566 - INFO - [INFO] Detected language: am
+2025-04-24 01:23:32,980 - INFO - [SUCCESS] Translated to: 'Boor'
+2025-04-24 01:23:33,241 - INFO - [INPUT] Raw user input: '\u1266\u122d\u1233'
+2025-04-24 01:23:33,882 - INFO - [INFO] Detected language: am
+2025-04-24 01:23:34,414 - INFO - [SUCCESS] Translated to: 'Bag'
+2025-04-24 01:23:36,075 - INFO - [INPUT] Raw user input: '\u1266\u122d'
+2025-04-24 01:23:36,616 - INFO - [INFO] Detected language: am
+2025-04-24 01:23:37,030 - INFO - [SUCCESS] Translated to: 'Boor'
+2025-04-24 01:23:39,109 - INFO - [INPUT] Raw user input: '\u1266\u122d\u1235'
+2025-04-24 01:23:39,514 - INFO - [INFO] Detected language: am
+2025-04-24 01:23:39,929 - INFO - [SUCCESS] Translated to: 'Boons'
+2025-04-24 01:23:40,722 - INFO - [INPUT] Raw user input: '\u1266\u122d\u1233'
+2025-04-24 01:23:41,129 - INFO - [INFO] Detected language: am
+2025-04-24 01:23:41,546 - INFO - [SUCCESS] Translated to: 'Bag'
+2025-04-24 01:23:42,624 - INFO - [INPUT] Raw user input: '\u1266\u122d'
+2025-04-24 01:23:43,031 - INFO - [INFO] Detected language: am
+2025-04-24 01:23:43,645 - INFO - [SUCCESS] Translated to: 'Boor'
+2025-04-24 01:23:43,651 - INFO - [INPUT] Raw user input: '\u1266\u122d\u1235'
+2025-04-24 01:23:44,161 - INFO - [INFO] Detected language: am
+2025-04-24 01:23:44,695 - INFO - [SUCCESS] Translated to: 'Boons'
+2025-04-24 01:23:44,695 - INFO - [INPUT] Raw user input: '\u1266\u122d\u1233'
+2025-04-24 01:23:45,225 - INFO - [INFO] Detected language: am
+2025-04-24 01:23:45,643 - INFO - [SUCCESS] Translated to: 'Bag'
+2025-04-24 01:23:47,214 - INFO - [INPUT] Raw user input: '\u1266\u122d'
+2025-04-24 01:23:47,626 - INFO - [INFO] Detected language: am
+2025-04-24 01:23:48,043 - INFO - [SUCCESS] Translated to: 'Boor'
+2025-04-24 01:23:48,059 - INFO - [INPUT] Raw user input: '\u1266\u122d\u1235'
+2025-04-24 01:23:48,476 - INFO - [INFO] Detected language: am
+2025-04-24 01:23:48,909 - INFO - [SUCCESS] Translated to: 'Boons'
+2025-04-24 01:23:48,909 - INFO - [INPUT] Raw user input: '\u1266\u122d\u1233'
+2025-04-24 01:23:49,351 - INFO - [INFO] Detected language: am
+2025-04-24 01:23:49,758 - INFO - [SUCCESS] Translated to: 'Bag'
+2025-04-24 01:23:51,142 - INFO - [INPUT] Raw user input: '\u1266\u122d'
+2025-04-24 01:23:51,693 - INFO - [INFO] Detected language: am
+2025-04-24 01:23:52,228 - INFO - [SUCCESS] Translated to: 'Boor'
+2025-04-24 01:23:52,228 - INFO - [INPUT] Raw user input: '\u1266\u122d\u1235'
+2025-04-24 01:23:52,659 - INFO - [INFO] Detected language: am
+2025-04-24 01:23:53,072 - INFO - [SUCCESS] Translated to: 'Boons'
+2025-04-24 01:23:53,884 - INFO - [INPUT] Raw user input: '\u1266\u122d\u1233'
+2025-04-24 01:23:54,391 - INFO - [INFO] Detected language: am
+2025-04-24 01:23:54,942 - INFO - [SUCCESS] Translated to: 'Bag'
+2025-04-24 01:23:58,097 - INFO - [INPUT] Raw user input: '\u1266\u122d'
+2025-04-24 01:23:58,643 - INFO - [INFO] Detected language: am
+2025-04-24 01:23:59,167 - INFO - [SUCCESS] Translated to: 'Boor'
+2025-04-24 01:24:03,333 - INFO - [INPUT] Raw user input: '\u130d\u1305\u1205\u130d'
+2025-04-24 01:24:05,278 - INFO - [INFO] Detected language: am
+2025-04-24 01:24:05,689 - INFO - [SUCCESS] Translated to: 'Grid'
+2025-04-24 01:24:06,033 - INFO - [INPUT] Raw user input: '\u134d\u130d\u1205'
+2025-04-24 01:24:07,737 - INFO - [INFO] Detected language: am
+2025-04-24 01:24:08,153 - INFO - [SUCCESS] Translated to: 'Power'
+2025-04-24 01:24:08,153 - INFO - [INPUT] Raw user input: '\u134d\u130d\u1205\u134d\u1205'
+2025-04-24 01:24:10,116 - INFO - [INFO] Detected language: am
+2025-04-24 01:24:10,659 - INFO - [SUCCESS] Translated to: 'Your copies'

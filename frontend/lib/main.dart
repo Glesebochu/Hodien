@@ -5,6 +5,7 @@ import 'firebase_options.dart';
 import 'pages/authpage.dart';
 import 'pages/home.dart';
 import 'pages/settings.dart';
+import 'pages/search_page.dart';
 import 'utils/utils.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart' as shadcn;
 
@@ -37,6 +38,7 @@ class MainApp extends StatelessWidget {
       routes: {
         '/home': (context) => HomePage(),
         '/settings': (context) => const SettingsPage(),
+        '/search': (context) => const SearchPage(), // From search-module
       },
       debugShowCheckedModeBanner: false,
       navigatorKey: navigatorKey,
@@ -60,3 +62,26 @@ class MainApp extends StatelessWidget {
     );
   }
 }
+
+// void main() {
+//   runApp(const MainApp(home: SearchPage(), debugShowCheckedModeBanner: false));
+// }
+
+// class MainApp extends StatelessWidget {
+//   final Widget home;
+//   final bool debugShowCheckedModeBanner;
+
+//   const MainApp({
+//     super.key,
+//     required this.home,
+//     this.debugShowCheckedModeBanner = true,
+//   });
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       home: home,
+//       debugShowCheckedModeBanner: debugShowCheckedModeBanner,
+//     );
+//   }
+// }
