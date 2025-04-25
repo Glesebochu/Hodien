@@ -24,6 +24,9 @@ doc/api/
 .flutter-plugins
 .flutter-plugins-dependencies
 
+# For Firebase secrets
+hodien-f5535-firebase-adminsdk-fbsvc-dd2b2fc2a9.json
+
 #=============================================================================
 # For Python
 #=============================================================================
