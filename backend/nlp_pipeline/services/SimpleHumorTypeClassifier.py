@@ -1,5 +1,6 @@
 import pandas as pd
 import re
+import random
 
 class SimpleHumorTypeClassifier:
     def __init__(self, input_file, output_file="backend/nlp_pipeline/data/classified_jokes.csv"):
@@ -54,8 +55,13 @@ class SimpleHumorTypeClassifier:
         self.humor_type_mapping = {label: idx + 1 for idx, label in enumerate(self.humor_keywords.keys())}
         self.data = None
 
-    def load_data(self):
-        self.data = pd.read_csv(self.input_file)
+    def load_data(self, max_rows=10000):
+        """
+        Load data from the input file. Optionally limit the number of rows loaded.
+
+        :param max_rows: Maximum number of rows to load from the CSV file.
+        """
+        self.data = pd.read_csv(self.input_file, nrows=max_rows)
 
     def classify_humor(self, text):
         text_lower = text.lower()
@@ -67,7 +73,10 @@ class SimpleHumorTypeClassifier:
         best_fit = max(scores, key=scores.get)
         total = sum(scores.values())
         confidence = scores[best_fit] / total if total > 0 else 0.2
-        return self.humor_type_mapping[best_fit], round(confidence, 3)
+
+        # Randomly assign a boolean value weighted by confidence
+        random_decimal = round(random.uniform(0, confidence), 2)
+        return self.humor_type_mapping[best_fit], random_decimal
 
     def process_data(self):
         humor_types = []
@@ -89,9 +98,3 @@ class SimpleHumorTypeClassifier:
         self.process_data()
         self.save_data()
         return self.output_file
-
-# Example usage
-if __name__ == "__main__":
-    classifier = SimpleHumorTypeClassifier(input_file="humor.csv")
-    output_path = classifier.run()
-    print(f"Classified humor saved to: {output_path}")
