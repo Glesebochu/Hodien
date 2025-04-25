@@ -52,23 +52,24 @@ class Indexer:
             doc_id = record['id']
             # Tokenize and stem
             tokens = data_pp.tokenize(record['text'])
-            print("\nTokens:", tokens)
+            # print("\nTokens:", tokens)
             
             # Normalize
             normalized_tokens = data_pp.normalize(tokens)
-            print("\nNormalized Tokens:", normalized_tokens)
+            # print("\nNormalized Tokens:", normalized_tokens)
             
             # Remove stop words
             stop_word_free_tokens = data_pp.remove_stop_words(normalized_tokens)
-            print("\nStop Word Free Tokens:", stop_word_free_tokens)
+            # print("\nStop Word Free Tokens:", stop_word_free_tokens)
             
             # Fix spelling
             spell_checked_tokens = data_pp.correct_spelling(stop_word_free_tokens)
-            print("\nSpell Checked Tokens (Before Filtering None):", spell_checked_tokens)
+            # print("\nSpell Checked Tokens (Before Filtering None):", spell_checked_tokens)
             
+            print(doc_id)
             # Stem tokens
             terms = data_pp.stem_tokens(spell_checked_tokens)
-            print("\nStemmed Tokens (Terms):", terms)
+            # print("\nStemmed Tokens (Terms):", terms)
             
             for term in terms:
                 self.term_freq[term][doc_id] += 1
