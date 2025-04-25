@@ -70,8 +70,10 @@ class DataPreprocessor:
         return corrected
 
     def stem_tokens(self, tokens):
+        # Filter out None values
+        valid_tokens = [token for token in tokens if token is not None]
         stemmer = PorterStemmer()
-        stemmed = [stemmer.stem(token) for token in tokens]
+        stemmed = [stemmer.stem(token) for token in valid_tokens]
         return stemmed        
     def expand_synonyms(self, tokens):
         expanded = []
