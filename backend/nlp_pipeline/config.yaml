@@ -1,4 +1,4 @@
-model_path: "finetuned_distilbert"
+model_path: "finetuned_minilm"
 batch_size: 32
 epochs: 3
 learning_rate: 2e-5
