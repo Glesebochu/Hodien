@@ -1,57 +1,94 @@
+import logging
+import re
+from collections import Counter
+from nltk.corpus import stopwords
+import traceback
+from spellchecker import SpellChecker
+from nltk.stem import PorterStemmer
+from nltk.corpus import wordnet
+
+# Logging setup
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
 class DataPreprocessor:
+    def __init__(self, text:str):
+        # Simple stop word list for illustration
+        self.stop_words = set(stopwords.words("english"))
+        self.result=self.preprocess(text)
+        
+    # This function does the entire preprocessing pipeline
     def preprocess(self, text: str) -> dict:
-        tokens = self.tokenize(text)
-        corrected = self.correct_spelling(tokens)
-        normalized = self.normalize(corrected)
-        filtered = self.remove_stop_words(normalized)
-        stemmed = self.stem_tokens(filtered)
-        expanded = self.expand_synonyms(stemmed)
-        weights = self.weigh_term(stemmed)
+        try:
+            logging.info("Preprocessing started on: " + text)
 
-        return {
-            "tokens": tokens,
-            "corrected_tokens": corrected,
-            "normalized_tokens": normalized,
-            "filtered_tokens": filtered,
-            "stemmed_tokens": stemmed,
-            "expanded_tokens": expanded,
-            "term_weights": weights
-        }
+            tokens = self.tokenize(text)
+            normalized = self.normalize(tokens)
+            filtered = self.remove_stop_words(normalized)
+            corrected = self.correct_spelling(filtered)
+            stemmed = self.stem_tokens(corrected)
+            expanded = self.expand_synonyms(corrected)
+            weights = self.weigh_term(expanded)
 
-    # --- Core Preprocessing Functions ---
+            result= {
+                "tokens": tokens,
+                "normalized_tokens": normalized,
+                "filtered_tokens": filtered,
+                "corrected_tokens": corrected,
+                "stemmed_tokens": stemmed,
+                "expanded_tokens": expanded,
+                "term_weights": weights,
+            }
+            
+            log_output = "Processed Results:\n"
+            for key, value in result.items():
+                log_output += f"{key}: {value}\n\n"
+            logging.info(log_output)
+            return result
 
-    def tokenize(self, text: str) -> list[str]:
-        return self.perform_tokenization(text)
+        except Exception as e:
+            tb = traceback.extract_tb(e.__traceback__)
+            failed_function = tb[-1].name  # This gives the name of the function that threw the error
+            logging.error(f"[DataPreprocessor.{failed_function}] Error: {str(e)}")
+            return {"error": str(e)}
 
-    def correct_spelling(self, tokens: list[str]) -> list[str]:
-        return self.run_spelling_correction(tokens)
+    # --- Individual Processing Functions ---
 
-    def normalize(self, tokens: list[str]) -> list[str]:
-        return [token.lower().strip() for token in tokens]
-
-    def remove_stop_words(self, tokens: list[str]) -> list[str]:
-        stop_words = {"the", "is", "and"}
-        return [token for token in tokens if token not in stop_words]
-
-    def stem_tokens(self, tokens: list[str]) -> list[str]:
-        return self.apply_stemming(tokens)
-
-    def expand_synonyms(self, tokens: list[str]) -> list[str]:
-        return self.find_synonym_expansions(tokens)
-
-    def weigh_term(self, stemmed_tokens: list[str]) -> dict[str, float]:
-        return {token: 1.0 for token in stemmed_tokens}  # Placeholder
-
-    # --- Internal Logic Placeholders ---
-
-    def perform_tokenization(self, text: str) -> list[str]:
+    def tokenize(self, text: str):
         return text.split()
 
-    def run_spelling_correction(self, tokens: list[str]) -> list[str]:
-        return tokens  # Stub
+    def normalize(self, tokens):
+        return [re.sub(r'[^\w\s]', '', token.lower().strip()) for token in tokens]
 
-    def apply_stemming(self, tokens: list[str]) -> list[str]:
-        return tokens  # Stub
+    def remove_stop_words(self, tokens):
+        return [token for token in tokens if token not in self.stop_words]
 
-    def find_synonym_expansions(self, tokens: list[str]) -> list[str]:
-        return tokens  # Stub
+    def correct_spelling(self, tokens):
+        spell = SpellChecker()
+        corrected = [spell.correction(token) for token in tokens]
+        return corrected
+
+    def stem_tokens(self, tokens):
+        stemmer = PorterStemmer()
+        stemmed = [stemmer.stem(token) for token in tokens]
+        return stemmed        
+    def expand_synonyms(self, tokens):
+        expanded = []
+        for token in tokens:
+            synonyms = set()
+            for syn in wordnet.synsets(token):
+                for lemma in syn.lemmas():
+                    synonyms.add(lemma.name().lower().replace('_', ' '))
+            # Keep the order of input tokens
+            expanded.append(token)
+            expanded.extend(sorted(synonyms))  # Sort within word, optional
+        return expanded
+
+    def weigh_term(self, tokens):
+        counts = Counter(tokens)
+        total = sum(counts.values())
+        return {token: round(count / total, 3) for token, count in counts.items()}
+if __name__ == "__main__":
+    # Example usage
+    preprocessor = DataPreprocessor("The quick brown fox jumps over the lazy dogb.")
