@@ -197,10 +197,10 @@ class _LoginPageState extends State<LoginPage> {
                                     ),
                           ),
                         ),
-                        TextButton(
-                          onPressed: () {},
-                          child: const Text('Forgot Password?'),
-                        ),
+                        // TextButton(
+                        //   onPressed: () {},
+                        //   child: const Text('Forgot Password?'),
+                        // ),
                       ],
                     ),
                   ),
@@ -214,7 +214,7 @@ class _LoginPageState extends State<LoginPage> {
                       text: TextSpan(
                         text: ' Sign Up',
                         style: const TextStyle(
-                          color: Colors.blue,
+                          color: Colors.indigo,
                           fontWeight: FontWeight.bold,
                         ),
                         recognizer:

@@ -224,10 +224,10 @@ class _SignupPageState extends State<SignupPage> {
                                     ),
                           ),
                         ),
-                        TextButton(
-                          onPressed: () {},
-                          child: const Text('Forgot Password?'),
-                        ),
+                        // TextButton(
+                        //   onPressed: () {},
+                        //   child: const Text('Forgot Password?'),
+                        // ),
                       ],
                     ),
                   ),
@@ -241,7 +241,7 @@ class _SignupPageState extends State<SignupPage> {
                       text: TextSpan(
                         text: ' Sign In',
                         style: const TextStyle(
-                          color: Colors.blue,
+                          color: Colors.indigo,
                           fontWeight: FontWeight.bold,
                         ),
                         recognizer:

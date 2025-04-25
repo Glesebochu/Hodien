@@ -1,357 +1,366 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart' as shadcn;
-import 'package:frontend/services/user_service.dart';
-import 'package:frontend/models/user.dart' as user_model;
-import 'package:firebase_auth/firebase_auth.dart';
+import '../services/user_service.dart';
+import '../models/user.dart' as app_models;
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
 
   @override
-  _SettingsPageState createState() => _SettingsPageState();
+  State<SettingsPage> createState() => _SettingsPageState();
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  final _userService = UserService();
+  late Future<app_models.User?> _userFuture;
+
   final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
   final _currentPasswordController = TextEditingController();
   final _newPasswordController = TextEditingController();
-  final _userService = UserService();
-  bool _isLoading = false;
+  final _confirmDeletePasswordController = TextEditingController();
 
   @override
-  void dispose() {
-    _usernameController.dispose();
-    _emailController.dispose();
-    _currentPasswordController.dispose();
-    _newPasswordController.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    _userFuture = _userService.getCurrentUser();
+  }
+
+  void _reloadUser() {
+    setState(() {
+      _userFuture = _userService.getCurrentUser();
+    });
+  }
+
+  Future<void> _handleEditProfile() async {
+    final username = _usernameController.text.trim();
+    // final email = _emailController.text.trim();
+    final res = await _userService.updateProfileInfo(
+      newUsername: username,
+      // newEmail: email,
+    );
+
+    if (res == "success") {
+      _showSuccessDialog('Profile updated successfully!');
+      _reloadUser();
+    } else {
+      _showErrorDialog(res);
+    }
+  }
+
+  Future<void> _handlePasswordChange() async {
+    final current = _currentPasswordController.text;
+    final newPass = _newPasswordController.text;
+    final res = await _userService.updatePassword(
+      currentPassword: current,
+      newPassword: newPass,
+    );
+
+    if (res == "success") {
+      _showSuccessDialog('Password changed successfully!');
+      _currentPasswordController.clear();
+      _newPasswordController.clear();
+    } else {
+      _showErrorDialog(res);
+    }
+  }
+
+  Future<void> _handleDeleteAccount() async {
+    final confirmed = await _confirmDeleteDialog();
+    if (!confirmed) return;
+
+    final password = _confirmDeletePasswordController.text;
+    final res = await _userService.deleteAccount(password);
+
+    if (res == "success") {
+      if (context.mounted) Navigator.of(context).pushReplacementNamed('/');
+    } else {
+      _showErrorDialog(res);
+    }
+  }
+
+  Future<void> _handleLogout() async {
+    FirebaseAuth.instance.signOut();
+    Navigator.pop(context);
+    // await _userService.logout();
+    // if (context.mounted) Navigator.of(context).pushReplacementNamed('/');
+  }
+
+  Future<void> _showSuccessDialog(String message) async {
+    return showDialog(
+      context: context,
+      builder:
+          (context) => Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 400),
+              child: shadcn.AlertDialog(
+                title: shadcn.Text(
+                  'Success',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                content: Text(message),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('OK'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+    );
+  }
+
+  Future<void> _showErrorDialog(String message) async {
+    return showDialog(
+      context: context,
+      builder:
+          (context) => Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 400),
+              child: shadcn.AlertDialog(
+                title: shadcn.Text(
+                  'Error',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                content: Text(message),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('OK'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+    );
+  }
+
+  Future<bool> _confirmDeleteDialog() async {
+    return await showDialog(
+          context: context,
+          builder:
+              (context) => Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 400),
+                  child: shadcn.AlertDialog(
+                    title: const Text('Are you sure?'),
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        shadcn.TextField(
+                          controller: _confirmDeletePasswordController,
+                          obscureText: true,
+                          placeholder: const Text('Enter your Password'),
+                          features: const [
+                            shadcn.InputFeature.clear(),
+                            shadcn.InputFeature.passwordToggle(
+                              mode: shadcn.PasswordPeekMode.toggle,
+                            ),
+                          ],
+                          // decoration: const InputDecoration(
+                          //   labelText: 'Enter your password',
+                          // ),
+                        ),
+                        const SizedBox(height: 12),
+                        const Text('This action cannot be undone.'),
+                      ],
+                    ),
+                    actions: [
+                      shadcn.PrimaryButton(
+                        onPressed: () => Navigator.pop(context, false),
+                        child: const Text('Cancel'),
+                      ),
+                      shadcn.DestructiveButton(
+                        onPressed: () => Navigator.pop(context, true),
+                        child: const Text('Delete'),
+                      ),
+                    ],
+                  ),
+                  // shadcn.AlertDialog(
+                  //   title: shadcn.Text(
+                  //     'Success',
+                  //     style: const TextStyle(fontWeight: FontWeight.bold),
+                  //   ),
+                  //   content: Text("message"),
+                  //   actions: [
+                  //     TextButton(
+                  //       onPressed: () => Navigator.pop(context),
+                  //       child: const Text('OK'),
+                  //     ),
+                  //   ],
+                  // ),
+                ),
+              ),
+        ) ??
+        false;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Settings'),
-        backgroundColor: Colors.amber.withAlpha(180),
-        elevation: 0,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: StreamBuilder<user_model.User?>(
-          stream: _userService.getCurrentUserStream(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (snapshot.hasError || !snapshot.hasData) {
-              return const Center(child: Text('Error loading user data'));
-            }
-            final user = snapshot.data!;
-            _usernameController.text = user.username;
-            _emailController.text = user.email;
+    return FutureBuilder<app_models.User?>(
+      future: _userFuture,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData)
+          return const Center(child: CircularProgressIndicator());
+        final user = snapshot.data!;
+        final initial = user.username[0].toUpperCase();
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+        _usernameController.text = user.username;
+        _emailController.text = user.email;
+
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Settings'),
+            actions: [
+              // shadcn.ThemeToggleButton(),
+              const SizedBox(width: 12),
+            ],
+          ),
+          body: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ListView(
               children: [
-                // Profile Section
-                shadcn.Card(
-                  // elevation: 2,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        shadcn.Avatar(
-                          size: 80,
-                          initials: user.username[0].toUpperCase(),
+                Column(
+                  children: [
+                    CircleAvatar(
+                      radius: 40,
+                      child: Text(
+                        initial,
+                        style: const TextStyle(
+                          fontSize: 40,
+                          fontWeight: FontWeight.bold,
                         ),
-                        const SizedBox(height: 16),
-                        shadcn.Form(
-                          child: shadcn.FormField(
-                            key: const shadcn.InputKey(#profile),
-                            label: const Text('Username'),
-                            validator: shadcn.ConditionalValidator((
-                              value,
-                            ) async {
-                              // simulate a network delay for example purpose
-                              await Future.delayed(const Duration(seconds: 1));
-                              return ![
-                                'sunarya-thito',
-                                'septogeddon',
-                                'admin',
-                              ].contains(value);
-                            }, message: 'Username already taken'),
-                            child: Column(
-                              children: [
-                                const shadcn.TextField(
-                                  placeholder: Text('Enter your username'),
-                                  initialValue: 'sunarya-thito',
-                                  features: [shadcn.InputFeature.revalidate()],
-                                ),
-
-                                const SizedBox(height: 16.0),
-
-                                shadcn.FormErrorBuilder(
-                                  builder: (context, errors, child) {
-                                    return shadcn.PrimaryButton(
-                                      onPressed:
-                                          _isLoading
-                                              ? null
-                                              : () => _updateUsername(context),
-                                      child:
-                                          _isLoading
-                                              ? const SizedBox(
-                                                width: 20,
-                                                height: 20,
-                                                child:
-                                                    CircularProgressIndicator(
-                                                      strokeWidth: 2,
-                                                    ),
-                                              )
-                                              : const Text('Update Username'),
-                                    );
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
+                    const SizedBox(height: 12),
+                    Text(
+                      'Hello, ${user.username}!',
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(user.email, style: TextStyle(color: Colors.grey[600])),
+                  ],
                 ),
 
                 const SizedBox(height: 16),
-
-                const SizedBox(height: 24),
-
-                // Account Section
                 shadcn.Card(
                   child: Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.all(12),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
-                          'Account',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          'Edit Profile',
+                          style: TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        const SizedBox(height: 16),
-
-                        shadcn.Form(
-                          child: shadcn.FormField(
-                            key: const shadcn.InputKey(#account),
-                            label: const Text('Email'),
-                            validator: shadcn.ConditionalValidator((
-                              value,
-                            ) async {
-                              // simulate a network delay for example purpose
-                              await Future.delayed(const Duration(seconds: 1));
-                              return ![
-                                'sunarya-thito',
-                                'septogeddon',
-                                'admin',
-                              ].contains(value);
-                            }, message: 'Email already taken'),
-                            child: Column(
-                              children: [
-                                const shadcn.TextField(
-                                  placeholder: Text('Enter your Email'),
-                                  initialValue: 'John@example.com',
-                                  features: [shadcn.InputFeature.revalidate()],
-                                ),
-
-                                const SizedBox(height: 16.0),
-
-                                shadcn.TextField(
-                                  controller: _currentPasswordController,
-                                  placeholder: Text('Enter your password'),
-                                  features: [
-                                    shadcn.InputFeature.clear(),
-                                    shadcn.InputFeature.passwordToggle(
-                                      mode: shadcn.PasswordPeekMode.hold,
-                                    ),
-                                  ],
-                                ),
-
-                                const SizedBox(height: 16),
-
-                                shadcn.FormErrorBuilder(
-                                  builder: (context, errors, child) {
-                                    return shadcn.PrimaryButton(
-                                      onPressed:
-                                          _isLoading
-                                              ? null
-                                              : () => _updateEmail(context),
-                                      child:
-                                          _isLoading
-                                              ? const SizedBox(
-                                                width: 20,
-                                                height: 20,
-                                                child:
-                                                    CircularProgressIndicator(
-                                                      strokeWidth: 2,
-                                                    ),
-                                              )
-                                              : const Text('Update Email'),
-                                    );
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
+                        const SizedBox(height: 8),
+                        shadcn.TextField(
+                          controller: _usernameController,
+                          placeholder: const Text('Username'),
+                          features: const [shadcn.InputFeature.clear()],
+                        ),
+                        const SizedBox(height: 12),
+                        // shadcn.TextField(
+                        //   controller: _emailController,
+                        //   placeholder: const Text('Email'),
+                        //   features: const [shadcn.InputFeature.clear()],
+                        // ),
+                        // const SizedBox(height: 12),
+                        shadcn.PrimaryButton(
+                          onPressed: _handleEditProfile,
+                          child: const Text('Update Info'),
+                          // text: 'Save Changes',
                         ),
                       ],
                     ),
                   ),
                 ),
-                const SizedBox(height: 24),
-
-                // Password Section
+                const SizedBox(height: 16),
                 shadcn.Card(
                   child: Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.all(12),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
-                          'Password',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          'Change Password',
+                          style: TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        const SizedBox(height: 16),
-
-                        shadcn.Form(
-                          child: shadcn.FormField(
-                            key: const shadcn.InputKey(#password),
-                            label: const Text('Password'),
-                            // validator: shadcn.ConditionalValidator((
-                            //   value,
-                            // ) async {
-                            //   // simulate a network delay for example purpose
-                            //   await Future.delayed(const Duration(seconds: 1));
-                            //   return ![
-                            //     'sunarya-thito',
-                            //     'septogeddon',
-                            //     'admin',
-                            //   ].contains(value);
-                            // }, message: 'Email already taken'),
-                            child: Column(
-                              children: [
-                                // const shadcn.TextField(
-                                //   placeholder: Text('Current Password'),
-                                //   initialValue: 'John@example.com',
-                                //   features: [shadcn.InputFeature.revalidate()],
-                                // ),
-
-                                // const SizedBox (height: 16.0),
-                                shadcn.TextField(
-                                  controller: _currentPasswordController,
-                                  placeholder: Text('Current password'),
-                                  features: [
-                                    shadcn.InputFeature.clear(),
-                                    shadcn.InputFeature.passwordToggle(
-                                      mode: shadcn.PasswordPeekMode.hold,
-                                    ),
-                                  ],
-                                ),
-
-                                const SizedBox(height: 16),
-
-                                shadcn.TextField(
-                                  controller: _newPasswordController,
-                                  placeholder: Text('New password'),
-                                  features: [
-                                    shadcn.InputFeature.clear(),
-                                    shadcn.InputFeature.passwordToggle(
-                                      mode: shadcn.PasswordPeekMode.hold,
-                                    ),
-                                  ],
-                                ),
-
-                                const SizedBox(height: 16),
-
-                                shadcn.FormErrorBuilder(
-                                  builder: (context, errors, child) {
-                                    return shadcn.PrimaryButton(
-                                      onPressed:
-                                          _isLoading
-                                              ? null
-                                              : () => _updatePassword(context),
-                                      child:
-                                          _isLoading
-                                              ? const SizedBox(
-                                                width: 20,
-                                                height: 20,
-                                                child:
-                                                    CircularProgressIndicator(
-                                                      strokeWidth: 2,
-                                                    ),
-                                              )
-                                              : const Text('Change Password'),
-                                    );
-                                  },
-                                ),
-                              ],
+                        const SizedBox(height: 8),
+                        shadcn.TextField(
+                          controller: _currentPasswordController,
+                          obscureText: true,
+                          placeholder: const Text('Current Password'),
+                          features: const [
+                            shadcn.InputFeature.clear(),
+                            shadcn.InputFeature.passwordToggle(
+                              mode: shadcn.PasswordPeekMode.toggle,
                             ),
-                          ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        shadcn.TextField(
+                          controller: _newPasswordController,
+                          obscureText: true,
+                          placeholder: const Text('New Password'),
+                          features: const [
+                            shadcn.InputFeature.clear(),
+                            shadcn.InputFeature.passwordToggle(
+                              mode: shadcn.PasswordPeekMode.toggle,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        shadcn.PrimaryButton(
+                          onPressed: _handlePasswordChange,
+                          child: const Text('Update profile'),
                         ),
                       ],
                     ),
                   ),
                 ),
-
-                const SizedBox(height: 24),
-
-                // Additional Actions
+                const SizedBox(height: 16),
                 shadcn.Card(
+                  // color: Colors.red.shade50,
                   child: Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.all(12),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        shadcn.OutlineButton(
-                          onPressed: () async {
-                            await FirebaseAuth.instance.signOut();
-                            // Navigation handled by authStateChanges
-                          },
-                          child: const Text('Logout'),
+                        const Text(
+                          'Account Actions',
+                          style: TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        const SizedBox(height: 16),
-
-                        // Danger Zone
-                        shadcn.Card(
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.max,
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-
-                              // crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'Danger Zone',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.red,
-                                  ),
-                                ),
-                                const SizedBox(height: 16),
-                                Align(
-                                  alignment: Alignment.bottomCenter,
-                                  child: shadcn.DestructiveButton(
-                                    onPressed:
-                                        _isLoading
-                                            ? null
-                                            : () => _deleteAccount(context),
-                                    child: const Text('Delete Account'),
-                                  ),
-                                ),
+                        const SizedBox(height: 8),
+                        SizedBox(
+                          width: double.infinity,
+                          child: shadcn.OutlineButton(
+                            onPressed: _handleLogout,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Icon(Icons.logout),
+                                SizedBox(width: 8),
+                                Text('Logout'),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        SizedBox(
+                          width: double.infinity,
+                          child: shadcn.DestructiveButton(
+                            onPressed: _handleDeleteAccount,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Icon(Icons.delete),
+                                SizedBox(width: 8),
+                                Text('Delete Account'),
                               ],
                             ),
                           ),
@@ -359,148 +368,12 @@ class _SettingsPageState extends State<SettingsPage> {
                       ],
                     ),
                   ),
-                ),
-              ],
-            );
-          },
-        ),
-      ),
-    );
-  }
-
-  Future<void> _updateUsername(BuildContext context) async {
-    final newUsername = _usernameController.text.trim();
-    if (newUsername.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Username cannot be empty')));
-      return;
-    }
-    setState(() => _isLoading = true);
-    try {
-      final currentUser = await _userService.getCurrentUser();
-      if (currentUser != null) {
-        final updatedUser = user_model.User(
-          userId: currentUser.userId,
-          username: newUsername,
-          email: currentUser.email,
-          status: currentUser.status,
-        );
-        await _userService.updateUser(updatedUser);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Username updated successfully')),
-        );
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Failed to update username: $e')));
-    } finally {
-      setState(() => _isLoading = false);
-    }
-  }
-
-  Future<void> _updateEmail(BuildContext context) async {
-    final newEmail = _emailController.text.trim();
-    final currentPassword = _currentPasswordController.text;
-    if (newEmail.isEmpty || currentPassword.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill in all fields')),
-      );
-      return;
-    }
-    setState(() => _isLoading = true);
-    try {
-      await _userService.updateEmail(newEmail, currentPassword);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Email updated successfully')),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Failed to update email: $e')));
-    } finally {
-      setState(() => _isLoading = false);
-    }
-  }
-
-  Future<void> _updatePassword(BuildContext context) async {
-    final currentPassword = _currentPasswordController.text;
-    final newPassword = _newPasswordController.text;
-    if (currentPassword.isEmpty || newPassword.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill in all fields')),
-      );
-      return;
-    }
-    setState(() => _isLoading = true);
-    try {
-      await _userService.updatePassword(currentPassword, newPassword);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Password updated successfully')),
-      );
-      _currentPasswordController.clear();
-      _newPasswordController.clear();
-    } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Failed to update password: $e')));
-    } finally {
-      setState(() => _isLoading = false);
-    }
-  }
-
-  Future<void> _deleteAccount(BuildContext context) async {
-    final passwordController = TextEditingController();
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder:
-          (context) => shadcn.AlertDialog(
-            title: const Text('Delete Account'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text('Enter your password to confirm:'),
-                const SizedBox(height: 8),
-                shadcn.TextField(
-                  controller: _currentPasswordController,
-                  placeholder: Text('Enter your password'),
-                  features: [
-                    shadcn.InputFeature.clear(),
-                    shadcn.InputFeature.passwordToggle(
-                      mode: shadcn.PasswordPeekMode.hold,
-                    ),
-                  ],
                 ),
               ],
             ),
-            actions: [
-              shadcn.SecondaryButton(
-                onPressed: () => Navigator.pop(context, false),
-                child: const Text('Cancel'),
-              ),
-              shadcn.SecondaryButton(
-                onPressed: () => Navigator.pop(context, true),
-                child: const Text('Delete'),
-              ),
-            ],
           ),
+        );
+      },
     );
-
-    if (confirm != true) return;
-
-    setState(() => _isLoading = true);
-    try {
-      await _userService.deleteAccount(passwordController.text);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Account deleted successfully')),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Failed to delete account: $e')));
-    } finally {
-      setState(() => _isLoading = false);
-    }
   }
 }
