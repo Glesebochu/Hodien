@@ -1,5 +1,6 @@
 import math
 import csv
+import json
 from collections import defaultdict
 from backend.shared_utils.services.DataPreprocessor import DataPreprocessor
 
@@ -51,18 +52,23 @@ class Indexer:
             doc_id = record['id']
             # Tokenize and stem
             tokens = data_pp.tokenize(record['text'])
+            print("\nTokens:", tokens)
             
             # Normalize
             normalized_tokens = data_pp.normalize(tokens)
+            print("\nNormalized Tokens:", normalized_tokens)
             
             # Remove stop words
             stop_word_free_tokens = data_pp.remove_stop_words(normalized_tokens)
+            print("\nStop Word Free Tokens:", stop_word_free_tokens)
             
             # Fix spelling
             spell_checked_tokens = data_pp.correct_spelling(stop_word_free_tokens)
+            print("\nSpell Checked Tokens (Before Filtering None):", spell_checked_tokens)
             
-            #Stem tokens
+            # Stem tokens
             terms = data_pp.stem_tokens(spell_checked_tokens)
+            print("\nStemmed Tokens (Terms):", terms)
             
             for term in terms:
                 self.term_freq[term][doc_id] += 1
@@ -84,7 +90,11 @@ class Indexer:
                     'weight': weight
                 })
 
-        # 4. Store in Firestore
-        index_collection = self.db.collection('inverted_index')
-        for term, postings in self.inverted_index.items():
-            index_collection.document(term).set({'postings': postings})
+        # 4. Write index to a JSON file
+        with open('backend/nlp_pipeline/data/inverted_index.json', 'w') as json_file:
+            json.dump(self.inverted_index, json_file, indent=4)
+
+        # 5. Store in Firestore
+        # index_collection = self.db.collection('inverted_index')
+        # for term, postings in self.inverted_index.items():
+        #     index_collection.document(term).set({'postings': postings})
