@@ -19,7 +19,7 @@ class Indexer:
         self.term_freq = defaultdict(lambda: defaultdict(int))  # term -> doc_id -> freq
         self.doc_count = 0  # Total documents
         self.term_doc_count = defaultdict(int)  # term -> number of docs containing it
-        self.inverted_index = defaultdict(int)
+        self.inverted_index = defaultdict(list)  # Change from int to list
         
         cred = credentials.Certificate("backend/nlp_pipeline/config/hodien-f5535-firebase-adminsdk-fbsvc-dd2b2fc2a9.json")
         firebase_admin.initialize_app(cred)
