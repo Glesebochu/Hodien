@@ -1,6 +1,7 @@
 from datetime import datetime
-from .ContentHumorAnalyzer import ContentHumorAnalyzer
 from ...shared_utils.models.Content import Content
+from .HumorDetector import HumorDetector
+from .SimpleHumorTypeClassifier import SimpleHumorTypeClassifier
 import os
 import csv
 import re
@@ -9,7 +10,8 @@ import emoji
 
 class ContentFilterer:
     def __init__(self):
-        self.analyzer = ContentHumorAnalyzer()
+        self.detector = HumorDetector()
+        self.classifier = SimpleHumorTypeClassifier()
         self.processed_log = []  # Each entry: {"content": content, "timestamp": datetime}
         
     def normalize(self, file):
@@ -61,9 +63,6 @@ class ContentFilterer:
         """
         Calls analyzer functions and removes content with low humor score.
         """
-        self.analyzer.classify_content(contents)
-        self.analyzer.extract_metadata(contents)
-
         filtered = []
         for content in contents:
             if content.humor_score >= threshold:
