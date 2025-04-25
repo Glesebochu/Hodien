@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/pages/home.dart';
 import 'package:provider/provider.dart';
 import '../models/humor_profile.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart' as shadcn;
@@ -297,10 +298,16 @@ void _showSuccessDialog(BuildContext context) {
                 // ),
                 shadcn.PrimaryButton(
                   onPressed: () {
-                    Navigator.pop(context); // Close the dialog
-                    Navigator.pop(context); // Close the spinner
-                    Navigator.pushNamed(context, '/');
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (_) => HomePage()),
+                      (route) => false,
+                    );
                   },
+                  // onPressed: () {
+                  //   Navigator.pop(context); // Close the dialog
+                  //   Navigator.pop(context); // Close the spinner
+                  //   Navigator.pushNamed(context, '/home');
+                  // },
                   child: Text(
                     "Get Started",
                     style: TextStyle(decoration: TextDecoration.none),

@@ -7,6 +7,7 @@ import 'pages/home.dart';
 import 'pages/humorTest.dart';
 import 'pages/settings.dart';
 import 'utils/utils.dart';
+import './services/user_service.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart' as shadcn;
 
 Future main() async {
@@ -52,7 +53,22 @@ class MainApp extends StatelessWidget {
             } else if (snapshot.hasError) {
               return Center(child: Text('something went wrong'));
             } else if (snapshot.hasData) {
-              return HomePage();
+              // User is logged in, check if humor profile exists
+              return FutureBuilder<bool>(
+                future: UserService().checkHumorProfileExists(),
+                builder: (context, profileSnapshot) {
+                  if (profileSnapshot.connectionState ==
+                      ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (profileSnapshot.hasError ||
+                      !(profileSnapshot.data ?? false)) {
+                    // Profile doesn't exist, send to test
+                    return HumorTestScreen();
+                  } else {
+                    return HomePage(); // Profile exists
+                  }
+                },
+              );
             } else {
               return Authpage();
             }

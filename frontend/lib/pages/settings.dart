@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart' as shadcn;
 import '../services/user_service.dart';
@@ -80,8 +81,10 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Future<void> _handleLogout() async {
-    await _userService.logout();
-    if (context.mounted) Navigator.of(context).pushReplacementNamed('/');
+    FirebaseAuth.instance.signOut();
+    Navigator.pop(context);
+    // await _userService.logout();
+    // if (context.mounted) Navigator.of(context).pushReplacementNamed('/');
   }
 
   Future<void> _showSuccessDialog(String message) async {

@@ -181,4 +181,17 @@ class UserService {
   Future<void> logout() async {
     await _auth.signOut();
   }
+
+  Future<bool> checkHumorProfileExists() async {
+    final user = _auth.currentUser;
+    if (user == null) return false;
+
+    final doc =
+        await FirebaseFirestore.instance
+            .collection('humor_profile')
+            .doc(user.uid)
+            .get();
+
+    return doc.exists;
+  }
 }
