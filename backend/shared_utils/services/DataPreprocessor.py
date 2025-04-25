@@ -13,10 +13,10 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 class DataPreprocessor:
-    def __init__(self, text:str):
+    def __init__(self):
         # Simple stop word list for illustration
         self.stop_words = set(stopwords.words("english"))
-        self.result=self.preprocess(text)
+        self.result=""
         
     # This function does the entire preprocessing pipeline
     def preprocess(self, text: str) -> dict:
