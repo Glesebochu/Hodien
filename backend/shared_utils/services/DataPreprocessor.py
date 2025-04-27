@@ -13,10 +13,10 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 class DataPreprocessor:
-    def __init__(self, text:str):
+    def __init__(self):
         # Simple stop word list for illustration
         self.stop_words = set(stopwords.words("english"))
-        self.result=self.preprocess(text)
+        self.result=""
         
     # This function does the entire preprocessing pipeline
     def preprocess(self, text: str) -> dict:
@@ -70,8 +70,10 @@ class DataPreprocessor:
         return corrected
 
     def stem_tokens(self, tokens):
+        # Filter out None values
+        valid_tokens = [token for token in tokens if token is not None]
         stemmer = PorterStemmer()
-        stemmed = [stemmer.stem(token) for token in tokens]
+        stemmed = [stemmer.stem(token) for token in valid_tokens]
         return stemmed        
     def expand_synonyms(self, tokens):
         expanded = []
