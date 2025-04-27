@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/reusable_back_button.dart';
 import '../models/search_input_bar.dart';
 
+
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
   @override
@@ -10,6 +11,7 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   bool showNoResults = false; // 🟡 Flag to toggle "No results found"
+  String? errorMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -40,12 +42,13 @@ class _SearchPageState extends State<SearchPage> {
 
               const SizedBox(height: 100),
 
-              // SearchInputBar with empty callback
+              // SearchInputBar with error callback
               SearchInputBar(
-                // Callback to handle search input
-                onEmptySearch: () {
+                // Callback to handle invalid input or error from search bar
+                onError: (String error) {
                   setState(() {
                     showNoResults = true;
+                    errorMessage = error;
                   });
                 },
                 onValidSearch: () {
@@ -60,11 +63,12 @@ class _SearchPageState extends State<SearchPage> {
 
               // Conditional display based on input
               if (showNoResults)
-                const Expanded(
+                Expanded(
                   child: Center(
                     child: Text(
-                      'No Results Found',
-                      style: TextStyle(
+                      errorMessage ??
+                          'No Results Found', // Use the errorMessage if it exists
+                      style: const TextStyle(
                         color: Colors.grey,
                         fontStyle: FontStyle.italic,
                       ),

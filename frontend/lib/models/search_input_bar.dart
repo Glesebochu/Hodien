@@ -6,9 +6,10 @@ import 'package:firebase_auth/firebase_auth.dart'; // For Firebase authenticatio
 
 class SearchInputBar extends StatefulWidget {
   // Callbacks for empty and valid search
-  final VoidCallback? onEmptySearch;
   final VoidCallback? onValidSearch;
-  const SearchInputBar({super.key, this.onEmptySearch, this.onValidSearch});
+  final void Function(String error)? onError;
+
+  const SearchInputBar({super.key, this.onValidSearch, this.onError});
 
   @override
   State<SearchInputBar> createState() => _SearchInputBarState();
@@ -17,7 +18,7 @@ class SearchInputBar extends StatefulWidget {
 // --- STATE CLASS FOR SEARCH INPUT BAR ---
 class _SearchInputBarState extends State<SearchInputBar> {
   final TextEditingController _controller = TextEditingController();
-  final TranslatorService _translatorService = TranslatorService();
+  final Translator _translatorService = Translator();
 
   // --- STATE VARIABLES ---
   String? translatedText; // Final translation result
@@ -68,7 +69,7 @@ class _SearchInputBarState extends State<SearchInputBar> {
       }
       try {
         // Call the translation service
-        final result = await _translatorService.translate(input);
+        final result = await _translatorService.translateText(input);
         setState(() {
           translatedText = result.translatedText;
           language = result.language;
@@ -78,11 +79,10 @@ class _SearchInputBarState extends State<SearchInputBar> {
       } catch (e) {
         // Handle any exceptions that may occur during the API call
         setState(() {
-          log("Translation Exception: $e");
-          error = "Translation request Failed";
-          translatedText = null;
-          language = null;
-          isLoading = false;
+          log("Translation Exception: $e from search bar");
+          setState(() {
+            error = "Translation request Failed";
+          });
         });
       }
     });
@@ -101,43 +101,43 @@ class _SearchInputBarState extends State<SearchInputBar> {
           // When user presses enter or search button on keyboard it will call this function
           // and pass the current value of the text field to it
           onSubmitted: (value) async {
-            // Only run if the input not empty and user is logged in
+            // Only run if the input is not empty and user is logged in
             try {
               if (value.trim().isNotEmpty &&
                   userId != 'anonymous' &&
-                  error != null) {
+                  error == null) {
                 log(
                   "Original Text: $value |"
                   "Translated Text: $translatedText |"
                   "Language: $language |"
                   "User ID: $userId",
                 );
-                if (error != null && language != null) {
-                  await _translatorService.sendQueryToController(
-                    originalText: value,
-                    translatedText: translatedText!,
-                    language: language!,
-                    userId: userId!, // fetch from Firebase
-                  );
-                }
-                log("Query sent to controller successfully");
+
+                // await _translatorService.sendQueryToController(
+                //   originalText: value,
+                //   translatedText: translatedText ?? '',
+                //   language: language ?? '',
+                //   userId: userId ?? 'anonymous',
+                // ); // fetch from Firebase
+                log("Query sent to controller successfully from search bar");
 
                 widget.onValidSearch!(); // Send signal up to parent
-              } else if (userId == 'anonymous' || error == null) {
-                // If the input is empty or user is not logged in, call the empty search callback
-                if (widget.onEmptySearch != null) {
-                  widget.onEmptySearch!(); // Send signal up to parent
-                }
+              } else if (userId == 'anonymous' || error != null) {
+                String errorMessage =
+                    "Submission blocked: Missing data or user not logged in.";
+                log("$errorMessage | from search bar");
+
+                widget.onError?.call(
+                  errorMessage,
+                ); // Notify parent about the error
               }
             } catch (e) {
-              log(
-                "Error submitting query: $e"
-                "User ID: userId"
-                "Original Text: $value",
-              );
-              setState(() {
-                error = "Failed to submit reuquest";
-              });
+              String errorMessage = "Error submitting query: $e";
+              log(errorMessage);
+
+              widget.onError?.call(
+                errorMessage,
+              ); // Notify parent about the error
             }
           },
           decoration: InputDecoration(
@@ -150,6 +150,7 @@ class _SearchInputBarState extends State<SearchInputBar> {
                 _controller.clear();
                 setState(() {
                   translatedText = null;
+                  language = null;
                   error = null;
                   isLoading = false;
                 });
@@ -193,9 +194,15 @@ class _SearchInputBarState extends State<SearchInputBar> {
           )
         // --- ERROR TEXT ---
         else if (error != null)
-          Text(
-            error ?? '',
-            style: const TextStyle(color: Colors.red, fontSize: 14),
+          Row(
+            children: [
+              const Icon(Icons.error, color: Colors.red, size: 16),
+              const SizedBox(width: 4),
+              Text(
+                error ?? '',
+                style: const TextStyle(color: Colors.red, fontSize: 14),
+              ),
+            ],
           ),
       ],
     );
