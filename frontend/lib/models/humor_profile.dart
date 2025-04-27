@@ -11,19 +11,167 @@ class HumorProfile {
   double situationalHumorPreference;
   double criticalHumorPreference;
   List<Reaction> reactionHistory;
-  List<dynamic> favoriteContent;
+  List<String> favoriteContent;
 
   HumorProfile({
     required this.userId,
     this.interests = const [],
-    this.physicalHumorPreference = 0.0,
-    this.linguisticHumorPreference = 0.0,
-    this.situationalHumorPreference = 0.0,
-    this.criticalHumorPreference = 0.0,
+    this.physicalHumorPreference = 0.25,
+    this.linguisticHumorPreference = 0.25,
+    this.situationalHumorPreference = 0.25,
+    this.criticalHumorPreference = 0.25,
     this.reactionHistory = const [],
-    this.favoriteContent = const [],
-  });
+    List<String>? favoriteContent,
+  }) : favoriteContent = favoriteContent ?? [];
 
+  //add id of favorite content
+  void addFavoriteById(String contentId) {
+    print('Adding content ID to favorites: $contentId');
+    if (!favoriteContent.contains(contentId)) {
+      favoriteContent.insert(0, contentId);
+    } // Only add if not already in the stack// Console log for debugging
+    print('Current favorites stack: $favoriteContent'); //
+  }
+
+  void removeFavoriteById(String contentId) {
+    print('Removing content ID from favorites: $contentId');
+    if (favoriteContent.contains(contentId)) {
+      favoriteContent.remove(contentId);
+    } // Only add if not already in the stack// Console log for debugging
+    print('Current favorites stack: $favoriteContent'); //
+  }
+
+  // Getter to retrieve the stack of favorite IDs
+  List<String> getFavoriteContentStack() {
+    return favoriteContent; // Return a copy to avoid direct modification
+  }
+
+  // Ensure preferences stay within bounds (0-1)
+
+  // Future<Map<HumorType, double>> getHumorTypeScores() async {
+  //   //retrieve the humor type scores from database for current user
+
+  //   return {
+  //     HumorType.physical: double.parse(physical// ),
+  //     HumorType.linguistic: double.parse(
+  //       linguisticHumorPreference.toStringAsFixed(2),
+  //     ),
+  //     HumorType.situational: double.parse(
+  //       situationalHumorPreference.toStringAsFixed(2),
+  //     ),
+  //     HumorType.critical: double.parse(
+  //       criticalHumorPreference.toStringAsFixed(2),
+  //     ),
+  //   };
+  // }
+
+  Future<Map<HumorType, double>> getHumorTypeScores() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      throw Exception('No user logged in.');
+    }
+
+    final docRef = FirebaseFirestore.instance
+        .collection('humor_profile')
+        .doc(user.uid);
+
+    final docSnap = await docRef.get();
+
+    if (!docSnap.exists) {
+      throw Exception('Humor profile not found.');
+    }
+
+    final data = docSnap.data()!;
+
+    return {
+      HumorType.physical: (data['physicalHumorPreference'] ?? 0.0).toDouble(),
+      HumorType.linguistic:
+          (data['linguisticHumorPreference'] ?? 0.0).toDouble(),
+      HumorType.situational:
+          (data['situationalHumorPreference'] ?? 0.0).toDouble(),
+      HumorType.critical: (data['criticalHumorPreference'] ?? 0.0).toDouble(),
+    };
+  }
+
+  double _clampPreference(double value) {
+    return value.clamp(0.0, 1.0);
+  }
+
+  void updateByFavorite(HumorType humorType) async {
+    double increment = 0.3; // Example increment
+
+    switch (humorType) {
+      case HumorType.physical:
+        physicalHumorPreference = _clampPreference(
+          physicalHumorPreference + increment,
+        );
+        break;
+      case HumorType.linguistic:
+        linguisticHumorPreference = _clampPreference(
+          linguisticHumorPreference + increment,
+        );
+        break;
+      case HumorType.situational:
+        situationalHumorPreference = _clampPreference(
+          situationalHumorPreference + increment,
+        );
+        break;
+      case HumorType.critical:
+        criticalHumorPreference = _clampPreference(
+          criticalHumorPreference + increment,
+        );
+        break;
+    }
+    await saveToFirebase();
+  }
+
+  // Update humor profile based on reaction
+  void updateFromReaction(HumorType humorType, String reaction) async {
+    double change = 0.0;
+    print('calling');
+
+    // Define how the reaction affects humor preference
+    switch (reaction) {
+      case 'Not Funny':
+        change = -0.2;
+        print('reduced'); // Decrease preference for humor type
+        break;
+      case 'Meh':
+        change = -0.1; // No change
+        break;
+      case 'Funny':
+        change = 0.1; // Increase preference for humor type
+        break;
+      case 'Hilarious':
+        change = 0.2; // Increase preference more
+        break;
+    }
+
+    switch (humorType) {
+      case HumorType.physical:
+        physicalHumorPreference = _clampPreference(
+          physicalHumorPreference + change,
+        );
+        break;
+      case HumorType.linguistic:
+        linguisticHumorPreference = _clampPreference(
+          linguisticHumorPreference + change,
+        );
+        break;
+      case HumorType.situational:
+        situationalHumorPreference = _clampPreference(
+          situationalHumorPreference + change,
+        );
+        break;
+      case HumorType.critical:
+        criticalHumorPreference = _clampPreference(
+          criticalHumorPreference + change,
+        );
+        break;
+    }
+    await saveToFirebase();
+    // reactionHistory = [...reactionHistory, reaction];
+  }
   // void setPreferencesFromTest(Map<String, double> answers) {
   //   physicalHumorPreference = answers['physical'] ?? 0.0;
   //   linguisticHumorPreference = answers['linguistic'] ?? 0.0;
@@ -85,38 +233,6 @@ class HumorProfile {
     };
   }
 
-  HumorProfile updateFromReaction(Reaction reaction) {
-    final delta =
-        {
-          ReactionType.notFunny: -0.1,
-          ReactionType.meh: 0.0,
-          ReactionType.funny: 0.2,
-          ReactionType.hillarious: 0.4,
-        }[reaction.reactionType] ??
-        0.0;
-
-    final content = _findContentById(reaction.contentId);
-    if (content == null) return this;
-
-    switch (content.humorType) {
-      case HumorType.physical:
-        physicalHumorPreference += delta;
-        break;
-      case HumorType.linguistic:
-        linguisticHumorPreference += delta;
-        break;
-      case HumorType.situational:
-        situationalHumorPreference += delta;
-        break;
-      case HumorType.critical:
-        criticalHumorPreference += delta;
-        break;
-    }
-
-    reactionHistory = [...reactionHistory, reaction];
-    return this;
-  }
-
   HumorProfile updateFromQuery(String textContains) {
     final text = textContains.toLowerCase();
     if (text.contains('physical')) physicalHumorPreference += 0.05;
@@ -155,10 +271,10 @@ class HumorProfile {
     });
   }
 
-  dynamic _findContentById(String contentId) {
-    return favoriteContent.firstWhere(
-      (c) => c.id.toString() == contentId,
-      orElse: () => null,
-    );
-  }
+  //dynamic _findContentById(String contentId) {
+  // return favoriteContent.firstWhere(
+  // (c) => c.id.toString() == contentId,
+  //orElse: () => null,
+  //);
+  //}
 }

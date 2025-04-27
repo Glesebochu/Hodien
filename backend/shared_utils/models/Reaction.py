@@ -8,7 +8,6 @@ class ReactionType(Enum):
     Meh = "Meh"
     Funny = "Funny"
     Hilarious = "Hilarious"
-    # You can easily extend this enum as the app evolves.
 
 @dataclass
 class Reaction:

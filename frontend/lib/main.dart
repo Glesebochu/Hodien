@@ -38,7 +38,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       title: 'Hodien',
       routes: {
-        '/home': (context) => HomePage(),
+        '/home': (context) => Home(),
         '/settings': (context) => const SettingsPage(),
         '/humorTest': (context) => HumorTestScreen(),
         '/search': (context) => const SearchPage(), // From search-module
@@ -67,7 +67,7 @@ class MainApp extends StatelessWidget {
                     // Profile doesn't exist, send to test
                     return HumorTestScreen();
                   } else {
-                    return HomePage(); // Profile exists
+                    return Home(); // Profile exists
                   }
                 },
               );

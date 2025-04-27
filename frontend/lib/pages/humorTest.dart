@@ -299,7 +299,7 @@ void _showSuccessDialog(BuildContext context) {
                 shadcn.PrimaryButton(
                   onPressed: () {
                     Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (_) => HomePage()),
+                      MaterialPageRoute(builder: (_) => Home()),
                       (route) => false,
                     );
                   },
