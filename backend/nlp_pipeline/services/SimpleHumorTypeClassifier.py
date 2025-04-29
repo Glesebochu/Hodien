@@ -70,13 +70,13 @@ class SimpleHumorTypeClassifier:
             score = sum(1 for p in patterns if p in text_lower)
             scores[category] = score
 
-        best_fit = max(scores, key=scores.get)
         total = sum(scores.values())
-        confidence = scores[best_fit] / total if total > 0 else 0.2
+        confidence = max(scores.values()) / total if total > 0 else 0.2
 
-        # Randomly assign a boolean value weighted by confidence
+        # Randomly assign a humor type between 1 and 4
+        random_humor_type = random.randint(1, 4)
         random_decimal = round(random.uniform(0, confidence), 2)
-        return self.humor_type_mapping[best_fit], random_decimal
+        return random_humor_type, random_decimal
 
     def process_data(self):
         humor_types = []
