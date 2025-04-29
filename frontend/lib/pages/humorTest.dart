@@ -75,6 +75,8 @@ class HumorTestScreen extends StatelessWidget {
 
   final shadcn.StepperController controller = shadcn.StepperController();
 
+  HumorTestScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(

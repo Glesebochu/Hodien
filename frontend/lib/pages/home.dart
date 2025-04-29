@@ -11,6 +11,7 @@ import 'dart:ui';
 import 'favorite_content.dart';
 import '../utils/theme.dart';
 import 'settings.dart';
+import 'search_page.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -143,12 +144,7 @@ class _HomeState extends State<Home> {
       case 0:
         return _buildFeedView();
       case 1:
-        return Center(
-          child: Text(
-            "Search Results",
-            style: TextStyle(color: textColor), // Use theme-based color
-          ),
-        );
+        return SearchPage();
       case 2:
         return FavoriteContentPage(humorProfile: profile);
       case 3:
@@ -199,8 +195,8 @@ class _HomeState extends State<Home> {
               child: FloatingActionButton(
                 heroTag: 'surpriseBtn',
                 backgroundColor: Colors.yellow[700],
-                child: const Icon(Icons.auto_awesome),
                 onPressed: showSurpriseJoke,
+                child: const Icon(Icons.auto_awesome),
               ),
             ),
           if (showSurprise && surpriseJoke != null) ...[
