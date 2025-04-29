@@ -12,14 +12,13 @@ from firebase_admin import credentials, firestore
 class Indexer:
     def __init__(self):
         self.index = defaultdict(Indexer.default_index_entry)
-        self.term_freq = defaultdict(lambda: defaultdict(int))  # term -> doc_id -> freq
+        self.term_freq = defaultdict(Indexer.default_term_freq_entry)  # term -> doc_id -> freq
         self.doc_count = 0  # Total documents
         self.term_doc_count = defaultdict(int)  # term -> number of docs containing it
         self.inverted_index = defaultdict(list)  # Change from int to list
-        
-        cred = credentials.Certificate("backend/nlp_pipeline/config/hodien-f5535-firebase-adminsdk-fbsvc-dd2b2fc2a9.json")
-        firebase_admin.initialize_app(cred)
-        self.db = firestore.client()
+
+        # Firestore client initialization moved to a separate method
+        self.db = None
 
     @staticmethod
     def default_index_entry():
@@ -28,6 +27,16 @@ class Indexer:
             "term_freqs": defaultdict(int),
             "metadata": []
         }
+
+    @staticmethod
+    def default_term_freq_entry():
+        return defaultdict(int)
+
+    def initialize_firestore(self):
+        """Initialize the Firestore client."""
+        cred = credentials.Certificate("backend/nlp_pipeline/config/hodien-f5535-firebase-adminsdk-fbsvc-dd2b2fc2a9.json")
+        firebase_admin.initialize_app(cred)
+        self.db = firestore.client()
 
     def process_record(self, record):
         data_pp = DataPreprocessor()
@@ -76,6 +85,10 @@ class Indexer:
             for term, doc_id in term_data:
                 self.term_freq[term][doc_id] += 1
                 self.term_doc_count[term] += 1 if self.term_freq[term][doc_id] == 1 else 0
+
+        # Firestore operations (ensure this is done outside multiprocessing)
+        if self.db is None:
+            self.initialize_firestore()
 
         # 3. Calculate TF-IDF weights
         for term in self.term_freq:
