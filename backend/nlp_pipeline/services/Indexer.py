@@ -112,10 +112,10 @@ class Indexer:
             json.dump(self.content_index, json_file, indent=4)
 
         # 5. Push to Firestore
-        self.push_to_firestore()
+        self.push_index_to_firestore()
 
     @staticmethod
-    def upload_term(term_data):
+    def upload_index_term(term_data):
         """Upload a single term and its content to Firestore."""
         term, content, collection_path = term_data
 
@@ -129,7 +129,7 @@ class Indexer:
         index_collection.document(term).set({'content': content})
         print(f"Added ${term} to Firestore")
 
-    def push_to_firestore(self, json_file_path: str = None):
+    def push_index_to_firestore(self, json_file_path: str = None):
         """Push the content index to Firestore, skipping existing terms.
 
         Args:
@@ -158,4 +158,54 @@ class Indexer:
 
         # Use parallel processing to upload terms
         with Pool(cpu_count()) as pool:
-            pool.map(Indexer.upload_term, new_terms)
+            pool.map(Indexer.upload_index_term, new_terms)
+            
+    @staticmethod
+    def upload_content_item(content_data):
+        """Upload a single content item to Firestore."""
+        content_id, content, collection_name = content_data
+
+        # Initialize Firebase app in the worker process if not already initialized
+        if not firebase_admin._apps:
+            cred = credentials.Certificate("backend/nlp_pipeline/config/hodien-f5535-firebase-adminsdk-fbsvc-dd2b2fc2a9.json")
+            firebase_admin.initialize_app(cred)
+
+        # Initialize Firestore client in the worker process
+        db = firestore.client()
+        collection = db.collection(collection_name)
+        collection.document(content_id).set(content)
+        print(f"Added content with ID ${content_id} to Firestore")
+        
+    def push_content_to_firestore(self, csv_file_path: str, collection_name: str = 'content'):
+        """Push the actual content from a CSV file to Firestore.
+
+        Args:
+            csv_file_path (str): Path to the CSV file containing content.
+            collection_name (str): The Firestore collection name to store the content.
+        """
+        # Initialize Firestore if not already initialized
+        if self.db is None:
+            self.initialize_firestore()
+        content_collection = self.db.collection(collection_name)
+
+        # Read content from the CSV file
+        content_list = []
+        with open(csv_file_path, 'r') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                content_list.append({
+                    'id': row['id'],
+                    'text': row['text'],
+                    'emoji_presence': row['emoji_presence'].lower() == 'true',
+                    'humor_type': row['humor_type'],
+                    'humor_type_score': float(row['humor_type_score'])
+                })
+
+        # Prepare data for parallel processing
+        content_data_list = [
+            (content['id'], content, collection_name) for content in content_list if content.get('id')
+        ]
+
+        # Use parallel processing to upload content
+        with Pool(cpu_count()) as pool:
+            pool.map(Indexer.upload_content_item, content_data_list)
