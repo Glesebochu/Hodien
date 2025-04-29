@@ -44,7 +44,8 @@ class Indexer:
         tokens = data_pp.tokenize(record['text'])
         normalized_tokens = data_pp.normalize(tokens)
         stop_word_free_tokens = data_pp.remove_stop_words(normalized_tokens)
-        terms = data_pp.stem_tokens(stop_word_free_tokens)
+        spell_checked_tokens = data_pp.correct_spelling(stop_word_free_tokens)
+        terms = data_pp.stem_tokens(spell_checked_tokens)
         
         print(f"Processing ${doc_id}")
 
