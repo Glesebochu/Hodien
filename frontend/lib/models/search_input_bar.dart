@@ -1,7 +1,7 @@
 import 'dart:async'; // For Timer (debounce)
 import 'package:flutter/material.dart';
 import '../services/translator_service.dart';
-import '../services/PreprocessingService.dart';
+import '../services/preprocessing_service.dart';
 import 'dart:developer'; // For using the log() function instead of print
 import 'package:firebase_auth/firebase_auth.dart'; // For Firebase authentication
 
