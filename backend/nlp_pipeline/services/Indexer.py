@@ -114,6 +114,21 @@ class Indexer:
         # 5. Push to Firestore
         self.push_to_firestore()
 
+    @staticmethod
+    def upload_term(term_data):
+        """Upload a single term and its content to Firestore."""
+        term, content, collection_path = term_data
+
+        # Initialize Firebase app in the worker process if not already initialized
+        if not firebase_admin._apps:
+            cred = credentials.Certificate("backend/nlp_pipeline/config/hodien-f5535-firebase-adminsdk-fbsvc-dd2b2fc2a9.json")
+            firebase_admin.initialize_app(cred)
+
+        db = firestore.client()
+        index_collection = db.collection(collection_path)
+        index_collection.document(term).set({'content': content})
+        print(f"Added ${term} to Firestore")
+
     def push_to_firestore(self, json_file_path: str = None):
         """Push the content index to Firestore, skipping existing terms.
 
@@ -137,15 +152,10 @@ class Indexer:
 
         # Filter new terms to upload
         new_terms = [
-            (term, posts) for term, posts in content_index.items()
+            (term, content, 'content_index') for term, content in content_index.items()
             if term.strip() and term not in existing_terms
         ]
 
-        def upload_term(term_data):
-            term, posts = term_data
-            index_collection.document(term).set({'posts': posts})
-            print(f"Added ${term} to Firestore")
-
         # Use parallel processing to upload terms
         with Pool(cpu_count()) as pool:
-            pool.map(upload_term, new_terms)
+            pool.map(Indexer.upload_term, new_terms)
