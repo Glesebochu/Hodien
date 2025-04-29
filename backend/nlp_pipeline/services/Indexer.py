@@ -3,6 +3,7 @@ import csv
 import json
 from collections import defaultdict
 from backend.shared_utils.services.DataPreprocessor import DataPreprocessor
+from multiprocessing import Pool, cpu_count
 
 # Initialize Firestore
 import firebase_admin
@@ -10,12 +11,7 @@ from firebase_admin import credentials, firestore
 
 class Indexer:
     def __init__(self):
-        self.index = defaultdict(lambda: {
-            "content_ids": set(),
-            "term_freqs": defaultdict(int),
-            "metadata": []
-        })
-        
+        self.index = defaultdict(Indexer.default_index_entry)
         self.term_freq = defaultdict(lambda: defaultdict(int))  # term -> doc_id -> freq
         self.doc_count = 0  # Total documents
         self.term_doc_count = defaultdict(int)  # term -> number of docs containing it
@@ -24,6 +20,29 @@ class Indexer:
         cred = credentials.Certificate("backend/nlp_pipeline/config/hodien-f5535-firebase-adminsdk-fbsvc-dd2b2fc2a9.json")
         firebase_admin.initialize_app(cred)
         self.db = firestore.client()
+
+    @staticmethod
+    def default_index_entry():
+        return {
+            "content_ids": set(),
+            "term_freqs": defaultdict(int),
+            "metadata": []
+        }
+
+    def process_record(self, record):
+        data_pp = DataPreprocessor()
+        doc_id = record['id']
+        tokens = data_pp.tokenize(record['text'])
+        normalized_tokens = data_pp.normalize(tokens)
+        stop_word_free_tokens = data_pp.remove_stop_words(normalized_tokens)
+        terms = data_pp.stem_tokens(stop_word_free_tokens)
+        
+        print(f"Processing ${doc_id}")
+
+        term_data = []
+        for term in terms:
+            term_data.append((term, doc_id))
+        return term_data, record
 
     def build_index(self, csv_file_path: str):
         """
@@ -48,30 +67,13 @@ class Indexer:
                 
         self.doc_count = len(records)
 
-        for record in records:
+        # Parallel processing
+        with Pool(cpu_count()) as pool:
+            results = pool.map(self.process_record, records)
+
+        for term_data, record in results:
             doc_id = record['id']
-            # Tokenize and stem
-            tokens = data_pp.tokenize(record['text'])
-            # print("\nTokens:", tokens)
-            
-            # Normalize
-            normalized_tokens = data_pp.normalize(tokens)
-            # print("\nNormalized Tokens:", normalized_tokens)
-            
-            # Remove stop words
-            stop_word_free_tokens = data_pp.remove_stop_words(normalized_tokens)
-            # print("\nStop Word Free Tokens:", stop_word_free_tokens)
-            
-            # Fix spelling
-            spell_checked_tokens = data_pp.correct_spelling(stop_word_free_tokens)
-            # print("\nSpell Checked Tokens (Before Filtering None):", spell_checked_tokens)
-            
-            print(doc_id)
-            # Stem tokens
-            terms = data_pp.stem_tokens(spell_checked_tokens)
-            # print("\nStemmed Tokens (Terms):", terms)
-            
-            for term in terms:
+            for term, doc_id in term_data:
                 self.term_freq[term][doc_id] += 1
                 self.term_doc_count[term] += 1 if self.term_freq[term][doc_id] == 1 else 0
 
