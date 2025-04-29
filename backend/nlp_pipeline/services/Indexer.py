@@ -113,8 +113,19 @@ class Indexer:
         # 5. Push to Firestore
         self.push_to_firestore()
 
-    def push_to_firestore(self):
-        """Push the content index to Firestore, skipping existing terms."""
+    def push_to_firestore(self, json_file_path: str = None):
+        """Push the content index to Firestore, skipping existing terms.
+
+        Args:
+            json_file_path (str, optional): Path to a JSON file containing the content index.
+        """
+        # Load content index from JSON file if provided
+        if json_file_path:
+            with open(json_file_path, 'r') as f:
+                content_index = json.load(f)
+        else:
+            content_index = self.content_index
+
         # Fetch existing terms from Firestore
         existing_terms = set()
         if self.db is None:
@@ -124,7 +135,7 @@ class Indexer:
             existing_terms.add(doc.id)
 
         # Store new terms in Firestore
-        for term, posts in self.content_index.items():
+        for term, posts in content_index.items():
             if not term.strip() or term in existing_terms:  # Skip empty or already existing terms
                 continue
             index_collection.document(term).set({'posts': posts})
