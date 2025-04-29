@@ -134,9 +134,17 @@ class Indexer:
         for doc in index_collection.stream():
             existing_terms.add(doc.id)
 
-        # Store new terms in Firestore
-        for term, posts in content_index.items():
-            if not term.strip() or term in existing_terms:  # Skip empty or already existing terms
-                continue
+        # Filter new terms to upload
+        new_terms = [
+            (term, posts) for term, posts in content_index.items()
+            if term.strip() and term not in existing_terms
+        ]
+
+        def upload_term(term_data):
+            term, posts = term_data
             index_collection.document(term).set({'posts': posts})
             print(f"Added ${term} to Firestore")
+
+        # Use parallel processing to upload terms
+        with Pool(cpu_count()) as pool:
+            pool.map(upload_term, new_terms)
