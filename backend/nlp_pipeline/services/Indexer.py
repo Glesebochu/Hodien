@@ -15,7 +15,7 @@ class Indexer:
         self.term_freq = defaultdict(Indexer.default_term_freq_entry)  # term -> doc_id -> freq
         self.doc_count = 0  # Total documents
         self.term_doc_count = defaultdict(int)  # term -> number of docs containing it
-        self.inverted_index = defaultdict(list)  # Change from int to list
+        self.content_index = defaultdict(list)  # Change from int to list
 
         # Firestore client initialization moved to a separate method
         self.db = None
@@ -98,7 +98,7 @@ class Indexer:
                 weight = round(tf * idf,4)
                 # Find record for metadata
                 record = next(r for r in records if r['id'] == doc_id)
-                self.inverted_index[term].append({
+                self.content_index[term].append({
                     'id': doc_id,
                     'humor_type': record['humor_type'],
                     'emoji_presence': record['emoji_presence'],
@@ -107,10 +107,13 @@ class Indexer:
                 })
 
         # 4. Write index to a JSON file
-        with open('backend/nlp_pipeline/data/inverted_index.json', 'w') as json_file:
-            json.dump(self.inverted_index, json_file, indent=4)
+        with open('backend/nlp_pipeline/data/content_index.json', 'w') as json_file:
+            json.dump(self.content_index, json_file, indent=4)
 
         # 5. Store in Firestore
-        # index_collection = self.db.collection('inverted_index')
-        # for term, postings in self.inverted_index.items():
-        #     index_collection.document(term).set({'postings': postings})
+        index_collection = self.db.collection('content_index')
+        for term, posts in self.content_index.items():
+            if not term.strip():  # Skip empty or invalid terms
+                continue
+            index_collection.document(term).set({'posts': posts})
+            print(f"Added ${term} to firestore")
