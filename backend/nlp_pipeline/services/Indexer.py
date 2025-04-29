@@ -110,10 +110,22 @@ class Indexer:
         with open('backend/nlp_pipeline/data/content_index.json', 'w') as json_file:
             json.dump(self.content_index, json_file, indent=4)
 
-        # 5. Store in Firestore
+        # 5. Push to Firestore
+        self.push_to_firestore()
+
+    def push_to_firestore(self):
+        """Push the content index to Firestore, skipping existing terms."""
+        # Fetch existing terms from Firestore
+        existing_terms = set()
+        if self.db is None:
+            self.initialize_firestore()
         index_collection = self.db.collection('content_index')
+        for doc in index_collection.stream():
+            existing_terms.add(doc.id)
+
+        # Store new terms in Firestore
         for term, posts in self.content_index.items():
-            if not term.strip():  # Skip empty or invalid terms
+            if not term.strip() or term in existing_terms:  # Skip empty or already existing terms
                 continue
             index_collection.document(term).set({'posts': posts})
-            print(f"Added ${term} to firestore")
+            print(f"Added ${term} to Firestore")
