@@ -1,71 +1,106 @@
+import logging
 import datetime
 import uuid
+from google.cloud import firestore
+# import firebase_admin
+# from firebase_admin import credentials
+# from firebase_admin import firestore
 
+
+# === Logging Setup ===
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+)
+
+# # === Firestore Initialization ===
+# if not firebase_admin._apps:
+#     cred = credentials.Certificate("backend/search_engine/config/hodien-f5535-searchengine-adminsdk.json")
+#     firebase_admin.initialize_app(cred)
+
+# db = firestore.client()
+
+# === UserQuery Class ===
 class UserQuery:
-    def __init__(self, original: str, translated: str, language: str, user_id: str, source: str):
-        existing_query = self.find_by_text(original, translated)
+    def __init__(self, db):
+        self.db = db
 
-        if existing_query:
-            # If query already exists, reuse it
-            self.__dict__.update(existing_query.__dict__)
-        else:
-            # Otherwise, create new query object
-            self.id = self._generate_id()
-            self.original_text = original
-            self.translated_text = translated
-            self.language = language
-            self.user_id = user_id
-            self.source = source
-            self.created_at = datetime.datetime.now()
 
-            # Preprocessing placeholders
-            self.tokens = []
-            self.corrected_tokens = []
-            self.stemmed_tokens = []
-            self.expanded_tokens = []
-
-            self.save()
-
-    # ------------------------------------------------------------
-    # Core Methods
-    # ------------------------------------------------------------
-
-    def exists(self, original_text: str, translated_text: str) -> bool:
-        return self.find_by_text(original_text, translated_text) is not None
-
-    def update(self, data: dict, id: str) -> bool:
+    def create(self, 
+           original_text: str,
+           translated_text: str,
+           language: str,
+           user_id: str,
+           tokens: list,
+           corrected_tokens: list,
+           stemmed_tokens: list,
+           expanded_tokens: list,
+           term_weights: dict,
+           source: str = "search_bar",
+           id: str = None) -> str:
         """
-        Placeholder: Update this query with new preprocessing data or metadata.
+        Creates a new user query document in Firestore.
+        Always returns the query ID.
         """
-        print(f"[Stub] Updating query {id} with data: {data}")
-        return True
+        try:
+            query_id = id or str(uuid.uuid4())
+            doc_ref = self.db.collection('user_queries').document(query_id)
 
-    def delete(self, id: str) -> bool:
-        """
-        Placeholder: Deletes the query by ID.
-        """
-        print(f"[Stub] Deleting query with id: {id}")
-        return True
+            data = {
+                "id": query_id,
+                "original_text": original_text,
+                "translated_text": translated_text,
+                "language": language,
+                "user_ids": [user_id],  # Note: user_ids is a list now
+                "source": source,
+                "created_at": datetime.datetime.utcnow().isoformat(),
+                "tokens": tokens,
+                "corrected_tokens": corrected_tokens,
+                "stemmed_tokens": stemmed_tokens,
+                "expanded_tokens": expanded_tokens,
+                "term_weights": term_weights,
+            }
 
-    # ------------------------------------------------------------
-    # Internal Placeholder Logic
-    # ------------------------------------------------------------
+            doc_ref.set(data)
+            logging.info(f"[Create] Query with ID: {query_id} created successfully.")
+            return query_id
 
-    def find_by_text(self, original_text: str, translated_text: str) -> "UserQuery" or None: # type: ignore
-        """
-        Placeholder: Simulates a query lookup in the database.
-        """
-        print(f"[Stub] Searching for existing query with original='{original_text}' and translated='{translated_text}'")
-        return None  # Replace with actual DB lookup logic
+        except Exception as e:
+            logging.error(f"[Create Error] {str(e)}")
+            raise e
 
-    def save(self):
+    def delete(self, query_id: str) -> bool:
         """
-        Placeholder: Simulates saving the query object to the database.
+        Deletes a query document by its ID.
         """
-        print(f"[Stub] Saving query '{self.original_text}' by user {self.user_id}")
+        try:
+            doc_ref = self.db.collection('user_queries').document(query_id)
+            doc_snapshot = doc_ref.get()
 
-    def _generate_id(self) -> str:
-        """
-        Generate a unique query ID.
-        """
-        return str(uuid.uuid4())
+            if doc_snapshot.exists:
+                doc_ref.delete()
+                logging.info(f"[Delete] Query with ID: {query_id} deleted successfully.")
+                return True
+            else:
+                logging.warning(f"[Delete] Query with ID: {query_id} not found.")
+                return False
+        except Exception as e:
+            logging.error(f"[Delete Error] {str(e)}")
+            return False
+
+# if __name__ == "__main__":
+#     # Example usage
+#     user_query = UserQuery()  # ✅ First instantiate the object
+
+#     query_id = user_query.create(
+#         original_text="The quick brown fox jumps over the lazy dog.",
+#         translated_text="The quick brown fox jumps over the lazy dog.",
+#         language="en",
+#         user_id="user_123",  # Example user ID
+#         tokens=["quick", "brown", "fox", "jumps", "lazy", "dog"],
+#         corrected_tokens=["quick", "brown", "fox", "jump", "lazy", "dog"],
+#         stemmed_tokens=["quick", "brown", "fox", "jump", "lazi", "dog"],
+#         expanded_tokens=["quick", "fast", "swift", "brown", "fox", "canine", "jump", "leap", "hop", "lazy", "dog", "pooch"],
+#         term_weights={"quick": 0.15, "brown": 0.12, "fox": 0.13, "jump": 0.11, "lazy": 0.1, "dog": 0.1}
+#     )
+

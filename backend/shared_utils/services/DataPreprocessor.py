@@ -6,18 +6,35 @@ import traceback
 from spellchecker import SpellChecker
 from nltk.stem import PorterStemmer
 from nltk.corpus import wordnet
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
+from backend.search_engine.models.UserQuery import UserQuery
+from google.cloud.firestore_v1.base_query import FieldFilter
+from fastapi.middleware.cors import CORSMiddleware
+
 
 # Logging setup
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
+app = FastAPI()
+# Firebase Admin SDK Initialization (must be before firestore.client())
+if not firebase_admin._apps:
+    cred = credentials.Certificate("backend/search_engine/config/hodien-f5535-searchengine-adminsdk.json")
+    firebase_admin.initialize_app(cred)
+
+db = firestore.client()
+
+# === DataPreprocessor Class 
 class DataPreprocessor:
     def __init__(self):
-        # Simple stop word list for illustration
+        # Stop words are loaded once for efficiency
         self.stop_words = set(stopwords.words("english"))
-        self.result=""
-        
+
     # This function does the entire preprocessing pipeline
     def preprocess(self, text: str) -> dict:
         try:
@@ -31,7 +48,7 @@ class DataPreprocessor:
             expanded = self.expand_synonyms(corrected)
             weights = self.weigh_term(expanded)
 
-            result= {
+            result = {
                 "tokens": tokens,
                 "normalized_tokens": normalized,
                 "filtered_tokens": filtered,
@@ -40,7 +57,7 @@ class DataPreprocessor:
                 "expanded_tokens": expanded,
                 "term_weights": weights,
             }
-            
+
             log_output = "Processed Results:\n"
             for key, value in result.items():
                 log_output += f"{key}: {value}\n\n"
@@ -51,7 +68,66 @@ class DataPreprocessor:
             tb = traceback.extract_tb(e.__traceback__)
             failed_function = tb[-1].name  # This gives the name of the function that threw the error
             logging.error(f"[DataPreprocessor.{failed_function}] Error: {str(e)}")
-            return {"error": str(e)}
+            raise e
+
+    # A function that creates a UserQuery object after preprocessing the text
+    def process_query(self, original_text: str, translated_text: str, language: str, user_id: str) -> str:
+        """
+        Preprocesses the original text, creates a UserQuery if not exists, otherwise reuses existing.
+        Always returns the Query ID. Links new user IDs if needed.
+        """
+        try:
+            # Step 1: Check if query already exists by original_text
+            query_ref = db.collection('user_queries').where(
+                filter=FieldFilter('original_text', '==', original_text)
+            ).limit(1)
+            results = query_ref.stream()
+
+            for doc in results:
+                existing_query = doc.to_dict()
+                query_id = existing_query.get("id")
+                logging.info(f"[Found Existing Query] ID: {query_id}")
+
+                # Check user_ids field and append user_id if not present
+                user_ids = existing_query.get("user_ids", [])
+
+                if user_id in user_ids:
+                    logging.info(f"[User Linked] User {user_id} already linked to query {query_id}.")
+                    return query_id  # ✅ Just return if already linked
+                else:
+                    # Append user_id to the list and update Firestore
+                    user_ids.append(user_id)
+                    db.collection('user_queries').document(query_id).update({
+                        "user_ids": user_ids
+                    })
+                    logging.info(f"[User Linked] User {user_id} linked to existing query {query_id}.")
+                    return query_id  # ✅ Return after updating
+
+            # Step 2: If no existing query found, preprocess new text
+            logging.info(f"[No Existing Query Found] Preprocessing new query: '{original_text}'")
+            text_to_preprocess = translated_text if translated_text else original_text
+            preprocessing_result = self.preprocess(text_to_preprocess)
+
+            # Step 3: Save new query
+            new_user_query = UserQuery(db)
+            new_query_id = new_user_query.create(
+                original_text=original_text,
+                translated_text=translated_text,
+                language=language,
+                user_id=user_id,
+                tokens=preprocessing_result.get("tokens", []),
+                corrected_tokens=preprocessing_result.get("corrected_tokens", []),
+                stemmed_tokens=preprocessing_result.get("stemmed_tokens", []),
+                expanded_tokens=preprocessing_result.get("expanded_tokens", []),
+                term_weights=preprocessing_result.get("term_weights", {}),
+            )
+
+            logging.info(f"[New Query Saved] ID: {new_query_id}")
+            return new_query_id
+
+        except Exception as e:
+            logging.error(f"[process_query Error] {str(e)}")
+            raise e
 
     # --- Individual Processing Functions ---
 
@@ -74,7 +150,8 @@ class DataPreprocessor:
         valid_tokens = [token for token in tokens if token is not None]
         stemmer = PorterStemmer()
         stemmed = [stemmer.stem(token) for token in valid_tokens]
-        return stemmed        
+        return stemmed
+
     def expand_synonyms(self, tokens):
         expanded = []
         for token in tokens:
@@ -91,6 +168,43 @@ class DataPreprocessor:
         counts = Counter(tokens)
         total = sum(counts.values())
         return {token: round(count / total, 3) for token, count in counts.items()}
+
+app.add_middleware( CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
+@app.post("/preprocess")
+async def preprocess_query(request: Request):
+    try:
+        data = await request.json()
+        original_text = data.get("original_text", "").strip()
+        translated_text = data.get("translated_text", "").strip()
+        language = data.get("language", "").strip()
+        user_id = data.get("user_id", "").strip()
+
+        if not original_text or not user_id:
+            return JSONResponse(content={"error": "Missing required fields"}, status_code=400)
+
+        preprocessor = DataPreprocessor()
+        query_id = preprocessor.process_query(
+            original_text=original_text,
+            translated_text=translated_text,
+            language=language,
+            user_id=user_id,
+        )
+
+        return {"queryId": query_id}
+    except Exception as e:
+        logging.error(f"[Preprocessing service Error] {str(e)}")
+        return JSONResponse(
+            content={"error": str(e)},
+            status_code=500
+        )
+
+
 if __name__ == "__main__":
     # Example usage
-    preprocessor = DataPreprocessor("The quick brown fox jumps over the lazy dogb.")
+    preprocessor = DataPreprocessor()
+    preprocessor.process_query(
+        original_text="Hello world! This is a test.",
+        translated_text="Hello world! This is a test.",
+        language="es",
+        user_id="user123"
+    )

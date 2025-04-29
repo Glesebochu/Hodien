@@ -53,7 +53,7 @@ class Translator {
           ); // Log the failure attempt
 
           if (attempt == 1) {
-            throw e; // If final retry also fails, throw error to outer catch
+            rethrow; // If final retry also fails, throw error to outer catch
           }
 
           await Future.delayed(

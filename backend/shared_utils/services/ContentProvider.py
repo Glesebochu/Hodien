@@ -3,6 +3,8 @@ from typing import List
 from models.User import user
 from models.Content import content
 
+# Take query and profile as input then match the indexed documents to the profile only and to both
+# Extract feed_content_pool and personalized_search_content_pool
 @dataclass
 class ContentProvider:
     user_profile: user

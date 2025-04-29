@@ -1,6 +1,7 @@
 import 'dart:async'; // For Timer (debounce)
 import 'package:flutter/material.dart';
 import '../services/translator_service.dart';
+import '../services/PreprocessingService.dart';
 import 'dart:developer'; // For using the log() function instead of print
 import 'package:firebase_auth/firebase_auth.dart'; // For Firebase authentication
 
@@ -19,6 +20,7 @@ class SearchInputBar extends StatefulWidget {
 class _SearchInputBarState extends State<SearchInputBar> {
   final TextEditingController _controller = TextEditingController();
   final Translator _translatorService = Translator();
+  final PreprocessingService _preprocessingService = PreprocessingService();
 
   // --- STATE VARIABLES ---
   String? translatedText; // Final translation result
@@ -28,6 +30,7 @@ class _SearchInputBarState extends State<SearchInputBar> {
   String? userId; // User ID for logging
   String? originalText; // Original text input by the user
   Timer? _debounce; // Timer for debounce control
+  int? queryId; // Query ID for Firebase (if needed)
 
   // --- INITIALIZE USER ID ---
   @override
@@ -101,25 +104,30 @@ class _SearchInputBarState extends State<SearchInputBar> {
           // When user presses enter or search button on keyboard it will call this function
           // and pass the current value of the text field to it
           onSubmitted: (value) async {
+            queryId = null; // Reset queryId for new submission
             // Only run if the input is not empty and user is logged in
             try {
               if (value.trim().isNotEmpty &&
                   userId != 'anonymous' &&
                   error == null) {
                 log(
-                  "Original Text: $value |"
+                  "New Original Text: $value |"
                   "Translated Text: $translatedText |"
                   "Language: $language |"
                   "User ID: $userId",
                 );
-
-                // await _translatorService.sendQueryToController(
-                //   originalText: value,
-                //   translatedText: translatedText ?? '',
-                //   language: language ?? '',
-                //   userId: userId ?? 'anonymous',
-                // ); // fetch from Firebase
-                log("Query sent to controller successfully from search bar");
+                log("Submitting query from search bar...");
+                // Call the preprocessing service to send the input to the backend
+                final queryId = await _preprocessingService
+                    .sendInputToPreprocessor(
+                      originalText: value,
+                      translatedText: translatedText ?? '',
+                      language: language ?? '',
+                      userId: userId!,
+                    );
+                log(
+                  "$queryId saved successfully and id recieved from preprocessing service",
+                );
 
                 widget.onValidSearch!(); // Send signal up to parent
               } else if (userId == 'anonymous' || error != null) {
@@ -132,9 +140,8 @@ class _SearchInputBarState extends State<SearchInputBar> {
                 ); // Notify parent about the error
               }
             } catch (e) {
-              String errorMessage = "Error submitting query: $e";
-              log(errorMessage);
-
+              String errorMessage = "An error occurred during search.";
+              log("Error submitting query: $e");
               widget.onError?.call(
                 errorMessage,
               ); // Notify parent about the error
