@@ -6,7 +6,7 @@ import 'pages/authpage.dart';
 import 'pages/home.dart';
 import 'pages/humorTest.dart';
 import 'pages/settings.dart';
-import 'models/search_page.dart';
+import 'pages/search_page.dart';
 import 'utils/utils.dart';
 import './services/user_service.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart' as shadcn;
