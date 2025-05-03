@@ -1,49 +1,239 @@
+import logging
+import re
+from collections import Counter
+from nltk.corpus import stopwords
+import traceback
+from spellchecker import SpellChecker
+from nltk.stem import PorterStemmer
+from nltk.corpus import wordnet
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
+from backend.search_engine.models.UserQuery import UserQuery
+from google.cloud.firestore_v1.base_query import FieldFilter
+from fastapi.middleware.cors import CORSMiddleware
+
+
+# Logging setup
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
+app = FastAPI()
+# Firebase Admin SDK Initialization (must be before firestore.client())
+if not firebase_admin._apps:
+    cred = credentials.Certificate("backend/search_engine/config/hodien-f5535-searchengine-adminsdk.json")
+    firebase_admin.initialize_app(cred)
+
+db = firestore.client()
+
+# === DataPreprocessor Class 
 class DataPreprocessor:
+    def __init__(self):
+        # Stop words are loaded once for efficiency
+        self.stop_words = set(stopwords.words("english"))
+
+    # This function does the entire preprocessing pipeline
     def preprocess(self, text: str) -> dict:
-        tokens = self.tokenize(text)
-        corrected = self.correct_spelling(tokens)
-        stemmed = self.stem_tokens(corrected)
-        expanded = self.expand_synonyms(stemmed)
+        try:
+            logging.info("Preprocessing started on: " + text)
 
-        return {
-            "tokens": tokens,
-            "corrected_tokens": corrected,
-            "stemmed_tokens": stemmed,
-            "expanded_tokens": expanded
-        }
+            tokens = self.tokenize(text)
+            normalized = self.normalize(tokens)
+            filtered = self.remove_stop_words(normalized)
+            corrected = self.correct_spelling(filtered)
+            stemmed = self.stem_tokens(corrected)
+            expanded = self.expand_synonyms(corrected)
+            weights = self.weigh_term(expanded)
 
-    def tokenize(self, text: str) -> list[str]:
-        return self.perform_tokenization(text)
+            result = {
+                "tokens": tokens,
+                "normalized_tokens": normalized,
+                "filtered_tokens": filtered,
+                "corrected_tokens": corrected,
+                "stemmed_tokens": stemmed,
+                "expanded_tokens": expanded,
+                "term_weights": weights,
+            }
+            log_output = "Processed Results:\n"
+            for key, value in result.items():
+                log_output += f"{key}: {value}\n\n"
+            logging.info(log_output)
+            return result
 
-    def correct_spelling(self, tokens: list[str]) -> list[str]:
-        return self.run_spelling_correction(tokens)
+        except Exception as e:
+            tb = traceback.extract_tb(e.__traceback__)
+            failed_function = tb[-1].name  # This gives the name of the function that threw the error
+            logging.error(f"[DataPreprocessor.{failed_function}] Error: {str(e)}")
+            raise e
 
-    def normalize(self, tokens: list[str]) -> list[str]:
-        # Example: lowercasing, removing punctuation, trimming spaces
-        return [token.lower().strip() for token in tokens]
+    # A function that creates a UserQuery object after preprocessing the text
+    def process_query(self, original_text: str, translated_text: str, language: str, user_id: str) -> str:
+        """
+        Preprocesses the original text, creates a UserQuery if not exists, otherwise reuses existing.
+        Always returns the Query ID. Links new user IDs if needed.
+        """
+        try:
+            # Step 1: Check if query already exists by original_text
+            query_ref = db.collection('user_queries').where(
+                filter=FieldFilter('original_text', '==', original_text)
+            ).limit(1)
+            results = query_ref.stream()
 
-    def remove_stop_words(self, tokens: list[str]) -> list[str]:
-        stop_words = {"the", "is", "and"}
-        return [token for token in tokens if token not in stop_words]
+            for doc in results:
+                existing_query = doc.to_dict()
+                query_id = existing_query.get("id")
+                logging.info(f"[Found Existing Query] ID: {query_id}")
 
-    def stem_tokens(self, tokens: list[str]) -> list[str]:
-        return self.apply_stemming(tokens)
+                # Check user_ids field and append user_id if not present
+                user_ids = existing_query.get("user_ids", [])
 
-    def expand_synonyms(self, tokens: list[str]) -> list[str]:
-        return self.find_synonym_expansions(tokens)
+                if user_id in user_ids:
+                    logging.info(f"[User Linked] User {user_id} already linked to query {query_id}.")
+                    return query_id  # ✅ Just return if already linked
+                else:
+                    # Append user_id to the list and update Firestore
+                    user_ids.append(user_id)
+                    db.collection('user_queries').document(query_id).update({
+                        "user_ids": user_ids
+                    })
+                    logging.info(f"[User Linked] User {user_id} linked to existing query {query_id}.")
+                    return query_id  # ✅ Return after updating
 
-    def weigh_term(self, stemmed_tokens: list[str]) -> dict[str, float]:
-        return {token: 1.0 for token in stemmed_tokens}  # Placeholder weights
+            # Step 2: If no existing query found, preprocess new text
+            logging.info(f"[No Existing Query Found] Preprocessing new query: '{original_text}'")
+            text_to_preprocess = translated_text if translated_text else original_text
+            preprocessing_result = self.preprocess(text_to_preprocess)
 
-    # --------- Internal Logic Placeholders ---------
-    def perform_tokenization(self, text: str) -> list[str]:
+            # Step 3: Save new query
+            new_user_query = UserQuery(db)
+            new_query_id = new_user_query.create(
+                original_text=original_text,
+                translated_text=translated_text,
+                language=language,
+                user_id=user_id,
+                tokens=preprocessing_result.get("tokens", []),
+                corrected_tokens=preprocessing_result.get("corrected_tokens", []),
+                stemmed_tokens=preprocessing_result.get("stemmed_tokens", []),
+                expanded_tokens=preprocessing_result.get("expanded_tokens", []),
+                term_weights=preprocessing_result.get("term_weights", {}),
+            )
+
+            logging.info(f"[New Query Saved] ID: {new_query_id}")
+            return new_query_id
+
+        except Exception as e:
+            logging.error(f"[process_query Error] {str(e)}")
+            raise e
+
+    # --- Individual Processing Functions ---
+
+    def tokenize(self, text: str):
         return text.split()
 
-    def run_spelling_correction(self, tokens: list[str]) -> list[str]:
-        return tokens  # Stub — integrate spell checker here
+    def normalize(self, tokens):
+        """
+        Converts tokens to lowercase, strips whitespace, and removes punctuation.
+        Skips tokens that are None, empty, or not strings.
+        """
+        if not isinstance(tokens, list):
+            return []
 
-    def apply_stemming(self, tokens: list[str]) -> list[str]:
-        return tokens  # Stub — integrate stemmer here
+        normalized = []
+        for token in tokens:
+            if isinstance(token, str):
+                # Lowercase, strip spaces, remove non-word characters (punctuation)
+                clean = re.sub(r'[^\w\s]', '', token.lower().strip())
+                if clean:
+                    normalized.append(clean)
+        return normalized
 
-    def find_synonym_expansions(self, tokens: list[str]) -> list[str]:
-        return tokens  # Stub — integrate synonym engine
+    def remove_stop_words(self, tokens):
+        return [token for token in tokens if token not in self.stop_words]
+
+    def correct_spelling(self, tokens):
+        spell = SpellChecker()
+        corrected = [spell.correction(token) for token in tokens]
+        return corrected
+
+    def stem_tokens(self, tokens):
+        # Filter out None values
+        valid_tokens = [token for token in tokens if token is not None]
+        stemmer = PorterStemmer()
+        stemmed = [stemmer.stem(token) for token in valid_tokens]
+        return stemmed
+
+    def expand_synonyms(self, tokens):
+        if not isinstance(tokens, list):
+            return []
+
+        expanded = []
+        for token in tokens:
+            if not token or not isinstance(token, str):
+                continue  # Skip None or invalid tokens
+
+            try:
+                token = token.lower()
+                expanded.append(token)
+
+                synonyms = set()
+                for syn in wordnet.synsets(token):
+                    for lemma in syn.lemmas():
+                        synonym = lemma.name().lower().replace('_', ' ')
+                        synonyms.add(synonym)
+
+                expanded.extend(sorted(synonyms))
+
+            except Exception as e:
+                logging.warning(f"Synonym expansion error for token '{token}': {e}")
+                continue
+
+        return expanded
+
+
+    def weigh_term(self, tokens):
+        counts = Counter(tokens)
+        total = sum(counts.values())
+        return {token: round(count / total, 3) for token, count in counts.items()}
+
+app.add_middleware( CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
+@app.post("/preprocess")
+async def preprocess_query(request: Request):
+    try:
+        data = await request.json()
+        original_text = data.get("original_text", "").strip()
+        translated_text = data.get("translated_text", "").strip()
+        language = data.get("language", "").strip()
+        user_id = data.get("user_id", "").strip()
+
+        if not original_text or not user_id:
+            return JSONResponse(content={"error": "Missing required fields"}, status_code=400)
+
+        preprocessor = DataPreprocessor()
+        query_id = preprocessor.process_query(
+            original_text=original_text,
+            translated_text=translated_text,
+            language=language,
+            user_id=user_id,
+        )
+
+        return {"queryId": query_id}
+    except Exception as e:
+        logging.error(f"[Preprocessing Error] {str(e)}")
+        return JSONResponse(
+            content={"error": str(e)},
+            status_code=500
+        )
+
+
+if __name__ == "__main__":
+    # Example usage
+    preprocessor = DataPreprocessor()
+    preprocessor.process_query(
+        original_text="Hello world! This is a test.",
+        translated_text="Hello world! This is a test.",
+        language="es",
+        user_id="user123"
+    )

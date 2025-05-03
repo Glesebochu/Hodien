@@ -6,7 +6,7 @@ import 'pages/authpage.dart';
 import 'pages/home.dart';
 import 'pages/humorTest.dart';
 import 'pages/settings.dart';
-import 'models/search_page.dart';
+import 'pages/search_page.dart';
 import 'utils/utils.dart';
 import './services/user_service.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart' as shadcn;
@@ -37,15 +37,15 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Hodien',
+      debugShowCheckedModeBanner: false,
+      navigatorKey: navigatorKey,
+      scaffoldMessengerKey: Utils.messengerKey,
       routes: {
         '/home': (context) => Home(),
         '/settings': (context) => const SettingsPage(),
         '/humorTest': (context) => HumorTestScreen(),
         '/search': (context) => const SearchPage(), // From search-module
       },
-      debugShowCheckedModeBanner: false,
-      navigatorKey: navigatorKey,
-      scaffoldMessengerKey: Utils.messengerKey,
       home: Scaffold(
         body: StreamBuilder<User?>(
           stream: FirebaseAuth.instance.authStateChanges(),
