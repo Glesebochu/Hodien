@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 // import '../models/reusable_back_button.dart';
-import '../models/search_input_bar.dart';
+import '../components/search_input_bar.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart' as shadcn;
 
 class SearchPage extends StatefulWidget {
