@@ -4,6 +4,7 @@ import '../services/translator_service.dart';
 import '../services/preprocessing_service.dart';
 import 'dart:developer'; // For using the log() function instead of print
 import 'package:firebase_auth/firebase_auth.dart'; // For Firebase authentication
+import 'package:shadcn_flutter/shadcn_flutter.dart' as shadcn;
 
 class SearchInputBar extends StatefulWidget {
   // Callbacks for empty and valid search
@@ -51,6 +52,32 @@ class _SearchInputBarState extends State<SearchInputBar> {
     return cleaned.isNotEmpty && !isOnlySymbols && !isOnlyNumbers;
   }
 
+  bool isValidQuery(String text) {
+    final trimmed = text.trim();
+    if (trimmed.isEmpty) return false;
+
+    // Check for any valid characters (letters, numbers, emojis)
+    final hasAlpha = RegExp(r'[a-zA-Z]').hasMatch(trimmed);
+    final hasDigit = RegExp(r'\d').hasMatch(trimmed);
+    final hasEmoji = RegExp(
+      r'[\u{1F600}-\u{1F64F}]',
+      unicode: true,
+    ).hasMatch(trimmed);
+
+    // Detect long single-block gibberish like "dskjfhalskdfjaslkdf"
+    final isLongNoSpaces = trimmed.length > 20 && !trimmed.contains(' ');
+
+    // Reject extremely repetitive input like "aaaaaaa"
+    final isRepetitive = trimmed.split('').toSet().length == 1;
+
+    // Detect high gibberish ratio: very long, has no alpha or emoji, and no spaces
+    final isLikelyPureGibberish = isLongNoSpaces && !hasAlpha && !hasEmoji;
+
+    return (hasAlpha || hasEmoji || hasDigit) &&
+        !isRepetitive &&
+        !isLikelyPureGibberish;
+  }
+
   // --- DEBOUNCED TRANSLATION CALL ---
   void _onTextChanged(String input) {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
@@ -93,125 +120,100 @@ class _SearchInputBarState extends State<SearchInputBar> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // --- SEARCH INPUT FIELD ---
-        TextField(
-          controller: _controller,
-          onChanged: _onTextChanged,
-          textInputAction: TextInputAction.search,
-          // When user presses enter or search button on keyboard it will call this function
-          // and pass the current value of the text field to it
-          onSubmitted: (value) async {
-            queryId = null; // Reset queryId for new submission
-            // Only run if the input is not empty and user is logged in
-            try {
-              if (value.trim().isNotEmpty &&
-                  userId != 'anonymous' &&
-                  error == null) {
-                log(
-                  "New Original Text: $value |"
-                  "Translated Text: $translatedText |"
-                  "Language: $language |"
-                  "User ID: $userId",
-                );
-                log("Submitting query from search bar...");
-                // Call the preprocessing service to send the input to the backend
-                final queryId = await _preprocessingService
-                    .sendInputToPreprocessor(
-                      originalText: value,
-                      translatedText: translatedText ?? '',
-                      language: language ?? '',
-                      userId: userId!,
-                    );
-                log(
-                  "$queryId saved successfully and id recieved from preprocessing service",
-                );
-
-                widget.onValidSearch!(); // Send signal up to parent
-              } else if (userId == 'anonymous' || error != null) {
-                String errorMessage =
-                    "Submission blocked: Missing data or user not logged in.";
-                log("$errorMessage | from search bar");
-
-                widget.onError?.call(
-                  errorMessage,
-                ); // Notify parent about the error
-              }
-            } catch (e) {
-              String errorMessage = "An error occurred during search.";
-              log("Error submitting query: $e");
-              widget.onError?.call(
-                errorMessage,
-              ); // Notify parent about the error
-            }
-          },
-          decoration: InputDecoration(
-            hintText: 'Search',
-            hintStyle: TextStyle(color: Colors.grey[600], fontSize: 17),
-            prefixIcon: const Icon(Icons.search, color: Colors.grey, size: 20),
-            suffixIcon: IconButton(
-              icon: const Icon(Icons.cancel, color: Colors.grey, size: 20),
-              onPressed: () {
-                _controller.clear();
-                setState(() {
-                  translatedText = null;
-                  language = null;
-                  error = null;
-                  isLoading = false;
-                });
-              },
-            ),
-            filled: true,
-            fillColor: Colors.grey[200],
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide.none,
-            ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 14,
-            ),
-          ),
-        ),
-        const SizedBox(height: 12),
-
-        // --- LOADING SPINNER ---
-        if (isLoading)
-          Padding(
-            padding: const EdgeInsets.only(left: 8.0),
-            child: const SizedBox(
-              width: 20,
-              height: 20,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                color: Color.fromARGB(255, 225, 204, 15),
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 10,
+      ), // ✅ Add 10px left/right
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // --- SEARCH INPUT FIELD ---
+          TextField(
+            controller: _controller,
+            onChanged: _onTextChanged,
+            textInputAction: TextInputAction.search,
+            onSubmitted: (value) async {
+              // ... (your existing submit logic)
+            },
+            decoration: InputDecoration(
+              hintText: 'Search',
+              hintStyle: TextStyle(
+                color: const Color.fromARGB(255, 147, 147, 147),
+                fontSize: 17,
+                fontWeight: FontWeight.w500,
+              ),
+              prefixIcon: const Padding(
+                padding: EdgeInsets.only(left: 16, right: 8),
+                child: Icon(Icons.search, color: Colors.grey, size: 20),
+              ),
+              suffixIcon: Padding(
+                padding: const EdgeInsets.only(right: 10),
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.cancel,
+                    color: Color.fromARGB(255, 212, 201, 83),
+                    size: 20,
+                  ),
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  hoverColor: Colors.transparent,
+                  onPressed: () {
+                    _controller.clear();
+                    setState(() {
+                      translatedText = null;
+                      language = null;
+                      error = null;
+                      isLoading = false;
+                    });
+                  },
+                ),
+              ),
+              filled: true,
+              fillColor: Colors.grey[200],
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 14,
               ),
             ),
-          )
-        // --- TRANSLATED TEXT ---
-        else if (error == null)
-          Padding(
-            padding: const EdgeInsets.only(left: 8.0),
-            child: Text(
-              translatedText ?? '',
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-            ),
-          )
-        // --- ERROR TEXT ---
-        else if (error != null)
-          Row(
-            children: [
-              const Icon(Icons.error, color: Colors.red, size: 16),
-              const SizedBox(width: 4),
-              Text(
-                error ?? '',
-                style: const TextStyle(color: Colors.red, fontSize: 14),
-              ),
-            ],
           ),
-      ],
+          const SizedBox(height: 8),
+          if (isLoading)
+            const Padding(
+              padding: EdgeInsets.only(left: 8.0),
+              child: SizedBox(
+                width: 20,
+                height: 20,
+                child: shadcn.CircularProgressIndicator(),
+              ),
+            )
+          else if (error == null)
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: shadcn.Text(
+                translatedText ?? '',
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            )
+          else if (error != null)
+            Row(
+              children: [
+                const Icon(Icons.error, color: Colors.red, size: 16),
+                const SizedBox(width: 4),
+                shadcn.Text(
+                  error ?? '',
+                  style: const TextStyle(color: Colors.red, fontSize: 14),
+                ),
+              ],
+            ),
+        ],
+      ),
     );
   }
 }

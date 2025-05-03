@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../models/reusable_back_button.dart';
+// import '../models/reusable_back_button.dart';
 import '../models/search_input_bar.dart';
-
+import 'package:shadcn_flutter/shadcn_flutter.dart' as shadcn;
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -26,21 +26,14 @@ class _SearchPageState extends State<SearchPage> {
               const SizedBox(height: 12),
 
               // Header Row
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: ReusableBackButton(),
-                  ),
-                  const Text(
-                    'Explore',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                ],
+              Center(
+                child: const shadcn.Text(
+                  'Explore',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
               ),
 
-              const SizedBox(height: 100),
+              const SizedBox(height: 20),
 
               // SearchInputBar with error callback
               SearchInputBar(
@@ -57,18 +50,18 @@ class _SearchPageState extends State<SearchPage> {
                   });
                 },
               ),
-              const SizedBox(height: 10),
-              const Divider(),
+              const SizedBox(height: 8),
+              const shadcn.Divider(),
               const SizedBox(height: 12),
 
               // Conditional display based on input
               if (showNoResults)
                 Expanded(
                   child: Center(
-                    child: Text(
+                    child: shadcn.Text(
                       errorMessage ??
                           'No Results Found', // Use the errorMessage if it exists
-                      style: const TextStyle(
+                      style: const shadcn.TextStyle(
                         color: Colors.grey,
                         fontStyle: FontStyle.italic,
                       ),
@@ -78,9 +71,9 @@ class _SearchPageState extends State<SearchPage> {
               else
                 const Expanded(
                   child: Center(
-                    child: Text(
+                    child: shadcn.Text(
                       'Search results will appear here.',
-                      style: TextStyle(
+                      style: shadcn.TextStyle(
                         color: Colors.grey,
                         fontStyle: FontStyle.italic,
                       ),

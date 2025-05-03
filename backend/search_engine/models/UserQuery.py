@@ -2,6 +2,7 @@ import logging
 import datetime
 import uuid
 from google.cloud import firestore
+from datetime import datetime, timezone
 # import firebase_admin
 # from firebase_admin import credentials
 # from firebase_admin import firestore
@@ -36,7 +37,6 @@ class UserQuery:
            stemmed_tokens: list,
            expanded_tokens: list,
            term_weights: dict,
-           source: str = "search_bar",
            id: str = None) -> str:
         """
         Creates a new user query document in Firestore.
@@ -52,8 +52,7 @@ class UserQuery:
                 "translated_text": translated_text,
                 "language": language,
                 "user_ids": [user_id],  # Note: user_ids is a list now
-                "source": source,
-                "created_at": datetime.datetime.utcnow().isoformat(),
+                "created_at": datetime.now(timezone.utc).isoformat(),                
                 "tokens": tokens,
                 "corrected_tokens": corrected_tokens,
                 "stemmed_tokens": stemmed_tokens,

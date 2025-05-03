@@ -57,7 +57,6 @@ class DataPreprocessor:
                 "expanded_tokens": expanded,
                 "term_weights": weights,
             }
-
             log_output = "Processed Results:\n"
             for key, value in result.items():
                 log_output += f"{key}: {value}\n\n"
@@ -135,7 +134,21 @@ class DataPreprocessor:
         return text.split()
 
     def normalize(self, tokens):
-        return [re.sub(r'[^\w\s]', '', token.lower().strip()) for token in tokens]
+        """
+        Converts tokens to lowercase, strips whitespace, and removes punctuation.
+        Skips tokens that are None, empty, or not strings.
+        """
+        if not isinstance(tokens, list):
+            return []
+
+        normalized = []
+        for token in tokens:
+            if isinstance(token, str):
+                # Lowercase, strip spaces, remove non-word characters (punctuation)
+                clean = re.sub(r'[^\w\s]', '', token.lower().strip())
+                if clean:
+                    normalized.append(clean)
+        return normalized
 
     def remove_stop_words(self, tokens):
         return [token for token in tokens if token not in self.stop_words]
@@ -153,16 +166,32 @@ class DataPreprocessor:
         return stemmed
 
     def expand_synonyms(self, tokens):
+        if not isinstance(tokens, list):
+            return []
+
         expanded = []
         for token in tokens:
-            synonyms = set()
-            for syn in wordnet.synsets(token):
-                for lemma in syn.lemmas():
-                    synonyms.add(lemma.name().lower().replace('_', ' '))
-            # Keep the order of input tokens
-            expanded.append(token)
-            expanded.extend(sorted(synonyms))  # Sort within word, optional
+            if not token or not isinstance(token, str):
+                continue  # Skip None or invalid tokens
+
+            try:
+                token = token.lower()
+                expanded.append(token)
+
+                synonyms = set()
+                for syn in wordnet.synsets(token):
+                    for lemma in syn.lemmas():
+                        synonym = lemma.name().lower().replace('_', ' ')
+                        synonyms.add(synonym)
+
+                expanded.extend(sorted(synonyms))
+
+            except Exception as e:
+                logging.warning(f"Synonym expansion error for token '{token}': {e}")
+                continue
+
         return expanded
+
 
     def weigh_term(self, tokens):
         counts = Counter(tokens)
@@ -192,7 +221,7 @@ async def preprocess_query(request: Request):
 
         return {"queryId": query_id}
     except Exception as e:
-        logging.error(f"[Preprocessing service Error] {str(e)}")
+        logging.error(f"[Preprocessing Error] {str(e)}")
         return JSONResponse(
             content={"error": str(e)},
             status_code=500

@@ -37,15 +37,15 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Hodien',
+      debugShowCheckedModeBanner: false,
+      navigatorKey: navigatorKey,
+      scaffoldMessengerKey: Utils.messengerKey,
       routes: {
         '/home': (context) => Home(),
         '/settings': (context) => const SettingsPage(),
         '/humorTest': (context) => HumorTestScreen(),
         '/search': (context) => const SearchPage(), // From search-module
       },
-      debugShowCheckedModeBanner: false,
-      navigatorKey: navigatorKey,
-      scaffoldMessengerKey: Utils.messengerKey,
       home: Scaffold(
         body: StreamBuilder<User?>(
           stream: FirebaseAuth.instance.authStateChanges(),

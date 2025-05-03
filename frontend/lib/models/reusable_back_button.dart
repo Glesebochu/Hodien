@@ -19,9 +19,7 @@ class ReusableBackButton extends StatelessWidget {
           if (Navigator.of(context).canPop()) {
             Navigator.of(context).pop();
           } else {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (_) => const SearchPage()),
-            );
+            Navigator.of(context).pushReplacementNamed('/home');
           }
         }
       },
