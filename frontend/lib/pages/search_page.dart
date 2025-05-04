@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-// import '../models/reusable_back_button.dart';
 import '../components/search_input_bar.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart' as shadcn;
+import 'package:frontend/models/humor_profile.dart';
+import 'post_card.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -12,6 +14,34 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   bool showNoResults = false; // 🟡 Flag to toggle "No results found"
   String? errorMessage;
+  bool isSearchLoading = false;
+  List<Map<String, dynamic>> searchResults = [];
+  late HumorProfile profile; // Declare the profile variable as late
+
+  @override
+  void initState() {
+    super.initState();
+    initializeProfile(); // Call the initializer
+  }
+
+  Future<void> initializeProfile() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      // Handle the case when no user is logged in
+      setState(() {
+        profile = HumorProfile(userId: 'anonymous');
+      });
+      return;
+    }
+
+    // Initialize the profile with the userId
+    setState(() {
+      profile = HumorProfile(userId: user.uid);
+    });
+
+    // Load the user's favorite content stack
+    await profile.loadFavoriteContentStack();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,16 +67,26 @@ class _SearchPageState extends State<SearchPage> {
 
               // SearchInputBar with error callback
               SearchInputBar(
-                // Callback to handle invalid input or error from search bar
+                onSearchStart: () {
+                  setState(() {
+                    isSearchLoading = true;
+                    showNoResults = false;
+                    errorMessage = null;
+                    searchResults = [];
+                  });
+                },
                 onError: (String error) {
                   setState(() {
                     showNoResults = true;
                     errorMessage = error;
+                    isSearchLoading = false;
+                    searchResults = [];
                   });
                 },
-                onValidSearch: () {
+                onSearchResults: (List<Map<String, dynamic>> results) {
                   setState(() {
-                    showNoResults = false;
+                    isSearchLoading = false;
+                    searchResults = results;
                   });
                 },
               ),
@@ -54,42 +94,49 @@ class _SearchPageState extends State<SearchPage> {
               const shadcn.Divider(),
               const SizedBox(height: 12),
 
-              // Conditional display based on input
-              if (showNoResults)
-                Expanded(
-                  child: Center(
-                    child: shadcn.Text(
-                      errorMessage ??
-                          'No Results Found', // Use the errorMessage if it exists
-                      style: const shadcn.TextStyle(
-                        color: Colors.grey,
-                        fontStyle: FontStyle.italic,
-                      ),
-                    ),
-                  ),
-                )
-              else
-                const Expanded(
-                  child: Center(
-                    child: shadcn.Text(
-                      'Search results will appear here.',
-                      style: shadcn.TextStyle(
-                        color: Colors.grey,
-                        fontStyle: FontStyle.italic,
-                      ),
-                    ),
-                  ),
+              Expanded(
+                child: Builder(
+                  builder: (_) {
+                    if (isSearchLoading) {
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          color: Color.fromARGB(255, 225, 204, 15),
+                        ),
+                      );
+                    } else if (showNoResults) {
+                      return Center(
+                        child: shadcn.Text(
+                          errorMessage ?? 'No Results Found',
+                          style: const shadcn.TextStyle(
+                            color: Colors.grey,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      );
+                    } else if (searchResults.isNotEmpty) {
+                      return ListView.builder(
+                        itemCount: searchResults.length,
+                        itemBuilder: (context, index) {
+                          return PostCard(
+                            jokeData: searchResults[index],
+                            humorProfile: profile, // Pass humor profile
+                          );
+                        },
+                      );
+                    } else {
+                      return const Center(
+                        child: shadcn.Text(
+                          'Search results will appear here.',
+                          style: shadcn.TextStyle(
+                            color: Colors.grey,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      );
+                    }
+                  },
                 ),
-              // loading/empty state previews
-              // const Center(
-              //   child: SizedBox(
-              //     width: 20,
-              //     height: 20,
-              //     child: CircularProgressIndicator(
-              //       color: Color.fromARGB(255, 225, 204, 15),
-              //     ),
-              //   ),
-              // ),
+              ),
               SizedBox(height: 20),
             ],
           ),

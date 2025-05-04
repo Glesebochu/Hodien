@@ -16,6 +16,7 @@ class HumorEngine {
 
   Future<List<Map<String, dynamic>>> fetchJokesProportionally({
     int totalToPick = 5,
+    List<String>? contentIds,
   }) async {
     try {
       // 1. Get weights from profile
@@ -34,10 +35,14 @@ class HumorEngine {
         weights: weights,
         totalToPick: totalToPick,
       );
+      print("Calculated Type Counts");
 
       // 3. Fetch jokes in batches per type to reduce reads
-      final selectedJokes = await _fetchJokesByTypeCounts(typeCounts);
-
+      final selectedJokes = await _fetchJokesByTypeCounts(
+        typeCounts,
+        contentIds,
+      );
+      print("Fetched Jokes}");
       // 4. Shuffle and take the required number
       selectedJokes.shuffle(_random);
       return selectedJokes.take(totalToPick).map(_formatJoke).toList();
@@ -73,37 +78,65 @@ class HumorEngine {
     return typeCounts;
   }
 
-  Future<List<Map<String, dynamic>>> _fetchJokesByTypeCounts(
-    Map<HumorType, int> typeCounts,
-  ) async {
-    final selectedJokes = <Map<String, dynamic>>[];
-
-    for (final entry in typeCounts.entries) {
-      if (entry.value <= 0) continue;
-
-      final querySnapshot =
-          await FirebaseFirestore.instance
-              .collection('content')
-              .where('humor_type', isEqualTo: _toFirestoreValue(entry.key))
-              .limit(entry.value * 3) // Fetch extra to allow random selection
-              .get();
-
-      final jokes =
-          querySnapshot.docs.map((doc) => _parseJokeDoc(doc)).toList()
-            ..shuffle(_random);
-
-      selectedJokes.addAll(jokes.take(entry.value));
-    }
-
-    return selectedJokes;
-  }
-
-  Map<String, dynamic> _parseJokeDoc(QueryDocumentSnapshot doc) {
+  Map<String, dynamic> _parseJokeDoc(
+    DocumentSnapshot<Map<String, dynamic>> doc,
+  ) {
     return {
       'id': doc.id,
       'text': doc['text'],
       'humorType': _fromFirestoreValue(doc['humor_type']),
     };
+  }
+
+  Future<List<Map<String, dynamic>>> _fetchJokesByTypeCounts(
+    Map<HumorType, int> typeCounts,
+    List<String>? contentIds,
+  ) async {
+    final selectedJokes = <Map<String, dynamic>>[];
+
+    for (final entry in typeCounts.entries) {
+      if (entry.value <= 0) continue;
+      final humorType = entry.key;
+      final countNeeded = entry.value;
+
+      if (contentIds != null && contentIds.isNotEmpty) {
+        // 🔁 Fetch ALL docs in parallel
+        final docs = await Future.wait(
+          contentIds.map(
+            (id) =>
+                FirebaseFirestore.instance.collection('content').doc(id).get(),
+          ),
+        );
+
+        // 🔍 Filter by humor type
+        final matchingDocs =
+            docs.where((doc) {
+              final data = doc.data();
+              return doc.exists &&
+                  data != null &&
+                  data['humor_type'] == _toFirestoreValue(humorType);
+            }).toList();
+
+        // 🎯 Convert + take the needed amount
+        final jokes =
+            matchingDocs.map(_parseJokeDoc).toList()..shuffle(_random);
+        selectedJokes.addAll(jokes.take(countNeeded));
+      } else {
+        // 🔄 Use normal Firestore query
+        final querySnapshot =
+            await FirebaseFirestore.instance
+                .collection('content')
+                .where('humor_type', isEqualTo: _toFirestoreValue(humorType))
+                .limit(countNeeded * 3)
+                .get();
+
+        final jokes =
+            querySnapshot.docs.map(_parseJokeDoc).toList()..shuffle(_random);
+        selectedJokes.addAll(jokes.take(countNeeded));
+      }
+    }
+
+    return selectedJokes;
   }
 
   Map<String, dynamic> _formatJoke(Map<String, dynamic> joke) {

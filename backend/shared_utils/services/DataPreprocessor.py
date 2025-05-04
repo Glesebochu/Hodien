@@ -41,11 +41,11 @@ class DataPreprocessor:
             logging.info("Preprocessing started on: " + text)
 
             tokens = self.tokenize(text)
-            corrected = self.correct_spelling(filtered)
-            normalized = self.normalize(tokens)
+            corrected = self.correct_spelling(tokens)
+            normalized = self.normalize(corrected)
             filtered = self.remove_stop_words(normalized)
-            stemmed = self.stem_tokens(corrected)
-            expanded = self.expand_synonyms(corrected)
+            stemmed = self.stem_tokens(filtered)
+            expanded = self.expand_synonyms(stemmed)
             weights = self.weigh_term(expanded)
 
             result = {
