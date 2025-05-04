@@ -41,18 +41,18 @@ class DataPreprocessor:
             logging.info("Preprocessing started on: " + text)
 
             tokens = self.tokenize(text)
+            corrected = self.correct_spelling(filtered)
             normalized = self.normalize(tokens)
             filtered = self.remove_stop_words(normalized)
-            corrected = self.correct_spelling(filtered)
             stemmed = self.stem_tokens(corrected)
             expanded = self.expand_synonyms(corrected)
             weights = self.weigh_term(expanded)
 
             result = {
-                "tokens": tokens,
+                "tokens": tokens,   
+                "corrected_tokens": corrected,
                 "normalized_tokens": normalized,
                 "filtered_tokens": filtered,
-                "corrected_tokens": corrected,
                 "stemmed_tokens": stemmed,
                 "expanded_tokens": expanded,
                 "term_weights": weights,
