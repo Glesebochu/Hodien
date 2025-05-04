@@ -6,7 +6,6 @@ import 'pages/authpage.dart';
 import 'pages/home.dart';
 import 'pages/humorTest.dart';
 import 'pages/settings.dart';
-import 'pages/search_page.dart';
 import 'utils/utils.dart';
 import './services/user_service.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart' as shadcn;
@@ -44,7 +43,6 @@ class MainApp extends StatelessWidget {
         '/home': (context) => Home(),
         '/settings': (context) => const SettingsPage(),
         '/humorTest': (context) => HumorTestScreen(),
-        '/search': (context) => const SearchPage(), // From search-module
       },
       home: Scaffold(
         body: StreamBuilder<User?>(

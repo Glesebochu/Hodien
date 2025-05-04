@@ -45,4 +45,4 @@ app.*.map.json
 /android/app/release
 
 # Hide backend credential config
-backend/search_engine/config/hodien-f5535-searchengine-adminsdk.json
+hodien-f5535-searchengine-adminsdk.json

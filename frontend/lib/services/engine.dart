@@ -42,10 +42,17 @@ class HumorEngine {
         typeCounts,
         contentIds,
       );
-      print("Fetched Jokes}");
+      print("Fetched Jokes: count ${selectedJokes.length}");
       // 4. Shuffle and take the required number
       selectedJokes.shuffle(_random);
-      return selectedJokes.take(totalToPick).map(_formatJoke).toList();
+
+      if (contentIds != null) {
+        // Return everything if contentIds were passed
+        return selectedJokes.map(_formatJoke).toList();
+      } else {
+        // Otherwise, limit to totalToPick
+        return selectedJokes.take(totalToPick).map(_formatJoke).toList();
+      }
     } catch (e, stackTrace) {
       print("Error fetching jokes: $e\n$stackTrace");
       return [];

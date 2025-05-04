@@ -3,45 +3,25 @@ import '../components/search_input_bar.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart' as shadcn;
 import 'package:frontend/models/humor_profile.dart';
 import 'post_card.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class SearchPage extends StatefulWidget {
-  const SearchPage({super.key});
+  final HumorProfile profile; // Declare the profile variable
+  const SearchPage({
+    super.key,
+    required this.profile,
+  }); // Constructor with profile
   @override
   State<SearchPage> createState() => _SearchPageState();
 }
 
-class _SearchPageState extends State<SearchPage> {
+class _SearchPageState extends State<SearchPage>
+    with AutomaticKeepAliveClientMixin {
   bool showNoResults = false; // 🟡 Flag to toggle "No results found"
   String? errorMessage;
   bool isSearchLoading = false;
   List<Map<String, dynamic>> searchResults = [];
-  late HumorProfile profile; // Declare the profile variable as late
-
   @override
-  void initState() {
-    super.initState();
-    initializeProfile(); // Call the initializer
-  }
-
-  Future<void> initializeProfile() async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null) {
-      // Handle the case when no user is logged in
-      setState(() {
-        profile = HumorProfile(userId: 'anonymous');
-      });
-      return;
-    }
-
-    // Initialize the profile with the userId
-    setState(() {
-      profile = HumorProfile(userId: user.uid);
-    });
-
-    // Load the user's favorite content stack
-    await profile.loadFavoriteContentStack();
-  }
+  bool get wantKeepAlive => true; // Keep the state alive when navigating away
 
   @override
   Widget build(BuildContext context) {
@@ -119,17 +99,21 @@ class _SearchPageState extends State<SearchPage> {
                         itemBuilder: (context, index) {
                           return PostCard(
                             jokeData: searchResults[index],
-                            humorProfile: profile, // Pass humor profile
+                            humorProfile: widget.profile, // Pass humor profile
                           );
                         },
                       );
                     } else {
                       return const Center(
                         child: shadcn.Text(
-                          'Search results will appear here.',
+                          'A spark of humor, a slice of soul - discover joy tailored just for you...',
                           style: shadcn.TextStyle(
-                            color: Colors.grey,
-                            fontStyle: FontStyle.italic,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                            height: 0.5,
+                            letterSpacing: 0.5,
+                            fontFamily: 'Helvetica',
+                            color: Color.fromARGB(255, 176, 173, 114),
                           ),
                         ),
                       );

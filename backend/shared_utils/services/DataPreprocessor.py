@@ -139,7 +139,7 @@ class DataPreprocessor:
         Skips tokens that are None, empty, or not strings.
         """
         if not isinstance(tokens, list):
-            return []
+            return tokens
 
         normalized = []
         for token in tokens:
@@ -148,26 +148,34 @@ class DataPreprocessor:
                 clean = re.sub(r'[^\w\s]', '', token.lower().strip())
                 if clean:
                     normalized.append(clean)
-        return normalized
+        return normalized if normalized else tokens
 
     def remove_stop_words(self, tokens):
         return [token for token in tokens if token not in self.stop_words]
 
     def correct_spelling(self, tokens):
         spell = SpellChecker()
-        corrected = [spell.correction(token) for token in tokens]
-        return corrected
+        if not tokens:
+            return tokens  # Return tokens if input is empty or None
 
+        corrected = []
+        for token in tokens:
+            correction = spell.correction(token)
+            corrected.append(correction if correction else token)  # Use original token if no correction is found
+
+        return corrected
+    
     def stem_tokens(self, tokens):
-        # Filter out None values
+        if not tokens:
+            return tokens
+
         valid_tokens = [token for token in tokens if token is not None]
         stemmer = PorterStemmer()
         stemmed = [stemmer.stem(token) for token in valid_tokens]
-        return stemmed
-
+        return stemmed if stemmed else tokens
     def expand_synonyms(self, tokens):
         if not isinstance(tokens, list):
-            return []
+            return tokens
 
         expanded = []
         for token in tokens:
@@ -190,14 +198,19 @@ class DataPreprocessor:
                 logging.warning(f"Synonym expansion error for token '{token}': {e}")
                 continue
 
-        return expanded
+        return expanded if expanded else tokens
 
 
     def weigh_term(self, tokens):
+        if not tokens:
+            return tokens
+
         counts = Counter(tokens)
         total = sum(counts.values())
-        return {token: round(count / total, 3) for token, count in counts.items()}
 
+        result = {token: round(count / total, 3) for token, count in counts.items()}
+        return result if result else tokens
+    
 app.add_middleware( CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 @app.post("/preprocess")
 async def preprocess_query(request: Request):
@@ -232,7 +245,7 @@ if __name__ == "__main__":
     # Example usage
     preprocessor = DataPreprocessor()
     preprocessor.process_query(
-        original_text="Hello world! This is a test.",
+        original_text="candy.",
         translated_text="Hello world! This is a test.",
         language="es",
         user_id="user123"

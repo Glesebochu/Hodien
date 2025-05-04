@@ -25,14 +25,20 @@ class Translator {
       log("[INFO] Detected Language: $detectedLang");
 
       // If the detected language is English, skip translation and return original text
-      if (detectedLang == "en") {
-        log("[SKIPPED] Input already in English.");
+      if (detectedLang == "auto") {
         return TranslationResult(
           translatedText: inputText,
           language: detectedLang,
         );
       }
-
+      // If the detected language is not Amharic, return an error
+      // if (detectedLang != "am" || detectedLang != "auto") {
+      //   log("[ERROR] Input language is $detectedLang.");
+      //   return TranslationResult(
+      //     error: "Input language is unsupported.",
+      //     language: detectedLang,
+      //   );
+      // }
       // Try translating the text (allow 1 retry if it fails)
       for (int attempt = 0; attempt < 2; attempt++) {
         try {

@@ -141,7 +141,7 @@ class _HomeState extends State<Home> {
       case 0:
         return _buildFeedView();
       case 1:
-        return SearchPage();
+        return SearchPage(profile: profile);
       case 2:
         return FavoriteContentPage(humorProfile: profile);
       case 3:
