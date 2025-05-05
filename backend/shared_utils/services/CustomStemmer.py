@@ -89,6 +89,7 @@ class CustomPorterStemmer:
 
     def step1b(self, word: str) -> str:
         logging.info(f"Step 1b Input: {word}")
+        result = word
         try:
             if word.endswith("eed"):
                 if self.measure(word[:-3]) > 0:
