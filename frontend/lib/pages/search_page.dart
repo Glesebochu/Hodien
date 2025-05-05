@@ -110,7 +110,7 @@ class _SearchPageState extends State<SearchPage>
                           style: shadcn.TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w500,
-                            height: 0.5,
+                            height: 1.5,
                             letterSpacing: 0.5,
                             fontFamily: 'Helvetica',
                             color: Color.fromARGB(255, 176, 173, 114),

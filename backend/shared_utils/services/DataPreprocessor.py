@@ -14,6 +14,8 @@ from firebase_admin import firestore
 from backend.search_engine.models.UserQuery import UserQuery
 from google.cloud.firestore_v1.base_query import FieldFilter
 from fastapi.middleware.cors import CORSMiddleware
+from .CustomStemmer import CustomPorterStemmer as CustomStemmer
+
 
 
 # Logging setup
@@ -169,10 +171,16 @@ class DataPreprocessor:
         if not tokens:
             return tokens
 
-        valid_tokens = [token for token in tokens if token is not None]
-        stemmer = PorterStemmer()
-        stemmed = [stemmer.stem(token) for token in valid_tokens]
-        return stemmed if stemmed else tokens
+        try:
+            valid_tokens = [token for token in tokens if token is not None]
+            stemmer = CustomStemmer()
+            stemmed = [stemmer.stem(token) for token in valid_tokens]
+            return stemmed if stemmed else tokens
+
+        except Exception as e:
+            logging.error(f"[stem_tokens] Stemming error: {str(e)}")
+            raise RuntimeError(f"Stemming failed at stem_tokens: {str(e)}")
+
     def expand_synonyms(self, tokens):
         if not isinstance(tokens, list):
             return tokens
