@@ -72,6 +72,7 @@ class CustomPorterStemmer:
 
     def step1a(self, word: str) -> str:
         logging.info(f"Step 1a Input: {word}")
+        result = word
         try:
             if word.endswith("sses"):
                 result = word[:-2]
@@ -129,6 +130,7 @@ class CustomPorterStemmer:
 
     def step1b_helper(self, word: str) -> str:
         logging.info(f"step1b_helper Input: {word}")
+        result = word
         try:
             if word.endswith(("at", "bl", "iz")):
                 result = word + "e"
@@ -149,6 +151,7 @@ class CustomPorterStemmer:
 
     def step1c(self, word: str) -> str:
         logging.info(f"Step 1c Input: {word}")
+        result = word
         try:
             if word.endswith("y"):
                 stem = word[:-1]
