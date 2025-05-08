@@ -17,8 +17,6 @@ void main() {
   setUpAll(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
 
-    FirebaseAuthPlatform.instance = MockFirebaseAuthPlatform();
-
     FirebasePlatform.instance = FakeFirebasePlatform();
   });
 
@@ -141,64 +139,6 @@ void main() {
 
       expect(result, 'success');
     });
-
-    // test('Successful Registration', () async {
-    //   final mockUserCredential = MockUserCredential();
-    //   final mockUser = MockUser();
-
-    //   when(mockUserCredential.user).thenReturn(mockUser);
-    //   when(mockUser.uid).thenReturn('user123');
-
-    //   when(
-    //     mockAuth.createUserWithEmailAndPassword(
-    //       email: 'test@example.com',
-    //       password: 'password123',
-    //     ),
-    //   ).thenAnswer((_) async => mockUserCredential);
-
-    //   final mockCollection = MockCollectionReference<Map<String, dynamic>>();
-    //   when(mockFirestore.collection('user')).thenReturn(mockCollection);
-
-    //   final mockDoc = MockDocumentReference<Map<String, dynamic>>();
-    //   when(mockCollection.doc('user123')).thenReturn(mockDoc);
-    //   when(mockDoc.set(any, SetOptions(merge: false))).thenAnswer((_) async {});
-
-    //   await userService.registerUser(
-    //     'test@example.com',
-    //     'password123',
-    //     'TestUser',
-    //   );
-
-    //   verify(
-    //     mockAuth.createUserWithEmailAndPassword(
-    //       email: 'test@example.com',
-    //       password: 'password123',
-    //     ),
-    //   ).called(1);
-    // });
-
-    // test('Duplicate Email Registration', () async {
-    //   when(
-    //     mockAuth.createUserWithEmailAndPassword(
-    //       email: 'existing@example.com',
-    //       password: 'password123',
-    //     ),
-    //   ).thenThrow(
-    //     firebase_auth.FirebaseAuthException(
-    //       code: 'email-already-in-use',
-    //       message: 'Email already in use',
-    //     ),
-    //   );
-
-    //   expect(
-    //     () async => await userService.registerUser(
-    //       'existing@example.com',
-    //       'password123',
-    //       'TestUser',
-    //     ),
-    //     throwsA(isA<firebase_auth.FirebaseAuthException>()),
-    //   );
-    // });
   });
 }
 
@@ -228,21 +168,4 @@ class FakeFirebaseAppPlatform extends FirebaseAppPlatform {
 
   @override
   Future<void> delete() async {}
-}
-
-class MockFirebaseAuthPlatform extends FirebaseAuthPlatform {
-  MockFirebaseAuthPlatform() : super();
-
-  static final Object _token = Object();
-
-  @override
-  FirebaseAuthPlatform delegateFor({required FirebaseApp app}) {
-    return this; // Return the same mock instance for simplicity
-  }
-
-  @override
-  Future<void> registerIdTokenListener() async {}
-
-  @override
-  Future<void> registerAuthStateListener() async {}
 }
