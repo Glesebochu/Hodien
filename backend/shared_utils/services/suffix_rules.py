@@ -1,4 +1,4 @@
-# ✅ STEP 2: Replace longer suffixes with simpler forms (from official Porter algorithm)
+# STEP 2: Replace longer suffixes with simpler forms (from official Porter algorithm)
 suffix_map_step2 = {
     'ational': 'ate',
     'tional': 'tion',
@@ -23,7 +23,7 @@ suffix_map_step2 = {
     'logi': 'log'
 }
 
-# ✅ STEP 3: Further suffix reductions (official Porter)
+# STEP 3: Further suffix reductions (official Porter)
 suffix_map_step3 = {
     'icate': 'ic',
     'ative': '',
@@ -34,7 +34,7 @@ suffix_map_step3 = {
     'ness': ''
 }
 
-# ✅ STEP 4: Common endings to remove (official Porter step 4)
+# STEP 4: Common endings to remove (official Porter step 4)
 suffix_list_step4 = [
     'al',
     'ance',
@@ -57,5 +57,3 @@ suffix_list_step4 = [
     'ize'
 ]
 
-# ❗ You can expand these maps/lists with rare or technical suffixes if needed,
-# e.g., scientific or legal vocabulary. This base set already covers most English roots.

@@ -94,7 +94,7 @@ class DataPreprocessor:
 
                 if user_id in user_ids:
                     logging.info(f"[User Linked] User {user_id} already linked to query {query_id}.")
-                    return query_id  # ✅ Just return if already linked
+                    return query_id   
                 else:
                     # Append user_id to the list and update Firestore
                     user_ids.append(user_id)
@@ -102,8 +102,7 @@ class DataPreprocessor:
                         "user_ids": user_ids
                     })
                     logging.info(f"[User Linked] User {user_id} linked to existing query {query_id}.")
-                    return query_id  # ✅ Return after updating
-
+                    return query_id  
             # Step 2: If no existing query found, preprocess new text
             logging.info(f"[No Existing Query Found] Preprocessing new query: '{original_text}'")
             text_to_preprocess = translated_text if translated_text else original_text
@@ -250,7 +249,6 @@ async def preprocess_query(request: Request):
 
 
 if __name__ == "__main__":
-    # Example usage
     preprocessor = DataPreprocessor()
     preprocessor.process_query(
         original_text="candy.",

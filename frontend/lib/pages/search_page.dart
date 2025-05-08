@@ -14,14 +14,11 @@ class SearchPage extends StatefulWidget {
   State<SearchPage> createState() => _SearchPageState();
 }
 
-class _SearchPageState extends State<SearchPage>
-    with AutomaticKeepAliveClientMixin {
-  bool showNoResults = false; // 🟡 Flag to toggle "No results found"
+class _SearchPageState extends State<SearchPage> {
+  bool showNoResults = false; // Flag to toggle "No results found"
   String? errorMessage;
   bool isSearchLoading = false;
   List<Map<String, dynamic>> searchResults = [];
-  @override
-  bool get wantKeepAlive => true; // Keep the state alive when navigating away
 
   @override
   Widget build(BuildContext context) {

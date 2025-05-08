@@ -142,7 +142,7 @@ class CustomPorterStemmer:
             elif self.measure(word) == 1 and self.cvc(word):
                 result = word + "e"
             else:
-                result = word  # ✅ FIX: Don't add "e" unless a rule matches
+                result = word 
             logging.info(f"step1b_helper Output: {result}")
             return result
         except Exception as e:
