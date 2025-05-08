@@ -1,7 +1,7 @@
 import 'dart:async'; // For Timer (debounce)
 import 'package:flutter/material.dart';
 import '../services/translator_service.dart';
-import '../services/preprocessing_service.dart';
+// import '../services/preprocessing_service.dart';
 import 'dart:developer'; // For using the log() function instead of print
 import 'package:firebase_auth/firebase_auth.dart'; // For Firebase authentication
 
@@ -20,7 +20,7 @@ class SearchInputBar extends StatefulWidget {
 class _SearchInputBarState extends State<SearchInputBar> {
   final TextEditingController _controller = TextEditingController();
   final Translator _translatorService = Translator();
-  final PreprocessingService _preprocessingService = PreprocessingService();
+  // final PreprocessingService _preprocessingService = PreprocessingService();
 
   // --- STATE VARIABLES ---
   String? translatedText; // Final translation result
@@ -118,13 +118,13 @@ class _SearchInputBarState extends State<SearchInputBar> {
                 );
                 log("Submitting query from search bar...");
                 // Call the preprocessing service to send the input to the backend
-                final queryId = await _preprocessingService
-                    .sendInputToPreprocessor(
-                      originalText: value,
-                      translatedText: translatedText ?? '',
-                      language: language ?? '',
-                      userId: userId!,
-                    );
+                // final queryId = await _preprocessingService
+                //     .sendInputToPreprocessor(
+                //       originalText: value,
+                //       translatedText: translatedText ?? '',
+                //       language: language ?? '',
+                //       userId: userId!,
+                //     );
                 log(
                   "$queryId saved successfully and id recieved from preprocessing service",
                 );

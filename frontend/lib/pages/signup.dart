@@ -135,6 +135,7 @@ class _SignupPageState extends State<SignupPage> {
                     child: Column(
                       children: [
                         TextFormField(
+                          key: ValueKey('signup_username'),
                           controller: _usernameController,
                           textInputAction: TextInputAction.next,
                           decoration: const InputDecoration(
@@ -153,6 +154,7 @@ class _SignupPageState extends State<SignupPage> {
                         const SizedBox(height: 16),
                         TextFormField(
                           controller: _emailController,
+                          key: ValueKey('signup_email'),
                           textInputAction: TextInputAction.next,
                           decoration: const InputDecoration(
                             labelText: 'Email',
@@ -173,6 +175,7 @@ class _SignupPageState extends State<SignupPage> {
                         const SizedBox(height: 16),
                         TextFormField(
                           controller: _passwordController,
+                          key: ValueKey('signup_password'),
                           textInputAction: TextInputAction.done,
                           decoration: InputDecoration(
                             labelText: 'Password',
@@ -206,6 +209,7 @@ class _SignupPageState extends State<SignupPage> {
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
+                            key: ValueKey('signup_button'),
                             onPressed: _isLoading ? null : _submitForm,
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(vertical: 16),

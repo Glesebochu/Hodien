@@ -130,6 +130,7 @@ class _LoginPageState extends State<LoginPage> {
                       children: [
                         TextFormField(
                           controller: _emailController,
+                          key: ValueKey('login_email'),
                           textInputAction: TextInputAction.next,
                           decoration: const InputDecoration(
                             labelText: 'Email',
@@ -149,6 +150,7 @@ class _LoginPageState extends State<LoginPage> {
                         const SizedBox(height: 16),
                         TextFormField(
                           controller: _passwordController,
+                          key: ValueKey('login_password'),
                           textInputAction: TextInputAction.done,
                           decoration: InputDecoration(
                             labelText: 'Password',
@@ -181,6 +183,7 @@ class _LoginPageState extends State<LoginPage> {
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
+                            key: ValueKey('login_button'),
                             onPressed: _isLoading ? null : _submitForm,
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(vertical: 16),

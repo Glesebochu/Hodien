@@ -339,6 +339,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         SizedBox(
                           width: double.infinity,
                           child: shadcn.OutlineButton(
+                            key: ValueKey('logout_button'),
                             onPressed: _handleLogout,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -354,6 +355,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         SizedBox(
                           width: double.infinity,
                           child: shadcn.DestructiveButton(
+                            key: ValueKey('delete_button'),
                             onPressed: _handleDeleteAccount,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,

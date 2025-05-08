@@ -226,6 +226,9 @@ class _QuestionScreen extends StatelessWidget {
                                       (opt) => Column(
                                         children: [
                                           shadcn.PrimaryButton(
+                                            key: ValueKey(
+                                              'humor_option_${opt['text']}',
+                                            ),
                                             onPressed: () {
                                               controller.nextStep();
                                               context

@@ -3,8 +3,12 @@ import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:frontend/models/user.dart';
 
 class UserService {
-  final _auth = firebase_auth.FirebaseAuth.instance;
-  final _firestore = FirebaseFirestore.instance;
+  final firebase_auth.FirebaseAuth _auth;
+  final FirebaseFirestore _firestore;
+
+  UserService({firebase_auth.FirebaseAuth? auth, FirebaseFirestore? firestore})
+    : _auth = auth ?? firebase_auth.FirebaseAuth.instance,
+      _firestore = firestore ?? FirebaseFirestore.instance;
 
   Future<void> registerUser(
     String email,
