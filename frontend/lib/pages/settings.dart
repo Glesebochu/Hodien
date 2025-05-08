@@ -202,8 +202,9 @@ class _SettingsPageState extends State<SettingsPage> {
     return FutureBuilder<app_models.User?>(
       future: _userFuture,
       builder: (context, snapshot) {
-        if (!snapshot.hasData)
+        if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
+        }
         final user = snapshot.data!;
         final initial = user.username[0].toUpperCase();
 

@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../services/user_service.dart';
-import '../models/user.dart' as user_model;
 import 'package:google_fonts/google_fonts.dart';
 import 'post_card.dart';
 import '../services/engine.dart';
@@ -43,6 +40,7 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     _initializeProfile();
+    //await HumorProfile.loadFavoriteContentStack(); // Load favorite content stack
   }
 
   Future<void> _initializeProfile() async {
@@ -52,12 +50,11 @@ class _HomeState extends State<Home> {
       print('No user logged in');
       return;
     }
-
     // Initialize the profile with the userId
     setState(() {
       profile = HumorProfile(userId: user.uid);
     });
-
+    await profile.loadFavoriteContentStack();
     // Initialize the humor engine after profile is set
     engine = HumorEngine(profile: profile);
 
@@ -144,7 +141,7 @@ class _HomeState extends State<Home> {
       case 0:
         return _buildFeedView();
       case 1:
-        return SearchPage();
+        return SearchPage(profile: profile);
       case 2:
         return FavoriteContentPage(humorProfile: profile);
       case 3:

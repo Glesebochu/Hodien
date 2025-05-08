@@ -14,6 +14,8 @@ from firebase_admin import firestore
 from backend.search_engine.models.UserQuery import UserQuery
 from google.cloud.firestore_v1.base_query import FieldFilter
 from fastapi.middleware.cors import CORSMiddleware
+from .CustomStemmer import CustomPorterStemmer as CustomStemmer
+
 
 
 # Logging setup
@@ -41,23 +43,22 @@ class DataPreprocessor:
             logging.info("Preprocessing started on: " + text)
 
             tokens = self.tokenize(text)
-            normalized = self.normalize(tokens)
+            corrected = self.correct_spelling(tokens)
+            normalized = self.normalize(corrected)
             filtered = self.remove_stop_words(normalized)
-            corrected = self.correct_spelling(filtered)
-            stemmed = self.stem_tokens(corrected)
-            expanded = self.expand_synonyms(corrected)
+            stemmed = self.stem_tokens(filtered)
+            expanded = self.expand_synonyms(stemmed)
             weights = self.weigh_term(expanded)
 
             result = {
-                "tokens": tokens,
+                "tokens": tokens,   
+                "corrected_tokens": corrected,
                 "normalized_tokens": normalized,
                 "filtered_tokens": filtered,
-                "corrected_tokens": corrected,
                 "stemmed_tokens": stemmed,
                 "expanded_tokens": expanded,
                 "term_weights": weights,
             }
-
             log_output = "Processed Results:\n"
             for key, value in result.items():
                 log_output += f"{key}: {value}\n\n"
@@ -93,7 +94,7 @@ class DataPreprocessor:
 
                 if user_id in user_ids:
                     logging.info(f"[User Linked] User {user_id} already linked to query {query_id}.")
-                    return query_id  # ✅ Just return if already linked
+                    return query_id   
                 else:
                     # Append user_id to the list and update Firestore
                     user_ids.append(user_id)
@@ -101,8 +102,7 @@ class DataPreprocessor:
                         "user_ids": user_ids
                     })
                     logging.info(f"[User Linked] User {user_id} linked to existing query {query_id}.")
-                    return query_id  # ✅ Return after updating
-
+                    return query_id  
             # Step 2: If no existing query found, preprocess new text
             logging.info(f"[No Existing Query Found] Preprocessing new query: '{original_text}'")
             text_to_preprocess = translated_text if translated_text else original_text
@@ -135,40 +135,89 @@ class DataPreprocessor:
         return text.split()
 
     def normalize(self, tokens):
-        return [re.sub(r'[^\w\s]', '', token.lower().strip()) for token in tokens]
+        """
+        Converts tokens to lowercase, strips whitespace, and removes punctuation.
+        Skips tokens that are None, empty, or not strings.
+        """
+        if not isinstance(tokens, list):
+            return tokens
+
+        normalized = []
+        for token in tokens:
+            if isinstance(token, str):
+                # Lowercase, strip spaces, remove non-word characters (punctuation)
+                clean = re.sub(r'[^\w\s]', '', token.lower().strip())
+                if clean:
+                    normalized.append(clean)
+        return normalized if normalized else tokens
 
     def remove_stop_words(self, tokens):
         return [token for token in tokens if token not in self.stop_words]
 
     def correct_spelling(self, tokens):
         spell = SpellChecker()
-        corrected = [spell.correction(token) for token in tokens]
-        return corrected
+        if not tokens:
+            return tokens  # Return tokens if input is empty or None
 
+        corrected = []
+        for token in tokens:
+            correction = spell.correction(token)
+            corrected.append(correction if correction else token)  # Use original token if no correction is found
+
+        return corrected
+    
     def stem_tokens(self, tokens):
-        # Filter out None values
-        valid_tokens = [token for token in tokens if token is not None]
-        stemmer = PorterStemmer()
-        stemmed = [stemmer.stem(token) for token in valid_tokens]
-        return stemmed
+        if not tokens:
+            return tokens
+
+        try:
+            valid_tokens = [token for token in tokens if token is not None]
+            stemmer = CustomStemmer()
+            stemmed = [stemmer.stem(token) for token in valid_tokens]
+            return stemmed if stemmed else tokens
+
+        except Exception as e:
+            logging.error(f"[stem_tokens] Stemming error: {str(e)}")
+            raise RuntimeError(f"Stemming failed at stem_tokens: {str(e)}")
 
     def expand_synonyms(self, tokens):
+        if not isinstance(tokens, list):
+            return tokens
+
         expanded = []
         for token in tokens:
-            synonyms = set()
-            for syn in wordnet.synsets(token):
-                for lemma in syn.lemmas():
-                    synonyms.add(lemma.name().lower().replace('_', ' '))
-            # Keep the order of input tokens
-            expanded.append(token)
-            expanded.extend(sorted(synonyms))  # Sort within word, optional
-        return expanded
+            if not token or not isinstance(token, str):
+                continue  # Skip None or invalid tokens
+
+            try:
+                token = token.lower()
+                expanded.append(token)
+
+                synonyms = set()
+                for syn in wordnet.synsets(token):
+                    for lemma in syn.lemmas():
+                        synonym = lemma.name().lower().replace('_', ' ')
+                        synonyms.add(synonym)
+
+                expanded.extend(sorted(synonyms))
+
+            except Exception as e:
+                logging.warning(f"Synonym expansion error for token '{token}': {e}")
+                continue
+
+        return expanded if expanded else tokens
+
 
     def weigh_term(self, tokens):
+        if not tokens:
+            return tokens
+
         counts = Counter(tokens)
         total = sum(counts.values())
-        return {token: round(count / total, 3) for token, count in counts.items()}
 
+        result = {token: round(count / total, 3) for token, count in counts.items()}
+        return result if result else tokens
+    
 app.add_middleware( CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 @app.post("/preprocess")
 async def preprocess_query(request: Request):
@@ -192,7 +241,7 @@ async def preprocess_query(request: Request):
 
         return {"queryId": query_id}
     except Exception as e:
-        logging.error(f"[Preprocessing service Error] {str(e)}")
+        logging.error(f"[Preprocessing Error] {str(e)}")
         return JSONResponse(
             content={"error": str(e)},
             status_code=500
@@ -200,10 +249,9 @@ async def preprocess_query(request: Request):
 
 
 if __name__ == "__main__":
-    # Example usage
     preprocessor = DataPreprocessor()
     preprocessor.process_query(
-        original_text="Hello world! This is a test.",
+        original_text="candy.",
         translated_text="Hello world! This is a test.",
         language="es",
         user_id="user123"

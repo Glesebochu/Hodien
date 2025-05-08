@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../pages/search_page.dart';
 
 class ReusableBackButton extends StatelessWidget {
   final Widget? redirectTo;
@@ -19,9 +18,7 @@ class ReusableBackButton extends StatelessWidget {
           if (Navigator.of(context).canPop()) {
             Navigator.of(context).pop();
           } else {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (_) => const SearchPage()),
-            );
+            Navigator.of(context).pushReplacementNamed('/home');
           }
         }
       },

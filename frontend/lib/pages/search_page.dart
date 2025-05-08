@@ -1,17 +1,24 @@
 import 'package:flutter/material.dart';
-import '../models/reusable_back_button.dart';
-import '../models/search_input_bar.dart';
-
+import '../components/search_input_bar.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart' as shadcn;
+import 'package:frontend/models/humor_profile.dart';
+import 'post_card.dart';
 
 class SearchPage extends StatefulWidget {
-  const SearchPage({super.key});
+  final HumorProfile profile; // Declare the profile variable
+  const SearchPage({
+    super.key,
+    required this.profile,
+  }); // Constructor with profile
   @override
   State<SearchPage> createState() => _SearchPageState();
 }
 
 class _SearchPageState extends State<SearchPage> {
-  bool showNoResults = false; // 🟡 Flag to toggle "No results found"
+  bool showNoResults = false; // Flag to toggle "No results found"
   String? errorMessage;
+  bool isSearchLoading = false;
+  List<Map<String, dynamic>> searchResults = [];
 
   @override
   Widget build(BuildContext context) {
@@ -26,77 +33,91 @@ class _SearchPageState extends State<SearchPage> {
               const SizedBox(height: 12),
 
               // Header Row
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: ReusableBackButton(),
-                  ),
-                  const Text(
-                    'Explore',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                ],
+              Center(
+                child: const shadcn.Text(
+                  'Explore',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
               ),
 
-              const SizedBox(height: 100),
+              const SizedBox(height: 20),
 
               // SearchInputBar with error callback
               SearchInputBar(
-                // Callback to handle invalid input or error from search bar
+                onSearchStart: () {
+                  setState(() {
+                    isSearchLoading = true;
+                    showNoResults = false;
+                    errorMessage = null;
+                    searchResults = [];
+                  });
+                },
                 onError: (String error) {
                   setState(() {
                     showNoResults = true;
                     errorMessage = error;
+                    isSearchLoading = false;
+                    searchResults = [];
                   });
                 },
-                onValidSearch: () {
+                onSearchResults: (List<Map<String, dynamic>> results) {
                   setState(() {
-                    showNoResults = false;
+                    isSearchLoading = false;
+                    searchResults = results;
                   });
                 },
               ),
-              const SizedBox(height: 10),
-              const Divider(),
+              const SizedBox(height: 8),
+              const shadcn.Divider(),
               const SizedBox(height: 12),
 
-              // Conditional display based on input
-              if (showNoResults)
-                Expanded(
-                  child: Center(
-                    child: Text(
-                      errorMessage ??
-                          'No Results Found', // Use the errorMessage if it exists
-                      style: const TextStyle(
-                        color: Colors.grey,
-                        fontStyle: FontStyle.italic,
-                      ),
-                    ),
-                  ),
-                )
-              else
-                const Expanded(
-                  child: Center(
-                    child: Text(
-                      'Search results will appear here.',
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontStyle: FontStyle.italic,
-                      ),
-                    ),
-                  ),
+              Expanded(
+                child: Builder(
+                  builder: (_) {
+                    if (isSearchLoading) {
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          color: Color.fromARGB(255, 225, 204, 15),
+                        ),
+                      );
+                    } else if (showNoResults) {
+                      return Center(
+                        child: shadcn.Text(
+                          errorMessage ?? 'No Results Found',
+                          style: const shadcn.TextStyle(
+                            color: Colors.grey,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      );
+                    } else if (searchResults.isNotEmpty) {
+                      return ListView.builder(
+                        itemCount: searchResults.length,
+                        itemBuilder: (context, index) {
+                          return PostCard(
+                            jokeData: searchResults[index],
+                            humorProfile: widget.profile, // Pass humor profile
+                          );
+                        },
+                      );
+                    } else {
+                      return const Center(
+                        child: shadcn.Text(
+                          'A spark of humor, a slice of soul - discover joy tailored just for you...',
+                          style: shadcn.TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                            height: 1.5,
+                            letterSpacing: 0.5,
+                            fontFamily: 'Helvetica',
+                            color: Color.fromARGB(255, 176, 173, 114),
+                          ),
+                        ),
+                      );
+                    }
+                  },
                 ),
-              // loading/empty state previews
-              // const Center(
-              //   child: SizedBox(
-              //     width: 20,
-              //     height: 20,
-              //     child: CircularProgressIndicator(
-              //       color: Color.fromARGB(255, 225, 204, 15),
-              //     ),
-              //   ),
-              // ),
+              ),
               SizedBox(height: 20),
             ],
           ),

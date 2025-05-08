@@ -2,6 +2,7 @@ import 'constants.dart';
 import 'reaction.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:frontend/models/favorite.dart';
 
 class HumorProfile {
   final String userId;
@@ -16,54 +17,73 @@ class HumorProfile {
   HumorProfile({
     required this.userId,
     this.interests = const [],
-    this.physicalHumorPreference = 0.25,
-    this.linguisticHumorPreference = 0.25,
-    this.situationalHumorPreference = 0.25,
-    this.criticalHumorPreference = 0.25,
+    this.physicalHumorPreference = 25,
+    this.linguisticHumorPreference = 25,
+    this.situationalHumorPreference = 25,
+    this.criticalHumorPreference = 25,
     this.reactionHistory = const [],
     List<String>? favoriteContent,
   }) : favoriteContent = favoriteContent ?? [];
 
   //add id of favorite content
-  void addFavoriteById(String contentId) {
-    print('Adding content ID to favorites: $contentId');
-    if (!favoriteContent.contains(contentId)) {
-      favoriteContent.insert(0, contentId);
-    } // Only add if not already in the stack// Console log for debugging
-    print('Current favorites stack: $favoriteContent'); //
+  void addFavoriteById(String contentId) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) throw Exception('User not logged in');
+
+    final favoritesRef = FirebaseFirestore.instance
+        .collection('favorite')
+        .doc(user.uid); // Use user ID as the doc ID
+
+    await favoritesRef.set({
+      'userId': user.uid,
+      'contentIds': FieldValue.arrayUnion([contentId]),
+      'favoritedAt': DateTime.now(),
+    }, SetOptions(merge: true));
+
+    await loadFavoriteContentStack(); // merge: true preserves existing data
   }
 
-  void removeFavoriteById(String contentId) {
+  void removeFavoriteById(String contentId) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) throw Exception('User not logged in');
+
     print('Removing content ID from favorites: $contentId');
-    if (favoriteContent.contains(contentId)) {
-      favoriteContent.remove(contentId);
-    } // Only add if not already in the stack// Console log for debugging
-    print('Current favorites stack: $favoriteContent'); //
+
+    // Remove from Firestore
+    final favoritesRef = FirebaseFirestore.instance
+        .collection('favorite')
+        .doc(user.uid);
+
+    await favoritesRef.update({
+      'contentIds': FieldValue.arrayRemove([contentId]),
+    });
+    await loadFavoriteContentStack();
   }
 
-  // Getter to retrieve the stack of favorite IDs
+  Future<void> loadFavoriteContentStack() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) throw Exception('User not logged in');
+
+    final doc =
+        await FirebaseFirestore.instance
+            .collection('favorite')
+            .doc(user.uid)
+            .get();
+
+    if (!doc.exists) {
+      favoriteContent = [];
+      return;
+    }
+
+    final data = doc.data();
+    favoriteContent =
+        List<String>.from(data?['contentIds'] ?? []).reversed.toList();
+  }
+
   List<String> getFavoriteContentStack() {
-    return favoriteContent; // Return a copy to avoid direct modification
+    return List<String>.from(favoriteContent); // Defensive copy
+    // return favoriteContent; // Return a copy to avoid direct modification
   }
-
-  // Ensure preferences stay within bounds (0-1)
-
-  // Future<Map<HumorType, double>> getHumorTypeScores() async {
-  //   //retrieve the humor type scores from database for current user
-
-  //   return {
-  //     HumorType.physical: double.parse(physical// ),
-  //     HumorType.linguistic: double.parse(
-  //       linguisticHumorPreference.toStringAsFixed(2),
-  //     ),
-  //     HumorType.situational: double.parse(
-  //       situationalHumorPreference.toStringAsFixed(2),
-  //     ),
-  //     HumorType.critical: double.parse(
-  //       criticalHumorPreference.toStringAsFixed(2),
-  //     ),
-  //   };
-  // }
 
   Future<Map<HumorType, double>> getHumorTypeScores() async {
     final user = FirebaseAuth.instance.currentUser;
@@ -93,91 +113,94 @@ class HumorProfile {
     };
   }
 
-  double _clampPreference(double value) {
-    return value.clamp(0.0, 1.0);
-  }
-
   void updateByFavorite(HumorType humorType) async {
-    double increment = 0.3; // Example increment
+    double increment = 20;
+    final currentScores = await getHumorTypeScores();
 
     switch (humorType) {
       case HumorType.physical:
-        physicalHumorPreference = _clampPreference(
-          physicalHumorPreference + increment,
-        );
+        physicalHumorPreference = currentScores[humorType]! + increment;
         break;
       case HumorType.linguistic:
-        linguisticHumorPreference = _clampPreference(
-          linguisticHumorPreference + increment,
-        );
+        linguisticHumorPreference = currentScores[humorType]! + increment;
         break;
       case HumorType.situational:
-        situationalHumorPreference = _clampPreference(
-          situationalHumorPreference + increment,
-        );
+        situationalHumorPreference = currentScores[humorType]! + increment;
         break;
       case HumorType.critical:
-        criticalHumorPreference = _clampPreference(
-          criticalHumorPreference + increment,
-        );
+        criticalHumorPreference = currentScores[humorType]! + increment;
         break;
     }
+
+    final total =
+        physicalHumorPreference +
+        linguisticHumorPreference +
+        situationalHumorPreference +
+        criticalHumorPreference;
+    double toPercentage(double score) => (score / total * 100).clamp(0, 100);
+
+    physicalHumorPreference = toPercentage(physicalHumorPreference);
+    linguisticHumorPreference = toPercentage(linguisticHumorPreference);
+    situationalHumorPreference = toPercentage(situationalHumorPreference);
+    criticalHumorPreference = toPercentage(criticalHumorPreference);
     await saveToFirebase();
   }
 
   // Update humor profile based on reaction
   void updateFromReaction(HumorType humorType, String reaction) async {
     double change = 0.0;
+    final currentScores = await getHumorTypeScores();
+
     print('calling');
 
     // Define how the reaction affects humor preference
     switch (reaction) {
       case 'Not Funny':
-        change = -0.2;
-        print('reduced'); // Decrease preference for humor type
+        change = -10;
+        print('reduced'); // Debugging
         break;
       case 'Meh':
-        change = -0.1; // No change
+        change = -5; // No change
         break;
       case 'Funny':
-        change = 0.1; // Increase preference for humor type
+        change = 10; // Increase preference for humor type
         break;
       case 'Hilarious':
-        change = 0.2; // Increase preference more
+        change = 15; // Increase preference more
         break;
     }
 
     switch (humorType) {
       case HumorType.physical:
-        physicalHumorPreference = _clampPreference(
-          physicalHumorPreference + change,
-        );
+        physicalHumorPreference = currentScores[humorType]! + change;
         break;
       case HumorType.linguistic:
-        linguisticHumorPreference = _clampPreference(
-          linguisticHumorPreference + change,
-        );
+        linguisticHumorPreference = currentScores[humorType]! + change;
         break;
       case HumorType.situational:
-        situationalHumorPreference = _clampPreference(
-          situationalHumorPreference + change,
-        );
+        situationalHumorPreference = currentScores[humorType]! + change;
         break;
       case HumorType.critical:
-        criticalHumorPreference = _clampPreference(
-          criticalHumorPreference + change,
-        );
+        criticalHumorPreference = currentScores[humorType]! + change;
         break;
     }
+
+    //clamp the vaues 0-100
+
+    final total =
+        physicalHumorPreference +
+        linguisticHumorPreference +
+        situationalHumorPreference +
+        criticalHumorPreference;
+    double toPercentage(double score) => (score / total * 100).clamp(0, 100);
+
+    physicalHumorPreference = toPercentage(physicalHumorPreference);
+    linguisticHumorPreference = toPercentage(linguisticHumorPreference);
+    situationalHumorPreference = toPercentage(situationalHumorPreference);
+    criticalHumorPreference = toPercentage(criticalHumorPreference);
     await saveToFirebase();
     // reactionHistory = [...reactionHistory, reaction];
   }
-  // void setPreferencesFromTest(Map<String, double> answers) {
-  //   physicalHumorPreference = answers['physical'] ?? 0.0;
-  //   linguisticHumorPreference = answers['linguistic'] ?? 0.0;
-  //   situationalHumorPreference = answers['situational'] ?? 0.0;
-  //   criticalHumorPreference = answers['critical'] ?? 0.0;
-  // }
 
   static Future<HumorProfile> setPreferencesFromTest(
     List<String> responseList,
@@ -241,15 +264,6 @@ class HumorProfile {
     if (text.contains('critical')) criticalHumorPreference += 0.05;
     return this;
   }
-
-  // bool saveProfile() {
-  //   try {
-  //     // Add persistent storage logic here
-  //     return true;
-  //   } catch (_) {
-  //     return false;
-  //   }
-  // }
 
   Future<void> saveToFirebase() async {
     final user = FirebaseAuth.instance.currentUser;
