@@ -71,43 +71,12 @@ class UserService {
     return User.fromFirestore(doc.data()!, firebaseUser.uid);
   }
 
-  // Future<void> updateUser(User user) async {
-  //   await FirebaseFirestore.instance
-  //       .collection('user')
-  //       .doc(user.userId)
-  //       .set(
-  //         user.toFirestore(),
-  //         SetOptions(merge: true), // Merge to avoid overwriting fields
-  //       );
-  // }
-
   Future<String> updateProfileInfo({
     required String newUsername,
     // required String newEmail,
   }) async {
     final currentUser = _auth.currentUser;
     if (currentUser == null) throw Exception('User not logged in');
-
-    // Check if email is already in use
-    // final emailMethods = await _auth.fetchSignInMethodsForEmail(newEmail);
-    // if (newEmail != currentUser.email && emailMethods.isNotEmpty) {
-    //   throw Exception('Email already in use');
-    // }
-    // print(emailMethods);
-
-    // final existingEmailSnapshot =
-    //     await FirebaseFirestore.instance
-    //         .collection('user')
-    //         .where('email', isEqualTo: newEmail)
-    //         .limit(1)
-    //         .get();
-
-    // if (existingEmailSnapshot.docs.isNotEmpty &&
-    //     existingEmailSnapshot.docs.first.id != currentUser.uid) {
-    //   throw Exception('Email already in use');
-    // }
-
-    // print(existingEmailSnapshot);
 
     // Check if username exists
     final usernameSnapshot =
