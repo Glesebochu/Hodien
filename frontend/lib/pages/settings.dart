@@ -82,7 +82,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Future<void> _handleLogout() async {
     FirebaseAuth.instance.signOut();
-    Navigator.pop(context);
+    // Navigator.pop(context);
     // await _userService.logout();
     // if (context.mounted) Navigator.of(context).pushReplacementNamed('/');
   }
@@ -340,6 +340,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         SizedBox(
                           width: double.infinity,
                           child: shadcn.OutlineButton(
+                            key: ValueKey('logout_button'),
                             onPressed: _handleLogout,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -355,6 +356,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         SizedBox(
                           width: double.infinity,
                           child: shadcn.DestructiveButton(
+                            key: ValueKey('delete_button'),
                             onPressed: _handleDeleteAccount,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
