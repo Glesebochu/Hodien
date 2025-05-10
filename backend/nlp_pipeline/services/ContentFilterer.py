@@ -61,7 +61,7 @@ class ContentFilterer:
 
     def remove_below_threshold(self, contents: list, threshold: float):
         """
-        Calls analyzer functions and removes content with low humor score.
+        Removes content with low humor score.
         """
         filtered = []
         for content in contents:
