@@ -112,7 +112,9 @@ class Indexer:
             json.dump(self.content_index, json_file, indent=4)
 
         # 5. Push to Firestore
-        self.push_index_to_firestore()
+        # self.push_index_to_firestore()
+        
+        return self.content_index
 
     @staticmethod
     def upload_index_term(term_data):
