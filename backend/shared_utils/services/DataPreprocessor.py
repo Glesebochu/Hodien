@@ -218,34 +218,34 @@ class DataPreprocessor:
         result = {token: round(count / total, 3) for token, count in counts.items()}
         return result if result else tokens
     
-app.add_middleware( CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
-@app.post("/preprocess")
-async def preprocess_query(request: Request):
-    try:
-        data = await request.json()
-        original_text = data.get("original_text", "").strip()
-        translated_text = data.get("translated_text", "").strip()
-        language = data.get("language", "").strip()
-        user_id = data.get("user_id", "").strip()
+# app.add_middleware( CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
+# @app.post("/preprocess")
+# async def preprocess_query(request: Request):
+#     try:
+#         data = await request.json()
+#         original_text = data.get("original_text", "").strip()
+#         translated_text = data.get("translated_text", "").strip()
+#         language = data.get("language", "").strip()
+#         user_id = data.get("user_id", "").strip()
 
-        if not original_text or not user_id:
-            return JSONResponse(content={"error": "Missing required fields"}, status_code=400)
+#         if not original_text or not user_id:
+#             return JSONResponse(content={"error": "Missing required fields"}, status_code=400)
 
-        preprocessor = DataPreprocessor()
-        query_id = preprocessor.process_query(
-            original_text=original_text,
-            translated_text=translated_text,
-            language=language,
-            user_id=user_id,
-        )
+#         preprocessor = DataPreprocessor()
+#         query_id = preprocessor.process_query(
+#             original_text=original_text,
+#             translated_text=translated_text,
+#             language=language,
+#             user_id=user_id,
+#         )
 
-        return {"queryId": query_id}
-    except Exception as e:
-        logging.error(f"[Preprocessing Error] {str(e)}")
-        return JSONResponse(
-            content={"error": str(e)},
-            status_code=500
-        )
+#         return {"queryId": query_id}
+#     except Exception as e:
+#         logging.error(f"[Preprocessing Error] {str(e)}")
+#         return JSONResponse(
+#             content={"error": str(e)},
+#             status_code=500
+#         )
 
 
 # if __name__ == "__main__":

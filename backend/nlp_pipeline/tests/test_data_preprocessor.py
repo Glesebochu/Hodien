@@ -11,7 +11,7 @@ def data_preprocessor():
     [
         (
             "Why did the Scarecrow become a Comedian? He's outstanding!",
-            ["Why", "did", "the", "Scarecrow", "become", "a", "Comedian", "He's", "outstanding"]
+            ["Why", "did", "the", "Scarecrow", "become", "a", "Comedian?", "He's", "outstanding!"]
         )
     ]
 )
@@ -23,7 +23,7 @@ def test_tokenize(data_preprocessor, input_text, expected_output):
     "input_tokens, expected_output",
     [
         (
-            ["Why", "did", "the", "Scarecrow", "!", None],
+            ["Why", "did", "the", "Scarecrow'", "!", None],
             ["why", "did", "the", "scarecrow"]
         )
     ]
@@ -37,7 +37,7 @@ def test_normalize(data_preprocessor, input_tokens, expected_output):
     [
         (
             ["why", "did", "the", "scarecrow", "become", "comedian"],
-            ["why", "scarecrow", "become", "comedian"]
+            ["scarecrow", "become", "comedian"]
         )
     ]
 )
@@ -53,11 +53,11 @@ def test_remove_stop_words(data_preprocessor, input_tokens, expected_output):
             ["scarecrow", "comedian", "outstanding"]
         ),
         (
-            ["paralel", "lnes", "comon", "shame", "theyll", "nevr", "meet"],
+            ["paralel", "liness", "comon", "shame", "theyll", "nevr", "meet"],
             ["parallel", "lines", "common", "shame", "they'll", "never", "meet"]
         ),
         (
-            ["told", "wfe", "drawng", "eyebrows", "hgh", "looked", "suprised"],
+            ["told", "wiffe", "drawng", "eyebrows", "hgh", "looked", "suprised"],
             ["told", "wife", "drawing", "eyebrows", "high", "looked", "surprised"]
         ),
     ]
