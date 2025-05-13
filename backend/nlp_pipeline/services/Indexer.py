@@ -8,6 +8,7 @@ from multiprocessing import Pool, cpu_count
 # Initialize Firestore
 import firebase_admin
 from firebase_admin import credentials, firestore
+from tabulate import tabulate
 
 class Indexer:
     def __init__(self):
@@ -91,11 +92,22 @@ class Indexer:
         if self.db is None:
             self.initialize_firestore()
 
+        # Display the term_doc_count dictionary as a table
+        term_doc_count_table = [
+            [term, count] for term, count in self.term_doc_count.items()
+        ]
+        print(tabulate(term_doc_count_table, headers=["Term", "Document Count"], tablefmt="grid"))
+        
         # 3. Calculate TF-IDF weights
         for term in self.term_freq:
-            idf = math.log(self.doc_count / (self.term_doc_count[term] + 1))  # Avoid division by zero
+            idf = math.log(self.doc_count / float(self.term_doc_count[term]))  # Avoid division by zero
             for doc_id in self.term_freq[term]:
                 tf = self.term_freq[term][doc_id]
+                
+                if tf == 0:
+                    # This should not happen, but just in case
+                    print(f"Error: Term frequency (tf) is zero for term '{term}' in document '{doc_id}'")
+                
                 weight = round(tf * idf,4)
                 # Find record for metadata
                 record = next(r for r in records if r['id'] == doc_id)
@@ -106,6 +118,13 @@ class Indexer:
                     'humor_type_score': record['humor_type_score'],
                     'weight': weight
                 })
+                
+        term_freq_table = [
+            [term, doc_id, freq, freq, round(math.log(self.doc_count / (self.term_doc_count[term] + 1)), 4)]
+            for term, docs in self.term_freq.items()
+            for doc_id, freq in docs.items()
+        ]
+        print(tabulate(term_freq_table, headers=["Term", "Document ID", "Frequency", "TF", "IDF"], tablefmt="grid"))
 
         # 4. Write index to a JSON file
         with open('backend/nlp_pipeline/data/content_index.json', 'w') as json_file:
