@@ -93,10 +93,10 @@ class Indexer:
             self.initialize_firestore()
 
         # Display the term_doc_count dictionary as a table
-        term_doc_count_table = [
-            [term, count] for term, count in self.term_doc_count.items()
-        ]
-        print(tabulate(term_doc_count_table, headers=["Term", "Document Count"], tablefmt="grid"))
+        # term_doc_count_table = [
+        #     [term, count] for term, count in self.term_doc_count.items()
+        # ]
+        # print(tabulate(term_doc_count_table, headers=["Term", "Document Count"], tablefmt="grid"))
         
         # 3. Calculate TF-IDF weights
         for term in self.term_freq:
@@ -119,12 +119,12 @@ class Indexer:
                     'weight': weight
                 })
                 
-        term_freq_table = [
-            [term, doc_id, freq, freq, round(math.log(self.doc_count / (self.term_doc_count[term] + 1)), 4)]
-            for term, docs in self.term_freq.items()
-            for doc_id, freq in docs.items()
-        ]
-        print(tabulate(term_freq_table, headers=["Term", "Document ID", "Frequency", "TF", "IDF"], tablefmt="grid"))
+        # term_freq_table = [
+        #     [term, doc_id, freq, freq, round(math.log(self.doc_count / (self.term_doc_count[term] + 1)), 4)]
+        #     for term, docs in self.term_freq.items()
+        #     for doc_id, freq in docs.items()
+        # ]
+        # print(tabulate(term_freq_table, headers=["Term", "Document ID", "Frequency", "TF", "IDF"], tablefmt="grid"))
 
         # 4. Write index to a JSON file
         with open('backend/nlp_pipeline/data/content_index.json', 'w') as json_file:
