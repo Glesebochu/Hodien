@@ -183,17 +183,17 @@ class Indexer:
             pool.map(Indexer.upload_index_term, new_terms)
             
     @staticmethod
-    def upload_content_item(content_data):
+    def upload_content_item(content_data, db=None):
         """Upload a single content item to Firestore."""
         content_id, content, collection_name = content_data
 
-        # Initialize Firebase app in the worker process if not already initialized
-        if not firebase_admin._apps:
-            cred = credentials.Certificate("backend/nlp_pipeline/config/hodien-f5535-firebase-adminsdk-fbsvc-dd2b2fc2a9.json")
-            firebase_admin.initialize_app(cred)
+        # Use the provided Firestore client or initialize a new one
+        if db is None:
+            if not firebase_admin._apps:
+                cred = credentials.Certificate("backend/nlp_pipeline/config/hodien-f5535-firebase-adminsdk-fbsvc-dd2b2fc2a9.json")
+                firebase_admin.initialize_app(cred)
+            db = firestore.client()
 
-        # Initialize Firestore client in the worker process
-        db = firestore.client()
         collection = db.collection(collection_name)
         collection.document(content_id).set(content)
         print(f"Added content with ID ${content_id} to Firestore")

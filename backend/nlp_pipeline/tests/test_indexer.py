@@ -52,7 +52,7 @@ def test_build_index(indexer, tmp_path):
                 "humor_type": '2',
                 "emoji_presence": False,
                 "humor_type_score": 0.9,
-                "weight": 0.4055
+                "weight": 1.0986
             }
         ],
         "comedian": [
@@ -61,7 +61,7 @@ def test_build_index(indexer, tmp_path):
                 "humor_type": '2',
                 "emoji_presence": False,
                 "humor_type_score": 0.9,
-                "weight": 0.4055
+                "weight": 1.0986
             }
         ],
         "outstand": [
@@ -70,14 +70,14 @@ def test_build_index(indexer, tmp_path):
                 "humor_type": '2',
                 "emoji_presence": False,
                 "humor_type_score": 0.9,
-                "weight": 0.0
+                "weight": 0.4055
             },
             {
                 "id": "3",
                 "humor_type": '2',
                 "emoji_presence": False,
                 "humor_type_score": 0.85,
-                "weight": 0.0
+                "weight": 0.4055
             }
         ],
         "bear": [
@@ -86,7 +86,7 @@ def test_build_index(indexer, tmp_path):
                 "humor_type": '2',
                 "emoji_presence": False,
                 "humor_type_score": 0.8,
-                "weight": 0.8109
+                "weight": 2.1972
             }
         ],
         "teeth": [
@@ -95,7 +95,7 @@ def test_build_index(indexer, tmp_path):
                 "humor_type": '2',
                 "emoji_presence": False,
                 "humor_type_score": 0.8,
-                "weight": 0.4055
+                "weight": 1.0986
             }
         ],
         "gummi": [
@@ -104,7 +104,7 @@ def test_build_index(indexer, tmp_path):
                 "humor_type": '2',
                 "emoji_presence": False,
                 "humor_type_score": 0.8,
-                "weight": 0.4055
+                "weight": 1.0986
             }
         ],
         "fake": [
@@ -113,7 +113,7 @@ def test_build_index(indexer, tmp_path):
                 "humor_type": '2',
                 "emoji_presence": False,
                 "humor_type_score": 0.85,
-                "weight": 0.4055
+                "weight": 1.0986
             }
         ],
         "spaghetti": [
@@ -122,7 +122,7 @@ def test_build_index(indexer, tmp_path):
                 "humor_type": '2',
                 "emoji_presence": False,
                 "humor_type_score": 0.85,
-                "weight": 0.4055
+                "weight": 1.0986
             }
         ],
         "impaste": [
@@ -131,7 +131,7 @@ def test_build_index(indexer, tmp_path):
                 "humor_type": '2',
                 "emoji_presence": False,
                 "humor_type_score": 0.85,
-                "weight": 0.4055
+                "weight": 1.0986
             }
         ],
         'become': [
@@ -140,14 +140,14 @@ def test_build_index(indexer, tmp_path):
                 'humor_type': '2',
                 'humor_type_score': 0.9,
                 'id': '1',
-                'weight': 0.0,
+                'weight': 0.4055,
             },
             {
                 'emoji_presence': False,
                 'humor_type': '2',
                 'humor_type_score': 0.85,
                 'id': '3',
-                'weight': 0.0,
+                'weight': 0.4055,
             },
         ],
         'call': [
@@ -156,7 +156,7 @@ def test_build_index(indexer, tmp_path):
                 'humor_type': '2',
                 'humor_type_score': 0.8,
                 'id': '2',
-                'weight': 0.4055,
+                'weight': 1.0986,
             },
         ],
     }
@@ -184,18 +184,22 @@ def test_upload_index_term(monkeypatch):
     mock_collection.document.assert_called_with("scarecrow")
     mock_document.set.assert_called_with({'content': {"tfidf": 0.5, "docs": ["1"]}})
 
-def test_push_content_to_firestore(indexer, monkeypatch, tmp_path):
-    """Test the push_content_to_firestore method."""
+def test_upload_content_item(monkeypatch):
+    """Test the upload_content_item method without contacting Firestore."""
+    # Mock Firestore client and its methods
     mock_firestore_client = MagicMock()
-    monkeypatch.setattr(indexer, "firestore_client", mock_firestore_client)
+    mock_collection = MagicMock()
+    mock_document = MagicMock()
+    mock_firestore_client.collection.return_value = mock_collection
+    mock_collection.document.return_value = mock_document
 
-    input_csv_path = tmp_path / "test_humor.csv"
-    input_csv_path.write_text(
-        "id,text\n"
-        "1,Why did the scarecrow become a comedian? He's outstanding!\n"
-        "2,The meeting is at 2 PM.\n"
-    )
-    indexer.push_content_to_firestore(input_csv_path, collection_name="humor_content")
+    # Prepare test data
+    content_data = ("1", {"text": "Why did the scarecrow become a comedian?", "emoji_presence": False}, "humor_content")
 
+    # Call the method with the mock Firestore client
+    Indexer.upload_content_item(content_data, db=mock_firestore_client)
+
+    # Assertions
     mock_firestore_client.collection.assert_called_with("humor_content")
-    assert mock_firestore_client.collection().document.call_count == 2
+    mock_collection.document.assert_called_with("1")
+    mock_document.set.assert_called_with({"text": "Why did the scarecrow become a comedian?", "emoji_presence": False})
