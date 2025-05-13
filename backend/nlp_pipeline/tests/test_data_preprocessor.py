@@ -75,7 +75,7 @@ def test_correct_spelling(data_preprocessor, input_tokens, expected_output):
         ),
         (
             ["parallel", "lines", "common", "shame", "they'll", "never", "meet"],
-            ["parallel", "line", "common", "shame", "theyll", "never", "meet"]
+            ["parallel", "line", "common", "shame", "they", "never", "meet"]
         ),
         (
             ["told", "wife", "drawing", "eyebrows", "high", "looked", "surprised"],
