@@ -163,19 +163,26 @@ def test_build_index(indexer, tmp_path):
     content_index = indexer.build_index(input_csv_path)
     assert content_index == expected_index
 
-def test_push_index_to_firestore(indexer, monkeypatch):
-    """Test the push_index_to_firestore method."""
+
+def test_upload_index_term(monkeypatch):
+    """Test the upload_index_term method without contacting Firestore."""
+    # Mock Firestore client and its methods
     mock_firestore_client = MagicMock()
-    monkeypatch.setattr(indexer, "firestore_client", mock_firestore_client)
+    mock_collection = MagicMock()
+    mock_document = MagicMock()
+    mock_firestore_client.collection.return_value = mock_collection
+    mock_collection.document.return_value = mock_document
 
-    index_data = {
-        "scarecrow": {"tfidf": 0.5, "docs": ["1"]},
-        "meeting": {"tfidf": 0.3, "docs": ["2"]}
-    }
-    indexer.push_index_to_firestore(index_data)
+    # Prepare test data
+    term_data = ("scarecrow", {"tfidf": 0.5, "docs": ["1"]}, "content_index")
 
-    mock_firestore_client.collection.assert_called_with("index")
-    assert mock_firestore_client.collection().document.call_count == len(index_data)
+    # Call the method with the mock Firestore client
+    Indexer.upload_index_term(term_data, db=mock_firestore_client)
+
+    # Assertions
+    mock_firestore_client.collection.assert_called_with("content_index")
+    mock_collection.document.assert_called_with("scarecrow")
+    mock_document.set.assert_called_with({'content': {"tfidf": 0.5, "docs": ["1"]}})
 
 def test_push_content_to_firestore(indexer, monkeypatch, tmp_path):
     """Test the push_content_to_firestore method."""

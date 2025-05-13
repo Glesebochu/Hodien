@@ -136,16 +136,17 @@ class Indexer:
         return self.content_index
 
     @staticmethod
-    def upload_index_term(term_data):
+    def upload_index_term(term_data, db=None):
         """Upload a single term and its content to Firestore."""
         term, content, collection_path = term_data
 
-        # Initialize Firebase app in the worker process if not already initialized
-        if not firebase_admin._apps:
-            cred = credentials.Certificate("backend/nlp_pipeline/config/hodien-f5535-firebase-adminsdk-fbsvc-dd2b2fc2a9.json")
-            firebase_admin.initialize_app(cred)
+        # Use the provided Firestore client or initialize a new one
+        if db is None:
+            if not firebase_admin._apps:
+                cred = credentials.Certificate("backend/nlp_pipeline/config/hodien-f5535-firebase-adminsdk-fbsvc-dd2b2fc2a9.json")
+                firebase_admin.initialize_app(cred)
+            db = firestore.client()
 
-        db = firestore.client()
         index_collection = db.collection(collection_path)
         index_collection.document(term).set({'content': content})
         print(f"Added ${term} to Firestore")
