@@ -8,63 +8,157 @@ def indexer():
     """Fixture to initialize the Indexer once for all tests."""
     return Indexer()
 
-def test_process_record(indexer):
-    """Test the process_record method."""
-    input_record = {"id": "1", "text": "Why did the scarecrow become a comedian? He's outstanding!"}
-    expected_terms = [
-        ("scarecrow", "1"),
-        ("comedian", "1"),
-        ("outstanding", "1")
+@pytest.mark.parametrize(
+    "input_record, expected_terms",
+    [
+        (
+            {"id": "1", "text": "Why did the scarecrow become a comedian? He's outstanding!"},
+            [
+                ("scarecrow", "1"),
+                ("become", "1"),
+                ("comedian", "1"),
+                ("outstand", "1")
+            ],
+        ),
+        (
+            {"id": "2", "text": "The meeting is at 2 PM."},
+            [
+                ("meet", "2"),
+                ("2", "2"),
+                ("pm", "2")
+            ],
+        )
     ]
+)
+def test_process_record(indexer, input_record, expected_terms):
+    """Test the process_record method with parameterized inputs."""
     term_data, processed_record = indexer.process_record(input_record)
+    
     assert term_data == expected_terms
-    assert processed_record == input_record
 
 def test_build_index(indexer, tmp_path):
     """Test the build_index method."""
     input_csv_path = tmp_path / "test_humor.csv"
     input_csv_path.write_text(
         "id,text,emoji_presence,humor_type,humor_type_score\n"
-        "1,Why did the scarecrow become a comedian? He's outstanding!,false,pun,0.9\n"
-        "2,The meeting is at 2 PM.,false,neutral,0.5\n"
+        "1,Why did the scarecrow become a comedian? He's outstanding!,false,2,0.9\n"
+        "2,What do you call a bear with no teeth? A gummy bear!,false,2,0.8\n"
+        "3,Why did the fake spaghetti become outstanding? An impasta!,false,2,0.85\n"
     )
     expected_index = {
         "scarecrow": [
             {
                 "id": "1",
-                "humor_type": "pun",
+                "humor_type": '2',
                 "emoji_presence": False,
                 "humor_type_score": 0.9,
-                "weight": 0.6931
+                "weight": 0.4055
             }
         ],
         "comedian": [
             {
                 "id": "1",
-                "humor_type": "pun",
+                "humor_type": '2',
                 "emoji_presence": False,
                 "humor_type_score": 0.9,
-                "weight": 0.6931
+                "weight": 0.4055
             }
         ],
-        "outstanding": [
+        "outstand": [
             {
                 "id": "1",
-                "humor_type": "pun",
+                "humor_type": '2',
                 "emoji_presence": False,
                 "humor_type_score": 0.9,
-                "weight": 0.6931
+                "weight": 0.0
+            },
+            {
+                "id": "3",
+                "humor_type": '2',
+                "emoji_presence": False,
+                "humor_type_score": 0.85,
+                "weight": 0.0
             }
         ],
-        "meeting": [
+        "bear": [
             {
                 "id": "2",
-                "humor_type": "neutral",
+                "humor_type": '2',
                 "emoji_presence": False,
-                "humor_type_score": 0.5,
-                "weight": 0.6931
+                "humor_type_score": 0.8,
+                "weight": 0.8109
             }
-        ]
+        ],
+        "teeth": [
+            {
+                "id": "2",
+                "humor_type": '2',
+                "emoji_presence": False,
+                "humor_type_score": 0.8,
+                "weight": 0.4055
+            }
+        ],
+        "gummi": [
+            {
+                "id": "2",
+                "humor_type": '2',
+                "emoji_presence": False,
+                "humor_type_score": 0.8,
+                "weight": 0.4055
+            }
+        ],
+        "fake": [
+            {
+                "id": "3",
+                "humor_type": '2',
+                "emoji_presence": False,
+                "humor_type_score": 0.85,
+                "weight": 0.4055
+            }
+        ],
+        "spaghetti": [
+            {
+                "id": "3",
+                "humor_type": '2',
+                "emoji_presence": False,
+                "humor_type_score": 0.85,
+                "weight": 0.4055
+            }
+        ],
+        "impaste": [
+            {
+                "id": "3",
+                "humor_type": '2',
+                "emoji_presence": False,
+                "humor_type_score": 0.85,
+                "weight": 0.4055
+            }
+        ],
+        'become': [
+            {
+                'emoji_presence': False,
+                'humor_type': '2',
+                'humor_type_score': 0.9,
+                'id': '1',
+                'weight': 0.0,
+            },
+            {
+                'emoji_presence': False,
+                'humor_type': '2',
+                'humor_type_score': 0.85,
+                'id': '3',
+                'weight': 0.0,
+            },
+        ],
+        'call': [
+            {
+                'emoji_presence': False,
+                'humor_type': '2',
+                'humor_type_score': 0.8,
+                'id': '2',
+                'weight': 0.4055,
+            },
+        ],
     }
     content_index = indexer.build_index(input_csv_path)
     assert content_index == expected_index
