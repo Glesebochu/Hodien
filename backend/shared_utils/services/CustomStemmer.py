@@ -43,7 +43,7 @@ class CustomPorterStemmer:
             elif prev_vowel:
                 m += 1
                 prev_vowel = False
-
+        # logging.info(f"Measure for '{word}': {m}")
         return m
 
 
@@ -166,7 +166,64 @@ class CustomPorterStemmer:
         except Exception as e:
             logging.error(f"Step 1c Error: {e}")
             return word
+    def step2(self, word: str) -> str:
+        logging.info(f"Step 2 Input: {word}")
+        try:
+            for suffix, replacement in suffix_map_step2.items():
+                if word.endswith(suffix):
+                    stem = word[: -len(suffix)]
+                    if self.measure(stem) > 0:
+                        result = stem + replacement
+                        logging.info(f"Step 2 Output: {result}")
+                        return result
+            return word
+        except Exception as e:
+            logging.error(f"Step 2 Error: {e}")
+            return word
 
+    def step3(self, word: str) -> str:
+        logging.info(f"Step 3 Input: {word}")
+        try:
+            for suffix, replacement in suffix_map_step3.items():
+                if word.endswith(suffix):
+                    stem = word[: -len(suffix)]
+                    if self.measure(stem) > 0:
+                        result = stem + replacement
+                        logging.info(f"Step 3 Output: {result}")
+                        return result
+            return word
+        except Exception as e:
+            logging.error(f"Step 3 Error: {e}")
+            return word
+
+    def step4(self, word: str) -> str:
+        logging.info(f"Step 4 Input: {word}")
+        try:
+            for suffix in suffix_list_step4:
+                if word.endswith(suffix):
+                    stem = word[: -len(suffix)]
+                    if self.measure(stem) >= 1 and len(stem) > 4:
+                        logging.info(f"Step 4 Output: {stem}")
+                        return stem
+            return word
+        except Exception as e:
+            logging.error(f"Step 4 Error: {e}")
+            return word
+
+    def step5(self, word: str) -> str:
+        logging.info(f"Step 5 Input: {word}")
+        try:
+            if word.endswith("e"):
+                stem = word[:-1]
+                if self.measure(stem) > 1 or (self.measure(stem) == 1 and not self.cvc(stem)):
+                    word = stem
+            if word.endswith("ll") and self.measure(word) > 1:
+                word = word[:-1]
+            logging.info(f"Step 5 Output: {word}")
+            return word
+        except Exception as e:
+            logging.error(f"Step 5 Error: {e}")
+            return word
     def stem(self, word: str) -> str:
         logging.info(f"\n🌱 Starting stemming for: {word}")
         word = word.lower()
@@ -178,6 +235,10 @@ class CustomPorterStemmer:
         word = self.step1a(word)
         word = self.step1b(word)
         word = self.step1c(word)
+        word = self.step2(word)
+        word = self.step3(word)
+        word = self.step4(word)
+        word = self.step5(word)
 
         logging.info(f"🎯 Final Stemmed Result: {word}\n")
         return word
@@ -185,6 +246,6 @@ class CustomPorterStemmer:
 
 if __name__ == "__main__":
     stemmer = CustomPorterStemmer()
-    test_words = ["hissing"]
+    test_words = ["accidental"]
     for word in test_words:
         print(f"Original: {word} → Stemmed: {stemmer.stem(word)}")

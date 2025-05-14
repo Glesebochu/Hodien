@@ -72,15 +72,19 @@ class DataPreprocessor:
             raise e
 
     # A function that creates a UserQuery object after preprocessing the text
-    def process_query(self, original_text: str, translated_text: str, language: str, user_id: str) -> str:
-        """
-        Preprocesses the original text, creates a UserQuery if not exists, otherwise reuses existing.
-        Always returns the Query ID. Links new user IDs if needed.
-        """
-        try:
-            # Step 1: Check if query already exists by original_text
+    def process_query(self, original_text: str, translated_text: str, language: str, user_id: str) -> str: 
+        """ Preprocesses the original text, creates a UserQuery if not exists, otherwise reuses existing. 
+        Always returns the Query ID. Links new user IDs if needed. Uses stemmed_tokens for checking query existence. """ 
+        try: 
+            # Step 1: Preprocess to get stemmed tokens 
+            logging.info(f"[Preprocessing] Starting preprocessing for: '{original_text}'") 
+            text_to_preprocess = translated_text if translated_text else original_text 
+            preprocessing_result = self.preprocess(text_to_preprocess) 
+            stemmed_tokens = preprocessing_result.get("stemmed_tokens", [])
+
+            # Step 2: Check if query already exists by stemmed_tokens
             query_ref = db.collection('user_queries').where(
-                filter=FieldFilter('original_text', '==', original_text)
+                filter=FieldFilter('stemmed_tokens', '==', stemmed_tokens)
             ).limit(1)
             results = query_ref.stream()
 
@@ -89,26 +93,21 @@ class DataPreprocessor:
                 query_id = existing_query.get("id")
                 logging.info(f"[Found Existing Query] ID: {query_id}")
 
-                # Check user_ids field and append user_id if not present
                 user_ids = existing_query.get("user_ids", [])
 
                 if user_id in user_ids:
                     logging.info(f"[User Linked] User {user_id} already linked to query {query_id}.")
-                    return query_id   
+                    return query_id  # ✅ Already linked
                 else:
-                    # Append user_id to the list and update Firestore
                     user_ids.append(user_id)
                     db.collection('user_queries').document(query_id).update({
                         "user_ids": user_ids
                     })
                     logging.info(f"[User Linked] User {user_id} linked to existing query {query_id}.")
-                    return query_id  
-            # Step 2: If no existing query found, preprocess new text
-            logging.info(f"[No Existing Query Found] Preprocessing new query: '{original_text}'")
-            text_to_preprocess = translated_text if translated_text else original_text
-            preprocessing_result = self.preprocess(text_to_preprocess)
+                    return query_id  # ✅ Now linked
 
-            # Step 3: Save new query
+            # Step 3: Save new query if no match found
+            logging.info(f"[No Existing Query Found] Saving new query: '{original_text}'")
             new_user_query = UserQuery(db)
             new_query_id = new_user_query.create(
                 original_text=original_text,
@@ -117,7 +116,7 @@ class DataPreprocessor:
                 user_id=user_id,
                 tokens=preprocessing_result.get("tokens", []),
                 corrected_tokens=preprocessing_result.get("corrected_tokens", []),
-                stemmed_tokens=preprocessing_result.get("stemmed_tokens", []),
+                stemmed_tokens=stemmed_tokens,
                 expanded_tokens=preprocessing_result.get("expanded_tokens", []),
                 term_weights=preprocessing_result.get("term_weights", {}),
             )
