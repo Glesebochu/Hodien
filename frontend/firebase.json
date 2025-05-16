@@ -16,22 +16,17 @@
             "ios": "1:292024245830:ios:2101697ef7f17a4254f447",
             "macos": "1:292024245830:ios:2101697ef7f17a4254f447",
             "web": "1:292024245830:web:d081526f50e9c84b54f447",
-            "windows": "1:292024245830:web:3d06c4f6ad9e658054f447"
+            "windows": "1:292024245830:web:3d06c4f6ad9e658054f447",
+            "linux": "1:292024245830:web:d081526f50e9c84b54f447"
           }
         }
       }
     }
   },
   "emulators": {
-    "auth": {
-      "port": 9099
-    },
-    "firestore": {
-      "port": 8080
-    },
-    "ui": {
-      "enabled": true
-    },
+    "auth": { "port": 9099 },
+    "firestore": { "port": 8080 },
+    "ui": { "enabled": true },
     "singleProjectMode": true
   }
 }
