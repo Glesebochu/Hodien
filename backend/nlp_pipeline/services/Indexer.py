@@ -181,11 +181,21 @@ class Indexer:
         # Use parallel processing to upload terms
         with Pool(cpu_count()) as pool:
             pool.map(Indexer.upload_index_term, new_terms)
-            
+
     @staticmethod
     def upload_content_item(content_data, db=None):
-        """Upload a single content item to Firestore."""
+        """Upload a single content item to Firestore with validation."""
         content_id, content, collection_name = content_data
+
+        # Validation: Check for missing id or any field being None/null/empty
+        required_fields = ['id', 'text', 'emoji_presence', 'humor_type', 'humor_type_score']
+        missing_or_invalid = [
+            field for field in required_fields
+            if field not in content or content[field] is None or (isinstance(content[field], str) and not content[field].strip())
+        ]
+        if not content_id or missing_or_invalid:
+            print(f"Skipping content with invalid data: id={content_id}, missing/invalid fields={missing_or_invalid}")
+            return
 
         # Use the provided Firestore client or initialize a new one
         if db is None:
