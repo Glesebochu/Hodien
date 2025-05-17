@@ -137,8 +137,34 @@ class Indexer:
 
     @staticmethod
     def upload_index_term(term_data, db=None):
-        """Upload a single term and its content to Firestore."""
+        """Upload a single term and its content to Firestore with validation."""
+        # Validate term_data structure
+        if not isinstance(term_data, (list, tuple)) or len(term_data) != 3:
+            print(f"Skipping invalid term_data structure: {term_data}")
+            return
+
         term, content, collection_path = term_data
+
+        # Validate term
+        if not term or not isinstance(term, str) or not term.strip():
+            print(f"Skipping upload: Invalid or empty term '{term}' in term_data: {term_data}")
+            return
+
+        # Validate content
+        if not isinstance(content, list) or not content:
+            print(f"Skipping upload: Content for term '{term}' is missing or not a list: {content}")
+            return
+
+        # Check required fields in each content item
+        required_fields = ['id', 'humor_type', 'emoji_presence', 'humor_type_score', 'weight']
+        for idx, item in enumerate(content):
+            missing_fields = [
+                field for field in required_fields
+                if field not in item or item[field] is None or (isinstance(item[field], str) and not item[field])
+            ]
+            if missing_fields:
+                print(f"Skipping upload: Content item at index {idx} for term '{term}' is missing fields: {missing_fields}")
+                return
 
         # Use the provided Firestore client or initialize a new one
         if db is None:
@@ -149,7 +175,7 @@ class Indexer:
 
         index_collection = db.collection(collection_path)
         index_collection.document(term).set({'content': content})
-        print(f"Added ${term} to Firestore")
+        print(f"Added {term} to Firestore")
 
     def push_index_to_firestore(self, json_file_path: str = None):
         """Push the content index to Firestore, skipping existing terms.
