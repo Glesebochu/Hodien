@@ -46,6 +46,7 @@ few
 for
 from
 further
+get
 had
 hadn
 hadn't
@@ -184,6 +185,7 @@ will
 with
 won
 won't
+would
 wouldn
 wouldn't
 y

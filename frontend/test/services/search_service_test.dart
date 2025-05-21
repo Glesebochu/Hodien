@@ -67,10 +67,10 @@ void main() {
         originalText: 'funny cat',
         translatedText: translation.translatedText,
         language: translation.language,
-        userId: mockUser.uid!,
+        userId: mockUser.uid,
       );
       final results = await mockMatcher.matchQueryAndProfile(
-        userId: mockUser.uid!,
+        userId: mockUser.uid,
         queryId: queryId,
       );
 
@@ -172,10 +172,10 @@ void main() {
         originalText: 'funny cat',
         translatedText: translation.translatedText,
         language: translation.language,
-        userId: mockUser.uid!,
+        userId: mockUser.uid,
       );
       final results = await mockMatcher.matchQueryAndProfile(
-        userId: mockUser.uid!,
+        userId: mockUser.uid,
         queryId: queryId,
       );
 
@@ -225,12 +225,12 @@ void main() {
         originalText: 'funny cat',
         translatedText: translation.translatedText,
         language: translation.language,
-        userId: mockUser.uid!,
+        userId: mockUser.uid,
       );
 
       try {
         await mockMatcher.matchQueryAndProfile(
-          userId: mockUser.uid!,
+          userId: mockUser.uid,
           queryId: queryId,
         );
       } catch (e) {

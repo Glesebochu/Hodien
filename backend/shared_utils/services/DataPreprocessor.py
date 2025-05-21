@@ -1,20 +1,20 @@
 import logging
 import re
 from collections import Counter
-from nltk.corpus import stopwords
 import traceback
 from spellchecker import SpellChecker
-from nltk.stem import PorterStemmer
 from nltk.corpus import wordnet
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
-from backend.search_engine.models.UserQuery import UserQuery
+from backend.search_engine.models.UserQuery import UserQuery as UserQuery
 from google.cloud.firestore_v1.base_query import FieldFilter
 from fastapi.middleware.cors import CORSMiddleware
 from .CustomStemmer import CustomPorterStemmer as CustomStemmer
+from nltk.corpus import words
+
 
 
 
@@ -35,7 +35,8 @@ db = firestore.client()
 class DataPreprocessor:
     def __init__(self):
         # Stop words are loaded once for efficiency
-        self.stop_words = set(stopwords.words("english"))
+        with open('stopwords_en.txt') as f:
+            self.stop_words = set(word.strip().lower() for word in f)
 
     # This function does the entire preprocessing pipeline
     def preprocess(self, text: str) -> dict:
@@ -44,17 +45,17 @@ class DataPreprocessor:
 
             tokens = self.tokenize(text)
             corrected = self.correct_spelling(tokens)
-            normalized = self.normalize(corrected)
-            filtered = self.remove_stop_words(normalized)
-            stemmed = self.stem_tokens(filtered)
+            filtered = self.remove_stop_words(corrected)
+            normalized = self.normalize(filtered)
+            stemmed = self.stem_tokens(normalized)
             expanded = self.expand_synonyms(stemmed)
             weights = self.weigh_term(expanded)
 
             result = {
                 "tokens": tokens,   
                 "corrected_tokens": corrected,
-                "normalized_tokens": normalized,
                 "filtered_tokens": filtered,
+                "normalized_tokens": normalized,
                 "stemmed_tokens": stemmed,
                 "expanded_tokens": expanded,
                 "term_weights": weights,
@@ -131,7 +132,7 @@ class DataPreprocessor:
     # --- Individual Processing Functions ---
 
     def tokenize(self, text: str):
-        return text.split()
+        return [re.sub(r"[^\w']", '', word.lower()) for word in text.split()]
 
     def normalize(self, tokens):
         """
@@ -183,29 +184,25 @@ class DataPreprocessor:
         if not isinstance(tokens, list):
             return tokens
 
-        expanded = []
+        tokens = [t for t in tokens if isinstance(t, str) and t]  # Clean original tokens
+        expanded = set(tokens)  # Use set to avoid duplicates
+
         for token in tokens:
-            if not token or not isinstance(token, str):
-                continue  # Skip None or invalid tokens
-
             try:
-                token = token.lower()
-                expanded.append(token)
-
                 synonyms = set()
                 for syn in wordnet.synsets(token):
                     for lemma in syn.lemmas():
                         synonym = lemma.name().lower().replace('_', ' ')
                         synonyms.add(synonym)
 
-                expanded.extend(sorted(synonyms))
+                new_synonyms = synonyms - expanded  # Only add new ones
+                expanded.update(new_synonyms)
 
             except Exception as e:
                 logging.warning(f"Synonym expansion error for token '{token}': {e}")
                 continue
 
-        return expanded if expanded else tokens
-
+        return sorted(expanded)
 
     def weigh_term(self, tokens):
         if not tokens:
@@ -250,8 +247,8 @@ async def preprocess_query(request: Request):
 if __name__ == "__main__":
     preprocessor = DataPreprocessor()
     preprocessor.process_query(
-        original_text="candy.",
-        translated_text="Hello world! This is a test.",
-        language="es",
+        original_text="He was surprized the comedein didn't realize how accidental the laughing would get, especialy when teh audience went quiet.",
+        translated_text="",
+        language="en",
         user_id="user123"
     )
