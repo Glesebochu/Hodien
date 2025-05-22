@@ -24,6 +24,7 @@ Future main() async {
 
   runApp(
     shadcn.ShadcnApp(
+      debugShowCheckedModeBanner: false,
       title: 'My App',
       home: const MainApp(),
       theme: shadcn.ThemeData(
