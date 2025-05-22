@@ -212,13 +212,13 @@ class _SettingsPageState extends State<SettingsPage> {
         _emailController.text = user.email;
 
         return Scaffold(
-          appBar: AppBar(
-            title: const Text('Settings'),
-            actions: [
-              // shadcn.ThemeToggleButton(),
-              const SizedBox(width: 12),
-            ],
-          ),
+          // appBar: AppBar(
+          //   title: const Text('Settings'),
+          //   actions: [
+          //     // shadcn.ThemeToggleButton(),
+          //     const SizedBox(width: 12),
+          //   ],
+          // ),
           body: Padding(
             padding: const EdgeInsets.all(16.0),
             child: ListView(

@@ -8,6 +8,7 @@ from multiprocessing import Pool, cpu_count
 # Initialize Firestore
 import firebase_admin
 from firebase_admin import credentials, firestore
+from tabulate import tabulate
 
 class Indexer:
     def __init__(self):
@@ -91,11 +92,22 @@ class Indexer:
         if self.db is None:
             self.initialize_firestore()
 
+        # Display the term_doc_count dictionary as a table
+        # term_doc_count_table = [
+        #     [term, count] for term, count in self.term_doc_count.items()
+        # ]
+        # print(tabulate(term_doc_count_table, headers=["Term", "Document Count"], tablefmt="grid"))
+        
         # 3. Calculate TF-IDF weights
         for term in self.term_freq:
-            idf = math.log(self.doc_count / (self.term_doc_count[term] + 1))  # Avoid division by zero
+            idf = math.log(self.doc_count / float(self.term_doc_count[term]))  # Avoid division by zero
             for doc_id in self.term_freq[term]:
                 tf = self.term_freq[term][doc_id]
+                
+                if tf == 0:
+                    # This should not happen, but just in case
+                    print(f"Error: Term frequency (tf) is zero for term '{term}' in document '{doc_id}'")
+                
                 weight = round(tf * idf,4)
                 # Find record for metadata
                 record = next(r for r in records if r['id'] == doc_id)
@@ -106,25 +118,35 @@ class Indexer:
                     'humor_type_score': record['humor_type_score'],
                     'weight': weight
                 })
+                
+        # term_freq_table = [
+        #     [term, doc_id, freq, freq, round(math.log(self.doc_count / (self.term_doc_count[term] + 1)), 4)]
+        #     for term, docs in self.term_freq.items()
+        #     for doc_id, freq in docs.items()
+        # ]
+        # print(tabulate(term_freq_table, headers=["Term", "Document ID", "Frequency", "TF", "IDF"], tablefmt="grid"))
 
         # 4. Write index to a JSON file
         with open('backend/nlp_pipeline/data/content_index.json', 'w') as json_file:
             json.dump(self.content_index, json_file, indent=4)
 
         # 5. Push to Firestore
-        self.push_index_to_firestore()
+        # self.push_index_to_firestore()
+        
+        return self.content_index
 
     @staticmethod
-    def upload_index_term(term_data):
+    def upload_index_term(term_data, db=None):
         """Upload a single term and its content to Firestore."""
         term, content, collection_path = term_data
 
-        # Initialize Firebase app in the worker process if not already initialized
-        if not firebase_admin._apps:
-            cred = credentials.Certificate("backend/nlp_pipeline/config/hodien-f5535-firebase-adminsdk-fbsvc-dd2b2fc2a9.json")
-            firebase_admin.initialize_app(cred)
+        # Use the provided Firestore client or initialize a new one
+        if db is None:
+            if not firebase_admin._apps:
+                cred = credentials.Certificate("backend/nlp_pipeline/config/hodien-f5535-firebase-adminsdk-fbsvc-dd2b2fc2a9.json")
+                firebase_admin.initialize_app(cred)
+            db = firestore.client()
 
-        db = firestore.client()
         index_collection = db.collection(collection_path)
         index_collection.document(term).set({'content': content})
         print(f"Added ${term} to Firestore")
@@ -161,17 +183,17 @@ class Indexer:
             pool.map(Indexer.upload_index_term, new_terms)
             
     @staticmethod
-    def upload_content_item(content_data):
+    def upload_content_item(content_data, db=None):
         """Upload a single content item to Firestore."""
         content_id, content, collection_name = content_data
 
-        # Initialize Firebase app in the worker process if not already initialized
-        if not firebase_admin._apps:
-            cred = credentials.Certificate("backend/nlp_pipeline/config/hodien-f5535-firebase-adminsdk-fbsvc-dd2b2fc2a9.json")
-            firebase_admin.initialize_app(cred)
+        # Use the provided Firestore client or initialize a new one
+        if db is None:
+            if not firebase_admin._apps:
+                cred = credentials.Certificate("backend/nlp_pipeline/config/hodien-f5535-firebase-adminsdk-fbsvc-dd2b2fc2a9.json")
+                firebase_admin.initialize_app(cred)
+            db = firestore.client()
 
-        # Initialize Firestore client in the worker process
-        db = firestore.client()
         collection = db.collection(collection_name)
         collection.document(content_id).set(content)
         print(f"Added content with ID ${content_id} to Firestore")

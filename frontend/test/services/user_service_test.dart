@@ -1,13 +1,10 @@
 import 'package:firebase_core_platform_interface/firebase_core_platform_interface.dart';
-import 'package:firebase_auth_platform_interface/firebase_auth_platform_interface.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:frontend/services/user_service.dart'; // Your UserService class
 // import 'package:frontend/models/user.dart';
 import '../mocks/firebase_mocks.mocks.dart'; // Import the generated mocks
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 void main() {
   late MockFirebaseAuth mockAuth;
