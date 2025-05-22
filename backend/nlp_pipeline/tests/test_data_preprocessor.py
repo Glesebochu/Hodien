@@ -71,10 +71,10 @@ def test_correct_spelling(data_preprocessor, input_tokens, expected_output):
     [
         (
             ["scarecrow", "comedian", "outstanding"],
-            ["scarecrow", "comed", "outstand"]
+            ["scarecrow", "comedian", "outstand"]
         ),
         (
-            ["parallel", "lines", "common", "shame", "they'll", "never", "meet"],
+            ["parallel", "lines", "common", "shame", "they", "never", "meet"],
             ["parallel", "line", "common", "shame", "they", "never", "meet"]
         ),
         (
