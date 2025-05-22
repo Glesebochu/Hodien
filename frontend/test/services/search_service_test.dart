@@ -4,11 +4,7 @@ import 'package:firebase_core_platform_interface/firebase_core_platform_interfac
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:frontend/services/translator_service.dart';
-import 'package:frontend/services/preprocessing_service.dart';
-import 'package:frontend/services/query_profile_matcher.dart';
 import '../mocks/search_mocks.mocks.dart';
-import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 void main() {
   late MockFirebaseAuth mockAuth;

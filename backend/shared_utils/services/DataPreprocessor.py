@@ -247,7 +247,7 @@ async def preprocess_query(request: Request):
 if __name__ == "__main__":
     preprocessor = DataPreprocessor()
     preprocessor.process_query(
-        original_text="He was surprized the comedein didn't realize how accidental the laughing would get, especialy when teh audience went quiet.",
+        original_text="He's fdgfsdg surprized the comedein they'll realize how accidental the laughing would get, especialy when teh audience went quiet.",
         translated_text="",
         language="en",
         user_id="user123"
