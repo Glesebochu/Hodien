@@ -152,6 +152,7 @@ class DataPreprocessor:
         return normalized if normalized else tokens
 
     def remove_stop_words(self, tokens):
+        tokens = [token.lower() if isinstance(token, str) else token for token in tokens]
         return [token for token in tokens if token not in self.stop_words]
 
     def correct_spelling(self, tokens):
