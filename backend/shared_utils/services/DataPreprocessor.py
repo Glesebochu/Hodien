@@ -132,7 +132,7 @@ class DataPreprocessor:
     # --- Individual Processing Functions ---
 
     def tokenize(self, text: str):
-        return [re.sub(r"[^\w']", '', word) for word in text.split()]
+        return text.split()
 
     def normalize(self, tokens):
         """
