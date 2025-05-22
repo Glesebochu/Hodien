@@ -98,7 +98,7 @@ def test_build_index(indexer, tmp_path):
                 "weight": 1.0986
             }
         ],
-        "gummi": [
+        "gummy": [
             {
                 "id": "2",
                 "humor_type": '2',
@@ -173,8 +173,20 @@ def test_upload_index_term(monkeypatch):
     mock_firestore_client.collection.return_value = mock_collection
     mock_collection.document.return_value = mock_document
 
-    # Prepare test data
-    term_data = ("scarecrow", {"tfidf": 0.5, "docs": ["1"]}, "content_index")
+    # Prepare test data that matches the required structure
+    term_data = (
+        "scarecrow",
+        [
+            {
+                "id": "1",
+                "humor_type": "2",
+                "emoji_presence": False,
+                "humor_type_score": 0.9,
+                "weight": 1.0986
+            }
+        ],
+        "content_index"
+    )
 
     # Call the method with the mock Firestore client
     Indexer.upload_index_term(term_data, db=mock_firestore_client)
@@ -182,7 +194,15 @@ def test_upload_index_term(monkeypatch):
     # Assertions
     mock_firestore_client.collection.assert_called_with("content_index")
     mock_collection.document.assert_called_with("scarecrow")
-    mock_document.set.assert_called_with({'content': {"tfidf": 0.5, "docs": ["1"]}})
+    mock_document.set.assert_called_with({'content': [
+        {
+            "id": "1",
+            "humor_type": "2",
+            "emoji_presence": False,
+            "humor_type_score": 0.9,
+            "weight": 1.0986
+        }
+    ]})
 
 def test_upload_content_item(monkeypatch):
     """Test the upload_content_item method without contacting Firestore."""
@@ -193,8 +213,18 @@ def test_upload_content_item(monkeypatch):
     mock_firestore_client.collection.return_value = mock_collection
     mock_collection.document.return_value = mock_document
 
-    # Prepare test data
-    content_data = ("1", {"text": "Why did the scarecrow become a comedian?", "emoji_presence": False}, "humor_content")
+    # Prepare test data with all required fields present and valid
+    content_data = (
+        "1",
+        {
+            "id": "1",
+            "text": "Why did the scarecrow become a comedian?",
+            "emoji_presence": False,
+            "humor_type": "2",
+            "humor_type_score": 0.9
+        },
+        "humor_content"
+    )
 
     # Call the method with the mock Firestore client
     Indexer.upload_content_item(content_data, db=mock_firestore_client)
@@ -202,4 +232,10 @@ def test_upload_content_item(monkeypatch):
     # Assertions
     mock_firestore_client.collection.assert_called_with("humor_content")
     mock_collection.document.assert_called_with("1")
-    mock_document.set.assert_called_with({"text": "Why did the scarecrow become a comedian?", "emoji_presence": False})
+    mock_document.set.assert_called_with({
+        "id": "1",
+        "text": "Why did the scarecrow become a comedian?",
+        "emoji_presence": False,
+        "humor_type": "2",
+        "humor_type_score": 0.9
+    })
