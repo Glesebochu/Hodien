@@ -1,20 +1,20 @@
 import logging
 import re
 from collections import Counter
-from nltk.corpus import stopwords
 import traceback
 from spellchecker import SpellChecker
-from nltk.stem import PorterStemmer
 from nltk.corpus import wordnet
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
-from backend.search_engine.models.UserQuery import UserQuery
+from backend.search_engine.models.UserQuery import UserQuery as UserQuery
 from google.cloud.firestore_v1.base_query import FieldFilter
 from fastapi.middleware.cors import CORSMiddleware
 from .CustomStemmer import CustomPorterStemmer as CustomStemmer
+from nltk.corpus import words
+
 
 
 
@@ -35,7 +35,8 @@ from .CustomStemmer import CustomPorterStemmer as CustomStemmer
 class DataPreprocessor:
     def __init__(self):
         # Stop words are loaded once for efficiency
-        self.stop_words = set(stopwords.words("english"))
+        with open('stopwords_en.txt') as f:
+            self.stop_words = set(word.strip().lower() for word in f)
 
     # This function does the entire preprocessing pipeline
     def preprocess(self, text: str) -> dict:
@@ -44,17 +45,17 @@ class DataPreprocessor:
 
             tokens = self.tokenize(text)
             corrected = self.correct_spelling(tokens)
-            normalized = self.normalize(corrected)
-            filtered = self.remove_stop_words(normalized)
-            stemmed = self.stem_tokens(filtered)
+            filtered = self.remove_stop_words(corrected)
+            normalized = self.normalize(filtered)
+            stemmed = self.stem_tokens(normalized)
             expanded = self.expand_synonyms(stemmed)
             weights = self.weigh_term(expanded)
 
             result = {
                 "tokens": tokens,   
                 "corrected_tokens": corrected,
-                "normalized_tokens": normalized,
                 "filtered_tokens": filtered,
+                "normalized_tokens": normalized,
                 "stemmed_tokens": stemmed,
                 "expanded_tokens": expanded,
                 "term_weights": weights,
@@ -72,15 +73,19 @@ class DataPreprocessor:
             raise e
 
     # A function that creates a UserQuery object after preprocessing the text
-    def process_query(self, original_text: str, translated_text: str, language: str, user_id: str) -> str:
-        """
-        Preprocesses the original text, creates a UserQuery if not exists, otherwise reuses existing.
-        Always returns the Query ID. Links new user IDs if needed.
-        """
-        try:
-            # Step 1: Check if query already exists by original_text
+    def process_query(self, original_text: str, translated_text: str, language: str, user_id: str) -> str: 
+        """ Preprocesses the original text, creates a UserQuery if not exists, otherwise reuses existing. 
+        Always returns the Query ID. Links new user IDs if needed. Uses stemmed_tokens for checking query existence. """ 
+        try: 
+            # Step 1: Preprocess to get stemmed tokens 
+            logging.info(f"[Preprocessing] Starting preprocessing for: '{original_text}'") 
+            text_to_preprocess = translated_text if translated_text else original_text 
+            preprocessing_result = self.preprocess(text_to_preprocess) 
+            stemmed_tokens = preprocessing_result.get("stemmed_tokens", [])
+
+            # Step 2: Check if query already exists by stemmed_tokens
             query_ref = db.collection('user_queries').where(
-                filter=FieldFilter('original_text', '==', original_text)
+                filter=FieldFilter('stemmed_tokens', '==', stemmed_tokens)
             ).limit(1)
             results = query_ref.stream()
 
@@ -89,26 +94,21 @@ class DataPreprocessor:
                 query_id = existing_query.get("id")
                 logging.info(f"[Found Existing Query] ID: {query_id}")
 
-                # Check user_ids field and append user_id if not present
                 user_ids = existing_query.get("user_ids", [])
 
                 if user_id in user_ids:
                     logging.info(f"[User Linked] User {user_id} already linked to query {query_id}.")
-                    return query_id   
+                    return query_id  # ✅ Already linked
                 else:
-                    # Append user_id to the list and update Firestore
                     user_ids.append(user_id)
                     db.collection('user_queries').document(query_id).update({
                         "user_ids": user_ids
                     })
                     logging.info(f"[User Linked] User {user_id} linked to existing query {query_id}.")
-                    return query_id  
-            # Step 2: If no existing query found, preprocess new text
-            logging.info(f"[No Existing Query Found] Preprocessing new query: '{original_text}'")
-            text_to_preprocess = translated_text if translated_text else original_text
-            preprocessing_result = self.preprocess(text_to_preprocess)
+                    return query_id  # ✅ Now linked
 
-            # Step 3: Save new query
+            # Step 3: Save new query if no match found
+            logging.info(f"[No Existing Query Found] Saving new query: '{original_text}'")
             new_user_query = UserQuery(db)
             new_query_id = new_user_query.create(
                 original_text=original_text,
@@ -117,7 +117,7 @@ class DataPreprocessor:
                 user_id=user_id,
                 tokens=preprocessing_result.get("tokens", []),
                 corrected_tokens=preprocessing_result.get("corrected_tokens", []),
-                stemmed_tokens=preprocessing_result.get("stemmed_tokens", []),
+                stemmed_tokens=stemmed_tokens,
                 expanded_tokens=preprocessing_result.get("expanded_tokens", []),
                 term_weights=preprocessing_result.get("term_weights", {}),
             )
@@ -132,7 +132,7 @@ class DataPreprocessor:
     # --- Individual Processing Functions ---
 
     def tokenize(self, text: str):
-        return text.split()
+        return [re.sub(r"[^\w']", '', word.lower()) for word in text.split()]
 
     def normalize(self, tokens):
         """
@@ -184,29 +184,25 @@ class DataPreprocessor:
         if not isinstance(tokens, list):
             return tokens
 
-        expanded = []
+        tokens = [t for t in tokens if isinstance(t, str) and t]  # Clean original tokens
+        expanded = set(tokens)  # Use set to avoid duplicates
+
         for token in tokens:
-            if not token or not isinstance(token, str):
-                continue  # Skip None or invalid tokens
-
             try:
-                token = token.lower()
-                expanded.append(token)
-
                 synonyms = set()
                 for syn in wordnet.synsets(token):
                     for lemma in syn.lemmas():
                         synonym = lemma.name().lower().replace('_', ' ')
                         synonyms.add(synonym)
 
-                expanded.extend(sorted(synonyms))
+                new_synonyms = synonyms - expanded  # Only add new ones
+                expanded.update(new_synonyms)
 
             except Exception as e:
                 logging.warning(f"Synonym expansion error for token '{token}': {e}")
                 continue
 
-        return expanded if expanded else tokens
-
+        return sorted(expanded)
 
     def weigh_term(self, tokens):
         if not tokens:
