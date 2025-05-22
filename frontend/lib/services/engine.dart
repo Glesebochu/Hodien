@@ -6,8 +6,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class HumorEngine {
   final HumorProfile profile;
   final Random _random = Random();
+  final FirebaseFirestore firestore;
 
-  HumorEngine({required this.profile});
+  HumorEngine({required this.profile, FirebaseFirestore? firestore})
+    : firestore = firestore ?? FirebaseFirestore.instance;
 
   // Convert between HumorType and Firestore values
   static String _toFirestoreValue(HumorType type) => type.index.toString();
@@ -17,10 +19,12 @@ class HumorEngine {
   Future<List<Map<String, dynamic>>> fetchJokesProportionally({
     int totalToPick = 5,
     List<String>? contentIds,
+    Map<HumorType, double>? overrideWeights,
   }) async {
     try {
       // 1. Get weights from profile
-      final weights = await profile.getHumorTypeScores();
+      final weights = overrideWeights ?? await profile.getHumorTypeScores();
+      //final weights = await profile.getHumorTypeScores();
       print("Weights: $weights");
       final totalWeight = weights.values.fold(0.0, (a, b) => a + b);
       print("Total Weight: $totalWeight");
@@ -109,12 +113,8 @@ class HumorEngine {
       if (contentIds != null && contentIds.isNotEmpty) {
         // 🔁 Fetch ALL docs in parallel
         final docs = await Future.wait(
-          contentIds.map(
-            (id) =>
-                FirebaseFirestore.instance.collection('content').doc(id).get(),
-          ),
+          contentIds.map((id) => firestore.collection('content').doc(id).get()),
         );
-
         // 🔍 Filter by humor type
         final matchingDocs =
             docs.where((doc) {
@@ -131,7 +131,7 @@ class HumorEngine {
       } else {
         // 🔄 Use normal Firestore query
         final querySnapshot =
-            await FirebaseFirestore.instance
+            await firestore
                 .collection('content')
                 .where('humor_type', isEqualTo: _toFirestoreValue(humorType))
                 .limit(countNeeded * 3)
@@ -154,9 +154,12 @@ class HumorEngine {
     };
   }
 
-  Future<Map<String, dynamic>> fetchSurpriseMeJoke() async {
+  Future<Map<String, dynamic>> fetchSurpriseMeJoke({
+    Map<HumorType, double>? overrideWeights,
+  }) async {
     try {
-      final Map<HumorType, double> weights = await profile.getHumorTypeScores();
+      final weights = overrideWeights ?? await profile.getHumorTypeScores();
+      //final Map<HumorType, double> weights = await profile.getHumorTypeScores();
 
       if (weights.values.every((w) => w == 0)) {
         print("All humor weights are zero");
@@ -177,10 +180,10 @@ class HumorEngine {
 
       // Step 3: Fetch jokes from Firestore with that type
       final querySnapshot =
-          await FirebaseFirestore.instance
+          await firestore
               .collection('content')
               .where('humor_type', isEqualTo: _toFirestoreValue(surpriseType))
-              .limit(10) // Fetch a few to allow random choice
+              .limit(10)
               .get();
 
       final jokes =

@@ -4,7 +4,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i7;
-import 'dart:typed_data' as _i9;
+import 'dart:typed_data' as _i10;
 
 import 'package:cloud_firestore/cloud_firestore.dart' as _i5;
 import 'package:cloud_firestore_platform_interface/cloud_firestore_platform_interface.dart'
@@ -13,8 +13,11 @@ import 'package:firebase_auth/firebase_auth.dart' as _i4;
 import 'package:firebase_auth_platform_interface/firebase_auth_platform_interface.dart'
     as _i3;
 import 'package:firebase_core/firebase_core.dart' as _i2;
+import 'package:frontend/models/constants.dart' as _i12;
+import 'package:frontend/models/humor_profile.dart' as _i8;
+import 'package:frontend/models/reaction.dart' as _i11;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i8;
+import 'package:mockito/src/dummies.dart' as _i9;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -139,6 +142,11 @@ class _FakeLoadBundleTask_18 extends _i1.SmartFake
 
 class _FakeFuture_19<T1> extends _i1.SmartFake implements _i7.Future<T1> {
   _FakeFuture_19(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+class _FakeHumorProfile_20 extends _i1.SmartFake implements _i8.HumorProfile {
+  _FakeHumorProfile_20(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
@@ -538,7 +546,7 @@ class MockFirebaseAuth extends _i1.Mock implements _i4.FirebaseAuth {
       (super.noSuchMethod(
             Invocation.method(#verifyPasswordResetCode, [code]),
             returnValue: _i7.Future<String>.value(
-              _i8.dummyValue<String>(
+              _i9.dummyValue<String>(
                 this,
                 Invocation.method(#verifyPasswordResetCode, [code]),
               ),
@@ -632,7 +640,7 @@ class MockUser extends _i1.Mock implements _i4.User {
   String get uid =>
       (super.noSuchMethod(
             Invocation.getter(#uid),
-            returnValue: _i8.dummyValue<String>(this, Invocation.getter(#uid)),
+            returnValue: _i9.dummyValue<String>(this, Invocation.getter(#uid)),
           )
           as String);
 
@@ -928,7 +936,7 @@ class MockAuthCredential extends _i1.Mock implements _i3.AuthCredential {
   String get providerId =>
       (super.noSuchMethod(
             Invocation.getter(#providerId),
-            returnValue: _i8.dummyValue<String>(
+            returnValue: _i9.dummyValue<String>(
               this,
               Invocation.getter(#providerId),
             ),
@@ -939,7 +947,7 @@ class MockAuthCredential extends _i1.Mock implements _i3.AuthCredential {
   String get signInMethod =>
       (super.noSuchMethod(
             Invocation.getter(#signInMethod),
-            returnValue: _i8.dummyValue<String>(
+            returnValue: _i9.dummyValue<String>(
               this,
               Invocation.getter(#signInMethod),
             ),
@@ -969,7 +977,7 @@ class MockCollectionReference<T extends Object?> extends _i1.Mock
   String get id =>
       (super.noSuchMethod(
             Invocation.getter(#id),
-            returnValue: _i8.dummyValue<String>(this, Invocation.getter(#id)),
+            returnValue: _i9.dummyValue<String>(this, Invocation.getter(#id)),
           )
           as String);
 
@@ -977,7 +985,7 @@ class MockCollectionReference<T extends Object?> extends _i1.Mock
   String get path =>
       (super.noSuchMethod(
             Invocation.getter(#path),
-            returnValue: _i8.dummyValue<String>(this, Invocation.getter(#path)),
+            returnValue: _i9.dummyValue<String>(this, Invocation.getter(#path)),
           )
           as String);
 
@@ -1395,7 +1403,7 @@ class MockDocumentReference<T extends Object?> extends _i1.Mock
   String get id =>
       (super.noSuchMethod(
             Invocation.getter(#id),
-            returnValue: _i8.dummyValue<String>(this, Invocation.getter(#id)),
+            returnValue: _i9.dummyValue<String>(this, Invocation.getter(#id)),
           )
           as String);
 
@@ -1414,7 +1422,7 @@ class MockDocumentReference<T extends Object?> extends _i1.Mock
   String get path =>
       (super.noSuchMethod(
             Invocation.getter(#path),
-            returnValue: _i8.dummyValue<String>(this, Invocation.getter(#path)),
+            returnValue: _i9.dummyValue<String>(this, Invocation.getter(#path)),
           )
           as String);
 
@@ -1519,7 +1527,7 @@ class MockDocumentSnapshot<T extends Object?> extends _i1.Mock
   String get id =>
       (super.noSuchMethod(
             Invocation.getter(#id),
-            returnValue: _i8.dummyValue<String>(this, Invocation.getter(#id)),
+            returnValue: _i9.dummyValue<String>(this, Invocation.getter(#id)),
           )
           as String);
 
@@ -1579,7 +1587,7 @@ class MockFirebaseFirestore extends _i1.Mock implements _i5.FirebaseFirestore {
   String get databaseURL =>
       (super.noSuchMethod(
             Invocation.getter(#databaseURL),
-            returnValue: _i8.dummyValue<String>(
+            returnValue: _i9.dummyValue<String>(
               this,
               Invocation.getter(#databaseURL),
             ),
@@ -1590,7 +1598,7 @@ class MockFirebaseFirestore extends _i1.Mock implements _i5.FirebaseFirestore {
   String get databaseId =>
       (super.noSuchMethod(
             Invocation.getter(#databaseId),
-            returnValue: _i8.dummyValue<String>(
+            returnValue: _i9.dummyValue<String>(
               this,
               Invocation.getter(#databaseId),
             ),
@@ -1682,7 +1690,7 @@ class MockFirebaseFirestore extends _i1.Mock implements _i5.FirebaseFirestore {
           as _i7.Future<void>);
 
   @override
-  _i5.LoadBundleTask loadBundle(_i9.Uint8List? bundle) =>
+  _i5.LoadBundleTask loadBundle(_i10.Uint8List? bundle) =>
       (super.noSuchMethod(
             Invocation.method(#loadBundle, [bundle]),
             returnValue: _FakeLoadBundleTask_18(
@@ -1823,8 +1831,8 @@ class MockFirebaseFirestore extends _i1.Mock implements _i5.FirebaseFirestore {
               {#timeout: timeout, #maxAttempts: maxAttempts},
             ),
             returnValue:
-                _i8.ifNotNull(
-                  _i8.dummyValueOrNull<T>(
+                _i9.ifNotNull(
+                  _i9.dummyValueOrNull<T>(
                     this,
                     Invocation.method(
                       #runTransaction,
@@ -2316,7 +2324,7 @@ class MockQueryDocumentSnapshot<T extends Object?> extends _i1.Mock
   String get id =>
       (super.noSuchMethod(
             Invocation.getter(#id),
-            returnValue: _i8.dummyValue<String>(this, Invocation.getter(#id)),
+            returnValue: _i9.dummyValue<String>(this, Invocation.getter(#id)),
           )
           as String);
 
@@ -2351,7 +2359,7 @@ class MockQueryDocumentSnapshot<T extends Object?> extends _i1.Mock
   T data() =>
       (super.noSuchMethod(
             Invocation.method(#data, []),
-            returnValue: _i8.dummyValue<T>(this, Invocation.method(#data, [])),
+            returnValue: _i9.dummyValue<T>(this, Invocation.method(#data, [])),
           )
           as T);
 
@@ -2362,4 +2370,213 @@ class MockQueryDocumentSnapshot<T extends Object?> extends _i1.Mock
   @override
   dynamic operator [](Object? field) =>
       super.noSuchMethod(Invocation.method(#[], [field]));
+}
+
+/// A class which mocks [HumorProfile].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockHumorProfile extends _i1.Mock implements _i8.HumorProfile {
+  MockHumorProfile() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  String get userId =>
+      (super.noSuchMethod(
+            Invocation.getter(#userId),
+            returnValue: _i9.dummyValue<String>(
+              this,
+              Invocation.getter(#userId),
+            ),
+          )
+          as String);
+
+  @override
+  List<String> get interests =>
+      (super.noSuchMethod(
+            Invocation.getter(#interests),
+            returnValue: <String>[],
+          )
+          as List<String>);
+
+  @override
+  double get physicalHumorPreference =>
+      (super.noSuchMethod(
+            Invocation.getter(#physicalHumorPreference),
+            returnValue: 0.0,
+          )
+          as double);
+
+  @override
+  double get linguisticHumorPreference =>
+      (super.noSuchMethod(
+            Invocation.getter(#linguisticHumorPreference),
+            returnValue: 0.0,
+          )
+          as double);
+
+  @override
+  double get situationalHumorPreference =>
+      (super.noSuchMethod(
+            Invocation.getter(#situationalHumorPreference),
+            returnValue: 0.0,
+          )
+          as double);
+
+  @override
+  double get criticalHumorPreference =>
+      (super.noSuchMethod(
+            Invocation.getter(#criticalHumorPreference),
+            returnValue: 0.0,
+          )
+          as double);
+
+  @override
+  List<_i11.Reaction> get reactionHistory =>
+      (super.noSuchMethod(
+            Invocation.getter(#reactionHistory),
+            returnValue: <_i11.Reaction>[],
+          )
+          as List<_i11.Reaction>);
+
+  @override
+  List<String> get favoriteContent =>
+      (super.noSuchMethod(
+            Invocation.getter(#favoriteContent),
+            returnValue: <String>[],
+          )
+          as List<String>);
+
+  @override
+  set interests(List<String>? _interests) => super.noSuchMethod(
+    Invocation.setter(#interests, _interests),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  set physicalHumorPreference(double? _physicalHumorPreference) =>
+      super.noSuchMethod(
+        Invocation.setter(#physicalHumorPreference, _physicalHumorPreference),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  set linguisticHumorPreference(double? _linguisticHumorPreference) =>
+      super.noSuchMethod(
+        Invocation.setter(
+          #linguisticHumorPreference,
+          _linguisticHumorPreference,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  set situationalHumorPreference(double? _situationalHumorPreference) =>
+      super.noSuchMethod(
+        Invocation.setter(
+          #situationalHumorPreference,
+          _situationalHumorPreference,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  set criticalHumorPreference(double? _criticalHumorPreference) =>
+      super.noSuchMethod(
+        Invocation.setter(#criticalHumorPreference, _criticalHumorPreference),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  set reactionHistory(List<_i11.Reaction>? _reactionHistory) =>
+      super.noSuchMethod(
+        Invocation.setter(#reactionHistory, _reactionHistory),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  set favoriteContent(List<String>? _favoriteContent) => super.noSuchMethod(
+    Invocation.setter(#favoriteContent, _favoriteContent),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void addFavoriteById(String? contentId) => super.noSuchMethod(
+    Invocation.method(#addFavoriteById, [contentId]),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void removeFavoriteById(String? contentId) => super.noSuchMethod(
+    Invocation.method(#removeFavoriteById, [contentId]),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  _i7.Future<void> loadFavoriteContentStack() =>
+      (super.noSuchMethod(
+            Invocation.method(#loadFavoriteContentStack, []),
+            returnValue: _i7.Future<void>.value(),
+            returnValueForMissingStub: _i7.Future<void>.value(),
+          )
+          as _i7.Future<void>);
+
+  @override
+  List<String> getFavoriteContentStack() =>
+      (super.noSuchMethod(
+            Invocation.method(#getFavoriteContentStack, []),
+            returnValue: <String>[],
+          )
+          as List<String>);
+
+  @override
+  _i7.Future<Map<_i12.HumorType, double>> getHumorTypeScores() =>
+      (super.noSuchMethod(
+            Invocation.method(#getHumorTypeScores, []),
+            returnValue: _i7.Future<Map<_i12.HumorType, double>>.value(
+              <_i12.HumorType, double>{},
+            ),
+          )
+          as _i7.Future<Map<_i12.HumorType, double>>);
+
+  @override
+  void updateByFavorite(_i12.HumorType? humorType) => super.noSuchMethod(
+    Invocation.method(#updateByFavorite, [humorType]),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void updateFromReaction(_i12.HumorType? humorType, String? reaction) =>
+      super.noSuchMethod(
+        Invocation.method(#updateFromReaction, [humorType, reaction]),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  Map<String, double> getUserPreferences() =>
+      (super.noSuchMethod(
+            Invocation.method(#getUserPreferences, []),
+            returnValue: <String, double>{},
+          )
+          as Map<String, double>);
+
+  @override
+  _i8.HumorProfile updateFromQuery(String? textContains) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateFromQuery, [textContains]),
+            returnValue: _FakeHumorProfile_20(
+              this,
+              Invocation.method(#updateFromQuery, [textContains]),
+            ),
+          )
+          as _i8.HumorProfile);
+
+  @override
+  _i7.Future<void> saveToFirebase() =>
+      (super.noSuchMethod(
+            Invocation.method(#saveToFirebase, []),
+            returnValue: _i7.Future<void>.value(),
+            returnValueForMissingStub: _i7.Future<void>.value(),
+          )
+          as _i7.Future<void>);
 }
