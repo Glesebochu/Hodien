@@ -132,7 +132,7 @@ class DataPreprocessor:
     # --- Individual Processing Functions ---
 
     def tokenize(self, text: str):
-        return [re.sub(r"[^\w']", '', word.lower()) for word in text.split()]
+        return [re.sub(r"[^\w']", '', word) for word in text.split()]
 
     def normalize(self, tokens):
         """
@@ -247,7 +247,7 @@ async def preprocess_query(request: Request):
 if __name__ == "__main__":
     preprocessor = DataPreprocessor()
     preprocessor.process_query(
-        original_text="He's fdgfsdg surprized the comedein they'll realize how accidental the laughing would get, especialy when teh audience went quiet.",
+        original_text="Why did the scarecrow become a comedian? He's outstanding they'll!",
         translated_text="",
         language="en",
         user_id="user123"
