@@ -43,10 +43,15 @@ class Indexer:
         data_pp = DataPreprocessor()
         doc_id = record['id']
         tokens = data_pp.tokenize(record['text'])
-        normalized_tokens = data_pp.normalize(tokens)
-        stop_word_free_tokens = data_pp.remove_stop_words(normalized_tokens)
-        spell_checked_tokens = data_pp.correct_spelling(stop_word_free_tokens)
-        terms = data_pp.stem_tokens(spell_checked_tokens)
+        print("tokens:", tokens)
+        spell_checked_tokens = data_pp.correct_spelling(tokens)
+        print("spell_checked_tokens:", spell_checked_tokens)
+        stop_word_free_tokens = data_pp.remove_stop_words(spell_checked_tokens)
+        print("stop_word_free_tokens:", stop_word_free_tokens)
+        normalized_tokens = data_pp.normalize(stop_word_free_tokens)
+        print("normalized_tokens:", normalized_tokens)
+        terms = data_pp.stem_tokens(normalized_tokens)
+        print("terms:", terms)
         
         print(f"Processing ${doc_id}")
 
