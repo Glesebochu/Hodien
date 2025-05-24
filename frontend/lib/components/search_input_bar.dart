@@ -187,7 +187,7 @@ class _SearchInputBarState extends State<SearchInputBar> {
               }
             },
             decoration: InputDecoration(
-              hintText: 'Search',
+              hintText: 'Hey',
               hintStyle: TextStyle(
                 color: const Color.fromARGB(255, 147, 147, 147),
                 fontSize: 17.5,
