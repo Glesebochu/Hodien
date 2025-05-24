@@ -123,9 +123,7 @@ class _SearchInputBarState extends State<SearchInputBar> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 10,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -192,12 +190,12 @@ class _SearchInputBarState extends State<SearchInputBar> {
               hintText: 'Search',
               hintStyle: TextStyle(
                 color: const Color.fromARGB(255, 147, 147, 147),
-                fontSize: 17,
+                fontSize: 17.5,
                 fontWeight: FontWeight.w500,
               ),
               prefixIcon: const Padding(
                 padding: EdgeInsets.only(left: 16, right: 8),
-                child: Icon(Icons.search, color: Colors.grey, size: 20),
+                child: Icon(Icons.search, color: Colors.grey, size: 20.5),
               ),
               suffixIcon: Padding(
                 padding: const EdgeInsets.only(right: 10),
@@ -205,7 +203,7 @@ class _SearchInputBarState extends State<SearchInputBar> {
                   icon: const Icon(
                     Icons.cancel,
                     color: Color.fromARGB(255, 212, 201, 83),
-                    size: 20,
+                    size: 20.5,
                   ),
                   splashColor: Colors.transparent,
                   highlightColor: Colors.transparent,
@@ -227,9 +225,10 @@ class _SearchInputBarState extends State<SearchInputBar> {
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide.none,
               ),
+              isDense: true,
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 20,
-                vertical: 14,
+                vertical: 13.5,
               ),
             ),
           ),

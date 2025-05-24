@@ -102,20 +102,16 @@ class _SearchPageState extends State<SearchPage> {
                       );
                     } else {
                       return Center(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                          alignment: Alignment.center,
-                          child: const shadcn.Text(
-                            'A spark of humor, a slice of soul - discover joy tailored just for you...',
-                            textAlign: TextAlign.center,
-                            style: shadcn.TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                              height: 1.5,
-                              letterSpacing: 0.5,
-                              fontFamily: 'Helvetica',
-                              color: Color.fromARGB(255, 176, 173, 114),
-                            ),
+                        child: const shadcn.Text(
+                          'A spark of humor, a slice of soul - discover joy tailored just for you...',
+                          textAlign: TextAlign.center,
+                          style: shadcn.TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                            height: 1.5,
+                            letterSpacing: 0.5,
+                            fontFamily: 'Helvetica',
+                            color: Color.fromARGB(255, 176, 173, 114),
                           ),
                         ),
                       );
