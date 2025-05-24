@@ -25,83 +25,86 @@ class _SearchPageState extends State<SearchPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 12),
+        // child: Padding(
+        // padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 2),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 12),
 
-              // Header Row
-              Center(
-                child: const shadcn.Text(
-                  'Explore',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
+            // Header Row
+            Center(
+              child: const shadcn.Text(
+                'Explore',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
+            ),
 
-              const SizedBox(height: 20),
+            const SizedBox(height: 20),
 
-              // SearchInputBar with error callback
-              SearchInputBar(
-                onSearchStart: () {
-                  setState(() {
-                    isSearchLoading = true;
-                    showNoResults = false;
-                    errorMessage = null;
-                    searchResults = [];
-                  });
-                },
-                onError: (String error) {
-                  setState(() {
-                    showNoResults = true;
-                    errorMessage = error;
-                    isSearchLoading = false;
-                    searchResults = [];
-                  });
-                },
-                onSearchResults: (List<Map<String, dynamic>> results) {
-                  setState(() {
-                    isSearchLoading = false;
-                    searchResults = results;
-                  });
-                },
-              ),
-              const SizedBox(height: 8),
-              const shadcn.Divider(),
-              const SizedBox(height: 12),
+            // SearchInputBar with error callback
+            SearchInputBar(
+              onSearchStart: () {
+                setState(() {
+                  isSearchLoading = true;
+                  showNoResults = false;
+                  errorMessage = null;
+                  searchResults = [];
+                });
+              },
+              onError: (String error) {
+                setState(() {
+                  showNoResults = true;
+                  errorMessage = error;
+                  isSearchLoading = false;
+                  searchResults = [];
+                });
+              },
+              onSearchResults: (List<Map<String, dynamic>> results) {
+                setState(() {
+                  isSearchLoading = false;
+                  searchResults = results;
+                });
+              },
+            ),
+            const SizedBox(height: 8),
+            const shadcn.Divider(),
+            const SizedBox(height: 12),
 
-              Expanded(
-                child: Builder(
-                  builder: (_) {
-                    if (isSearchLoading) {
-                      return const Center(
-                        child: CircularProgressIndicator(
-                          color: Color.fromARGB(255, 225, 204, 15),
+            Expanded(
+              child: Builder(
+                builder: (_) {
+                  if (isSearchLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: Color.fromARGB(255, 225, 204, 15),
+                      ),
+                    );
+                  } else if (showNoResults) {
+                    return Center(
+                      child: shadcn.Text(
+                        errorMessage ?? 'No Results Found',
+                        style: const shadcn.TextStyle(
+                          color: Colors.grey,
+                          fontStyle: FontStyle.italic,
                         ),
-                      );
-                    } else if (showNoResults) {
-                      return Center(
-                        child: shadcn.Text(
-                          errorMessage ?? 'No Results Found',
-                          style: const shadcn.TextStyle(
-                            color: Colors.grey,
-                            fontStyle: FontStyle.italic,
-                          ),
-                        ),
-                      );
-                    } else if (searchResults.isNotEmpty) {
-                      return ListView.builder(
-                        itemCount: searchResults.length,
-                        itemBuilder: (context, index) {
-                          return PostCard(
-                            jokeData: searchResults[index],
-                            humorProfile: widget.profile, // Pass humor profile
-                          );
-                        },
-                      );
-                    } else {
-                      return Center(
+                      ),
+                    );
+                  } else if (searchResults.isNotEmpty) {
+                    return ListView.builder(
+                      itemCount: searchResults.length,
+                      itemBuilder: (context, index) {
+                        return PostCard(
+                          jokeData: searchResults[index],
+                          humorProfile: widget.profile, // Pass humor profile
+                        );
+                      },
+                    );
+                  } else {
+                    return Center(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                        alignment: Alignment.center,
                         child: const shadcn.Text(
                           'A spark of humor, a slice of soul - discover joy tailored just for you...',
                           textAlign: TextAlign.center,
@@ -114,16 +117,17 @@ class _SearchPageState extends State<SearchPage> {
                             color: Color.fromARGB(255, 176, 173, 114),
                           ),
                         ),
-                      );
-                    }
-                  },
-                ),
+                      ),
+                    );
+                  }
+                },
               ),
-              SizedBox(height: 20),
-            ],
-          ),
+            ),
+            SizedBox(height: 20),
+          ],
         ),
       ),
     );
+    // );
   }
 }
