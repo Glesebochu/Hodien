@@ -23,6 +23,42 @@ class _FavoriteContentPageState extends State<FavoriteContentPage> {
     _fetchFavoriteJokesFromFirestore();
   }
 
+  String toSentenceCase(String text) {
+    if (text.isEmpty) return text;
+
+    // Ensure consistent spacing after periods
+    text = text.trim().replaceAll(RegExp(r'\s+'), ' ');
+
+    final buffer = StringBuffer();
+    bool capitalizeNext = true;
+
+    for (int i = 0; i < text.length; i++) {
+      final char = text[i];
+
+      if (capitalizeNext && RegExp(r'[a-zA-Z]').hasMatch(char)) {
+        buffer.write(char.toUpperCase());
+        capitalizeNext = false;
+      } else {
+        buffer.write(char);
+      }
+
+      if (char == '.' || char == '!' || char == '?') {
+        capitalizeNext = true;
+      }
+    }
+
+    return buffer.toString();
+  }
+
+  Map<String, dynamic> normalizeJokeData(Map<String, dynamic> rawJoke) {
+    return {
+      'id': rawJoke['id'],
+      'text': rawJoke['text'],
+      'humorType': rawJoke['humor_type'] ?? rawJoke['humorType'],
+      'humorScore': rawJoke['humor_type_score'] ?? rawJoke['humorScore'],
+    };
+  }
+
   Future<void> _fetchFavoriteJokesFromFirestore() async {
     List<String> favoriteIds = widget.humorProfile.getFavoriteContentStack();
 
@@ -61,6 +97,21 @@ class _FavoriteContentPageState extends State<FavoriteContentPage> {
     }
   }
 
+  String _getHumorTypeLabel(dynamic type) {
+    switch (type.toString()) {
+      case '1':
+        return 'physical';
+      case '2':
+        return 'linguistic';
+      case '3':
+        return 'situational';
+      case '4':
+        return 'critical';
+      default:
+        return 'unknown';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -93,7 +144,7 @@ class _FavoriteContentPageState extends State<FavoriteContentPage> {
         crossAxisCount: 2, // 2 per row → 4 per screen
         mainAxisSpacing: 12,
         crossAxisSpacing: 12,
-        childAspectRatio: 0.8,
+        childAspectRatio: 1.2,
       ),
       itemBuilder: (context, index) {
         final joke = jokes[index]; // Get the joke data
@@ -111,24 +162,31 @@ class _FavoriteContentPageState extends State<FavoriteContentPage> {
                       : const Color.fromARGB(255, 147, 146, 146),
             ), // Match light bg
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center, // Vertically center
               crossAxisAlignment: CrossAxisAlignment.start,
+              //crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   child: Text(
-                    joke['text'], // Show a truncated joke text
-                    maxLines: 4,
+                    toSentenceCase(joke['text']), // Show a truncated joke text
+                    //textAlign: TextAlign.center,
+                    maxLines: 5,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 15,
                       color: isDarkMode ? Colors.white : Colors.black,
                     ),
                   ),
                 ),
                 const SizedBox(height: 8),
-                // Text(
-                //"Type: ${joke['humorType']}", // Display humor type
-                // style: const TextStyle(fontSize: 12),
-                // ),
+                Text(
+                  "#${_getHumorTypeLabel(joke['humor_type'])} #${joke['humor_type_score']}",
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.yellow[700],
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ],
             ),
           ),
@@ -143,7 +201,9 @@ class _FavoriteContentPageState extends State<FavoriteContentPage> {
       children: [
         Expanded(
           child: PostCard(
-            jokeData: joke, // Pass the full joke data to PostCard
+            jokeData: normalizeJokeData(
+              joke,
+            ), // Pass the full joke data to PostCard
             humorProfile: widget.humorProfile, // Pass the humor profile
           ),
         ),

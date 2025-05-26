@@ -11,20 +11,23 @@ import 'settings.dart';
 import 'search_page.dart';
 
 class Home extends StatefulWidget {
-  const Home({super.key});
+  final VoidCallback toggleTheme;
+  final bool isDarkMode;
+
+  const Home({required this.toggleTheme, required this.isDarkMode, super.key});
 
   @override
   State<Home> createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
-  bool isDarkMode = false;
+  //bool isDarkMode = false;
 
-  void toggleTheme() {
-    setState(() {
-      isDarkMode = !isDarkMode;
-    });
-  }
+  //void toggleTheme() {
+  //  setState(() {
+  //    isDarkMode = !isDarkMode;
+  //  });
+  //}
 
   List<Map<String, dynamic>> jokes = []; // List of jokes
   bool showSurprise = false;
@@ -162,7 +165,7 @@ class _HomeState extends State<Home> {
                 text: 'Ho',
                 style: GoogleFonts.pacifico(
                   fontSize: 28,
-                  color: isDarkMode ? Colors.white : Colors.black87,
+                  color: widget.isDarkMode ? Colors.white : Colors.black87,
                 ),
               ),
               TextSpan(
@@ -177,8 +180,10 @@ class _HomeState extends State<Home> {
         ),
         actions: [
           IconButton(
-            icon: Icon(isDarkMode ? Icons.wb_sunny : Icons.nightlight_round),
-            onPressed: toggleTheme,
+            icon: Icon(
+              widget.isDarkMode ? Icons.wb_sunny : Icons.nightlight_round,
+            ),
+            onPressed: widget.toggleTheme,
           ),
         ],
       ),
@@ -189,11 +194,32 @@ class _HomeState extends State<Home> {
             Positioned(
               top: 16,
               left: 16,
-              child: FloatingActionButton(
-                heroTag: 'surpriseBtn',
-                backgroundColor: Colors.yellow[700],
+              child: RawMaterialButton(
                 onPressed: showSurpriseJoke,
-                child: const Icon(Icons.auto_awesome),
+                fillColor: Colors.yellow[700],
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                constraints: const BoxConstraints(
+                  minWidth: 140,
+                  minHeight: 56,
+                ), // wider & taller
+                elevation: 6,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Icon(Icons.auto_awesome, color: Colors.black),
+                    SizedBox(width: 8),
+                    Text(
+                      'Surprise Me',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           if (showSurprise && surpriseJoke != null) ...[
@@ -218,11 +244,13 @@ class _HomeState extends State<Home> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedTabIndex,
         onTap: (index) => setState(() => _selectedTabIndex = index),
-        selectedItemColor: isDarkMode ? Colors.amber : Colors.black,
+        selectedItemColor: widget.isDarkMode ? Colors.amber : Colors.black,
         unselectedItemColor:
-            isDarkMode ? Colors.yellow : const Color.fromARGB(255, 91, 90, 90),
+            widget.isDarkMode
+                ? Colors.yellow
+                : const Color.fromARGB(255, 91, 90, 90),
         backgroundColor:
-            isDarkMode ? Colors.black : Theme.of(context).canvasColor,
+            widget.isDarkMode ? Colors.black : Theme.of(context).canvasColor,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
