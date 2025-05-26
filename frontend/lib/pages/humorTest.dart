@@ -278,7 +278,6 @@ class _QuestionScreen extends StatelessWidget {
 }
 
 void toggleTheme() {
-  ;
 }
 
 void _showSuccessDialog(BuildContext context) {

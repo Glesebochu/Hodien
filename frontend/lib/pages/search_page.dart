@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../components/search_input_bar.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart' as shadcn;
 import 'package:frontend/models/humor_profile.dart';
@@ -6,14 +7,15 @@ import '../services/query_profile_matcher.dart';
 import 'post_card.dart';
 
 class SearchPage extends StatefulWidget {
-  final HumorProfile profile;
-  const SearchPage({super.key, required this.profile});
+  final HumorProfile? profile;
+  const SearchPage({super.key, this.profile});
 
   @override
   State<SearchPage> createState() => _SearchPageState();
 }
 
 class _SearchPageState extends State<SearchPage> {
+  late HumorProfile _profile;
   bool showNoResults = false;
   String? errorMessage;
   bool isSearchLoading = false;
@@ -25,6 +27,13 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void initState() {
     super.initState();
+
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      throw Exception("User not logged in.");
+    }
+    _profile = widget.profile ?? HumorProfile(userId: user.uid);
+
     _scrollController.addListener(() {
       if (_scrollController.position.pixels >=
               _scrollController.position.maxScrollExtent - 200 &&
@@ -40,7 +49,7 @@ class _SearchPageState extends State<SearchPage> {
 
     try {
       final results = await QueryProfileMatcher().matchQueryAndProfile(
-        userId: widget.profile.userId,
+        userId: _profile.userId,
         queryId: lastQueryId!,
       );
       if (results.isNotEmpty && results.first['error'] != true) {
@@ -57,14 +66,14 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 12),
-            Center(
-              child: const shadcn.Text(
+            const Center(
+              child: shadcn.Text(
                 'Explore',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
@@ -143,16 +152,15 @@ class _SearchPageState extends State<SearchPage> {
                         }
                         return PostCard(
                           jokeData: searchResults[index],
-                          humorProfile: widget.profile,
+                          humorProfile: _profile,
                         );
                       },
                     );
                   } else {
-                    return Center(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                        alignment: Alignment.center,
-                        child: const shadcn.Text(
+                    return const Center(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 24.0),
+                        child: shadcn.Text(
                           'A spark of humor, a slice of soul - discover joy tailored just for you...',
                           textAlign: TextAlign.center,
                           style: shadcn.TextStyle(
