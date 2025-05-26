@@ -62,6 +62,73 @@ class _PostCardState extends State<PostCard> {
     widget.humorProfile.updateFromReaction(currentHumorType, reactionType);
   }
 
+  String toSentenceCase(String text) {
+    if (text.isEmpty) return text;
+
+    // Ensure consistent spacing after periods
+    text = text.trim().replaceAll(RegExp(r'\s+'), ' ');
+
+    final buffer = StringBuffer();
+    bool capitalizeNext = true;
+
+    for (int i = 0; i < text.length; i++) {
+      final char = text[i];
+
+      if (capitalizeNext && RegExp(r'[a-zA-Z]').hasMatch(char)) {
+        buffer.write(char.toUpperCase());
+        capitalizeNext = false;
+      } else {
+        buffer.write(char);
+      }
+
+      if (char == '.' || char == '!' || char == '?') {
+        capitalizeNext = true;
+      }
+    }
+
+    return buffer.toString();
+  }
+
+  String toTitleCase(String text) {
+    if (text.isEmpty) return text;
+
+    return text
+        .toLowerCase()
+        .split(' ')
+        .map(
+          (word) =>
+              word.isNotEmpty
+                  ? '${word[0].toUpperCase()}${word.substring(1)}'
+                  : '',
+        )
+        .join(' ');
+  }
+
+  double estimateCardHeight1(String text) {
+    int wordCount = text.split(' ').length;
+    if (wordCount < 10) return 0.3;
+    if (wordCount < 13) return 0.33;
+    if (wordCount < 16) return 0.36;
+    if (wordCount < 19) return 0.39;
+    if (wordCount < 24) return 0.42;
+    if (wordCount < 30) return 0.45;
+    if (wordCount < 35) return 0.5;
+    return 0.52;
+  }
+
+  double estimateCardHeight(String text) {
+    int charCount = text.length;
+
+    if (charCount < 70) return 0.33;
+    if (charCount < 90) return 0.37;
+    if (charCount < 120) return 0.42;
+    if (charCount < 150) return 0.46;
+    if (charCount < 200) return 0.5;
+    if (charCount < 250) return 0.52;
+    if (charCount < 300) return 0.55;
+    return 0.58;
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
@@ -78,7 +145,10 @@ class _PostCardState extends State<PostCard> {
                   : const Color.fromARGB(255, 147, 146, 146),
           borderRadius: BorderRadius.circular(24),
         ),
-        height: MediaQuery.of(context).size.height * 0.7,
+        height:
+            MediaQuery.of(context).size.height *
+            (estimateCardHeight(widget.jokeData['text'])),
+        //height: estimateCardHeight(widget.jokeData['text']),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -103,12 +173,28 @@ class _PostCardState extends State<PostCard> {
             const SizedBox(height: 8),
             Expanded(
               child: SingleChildScrollView(
-                child: Text(
-                  widget.jokeData['text'], // Display the joke text
-                  style: TextStyle(
-                    fontSize: 23,
-                    color: isDarkMode ? Colors.white : Colors.black,
-                    height: 1.6,
+                child: RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: toSentenceCase(widget.jokeData['text']) + ' ',
+                        style: TextStyle(
+                          fontSize: 23,
+                          color: isDarkMode ? Colors.white : Colors.black,
+                          height: 1.6,
+                        ),
+                      ),
+                      TextSpan(
+                        text:
+                            '#${widget.jokeData['humorType']} #${widget.jokeData['humorScore']}',
+                        style: TextStyle(
+                          fontSize: 16, // Smaller than main text
+                          color: Colors.yellow[700], // Yellow hashtag
+                          height: 1.6,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),

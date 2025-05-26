@@ -10,6 +10,7 @@ import 'pages/settings.dart';
 import 'utils/utils.dart';
 import './services/user_service.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart' as shadcn;
+import 'theme.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,8 +37,22 @@ Future main() async {
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
-class MainApp extends StatelessWidget {
+class MainApp extends StatefulWidget {
   const MainApp({super.key});
+
+  @override
+  State<MainApp> createState() => _MainAppState();
+}
+
+class _MainAppState extends State<MainApp> {
+  bool isDarkMode = false;
+
+  void toggleTheme() {
+    setState(() {
+      isDarkMode = !isDarkMode;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -45,8 +60,12 @@ class MainApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       navigatorKey: navigatorKey,
       scaffoldMessengerKey: Utils.messengerKey,
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
+      themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
       routes: {
-        '/home': (context) => Home(),
+        '/home':
+            (context) => Home(toggleTheme: toggleTheme, isDarkMode: isDarkMode),
         '/settings': (context) => const SettingsPage(),
         '/humorTest': (context) => HumorTestScreen(),
       },
@@ -59,7 +78,6 @@ class MainApp extends StatelessWidget {
             } else if (snapshot.hasError) {
               return Center(child: Text('something went wrong'));
             } else if (snapshot.hasData) {
-              // User is logged in, check if humor profile exists
               return FutureBuilder<bool>(
                 future: UserService().checkHumorProfileExists(),
                 builder: (context, profileSnapshot) {
@@ -68,10 +86,12 @@ class MainApp extends StatelessWidget {
                     return const Center(child: CircularProgressIndicator());
                   } else if (profileSnapshot.hasError ||
                       !(profileSnapshot.data ?? false)) {
-                    // Profile doesn't exist, send to test
                     return HumorTestScreen();
                   } else {
-                    return Home(); // Profile exists
+                    return Home(
+                      toggleTheme: toggleTheme,
+                      isDarkMode: isDarkMode,
+                    );
                   }
                 },
               );

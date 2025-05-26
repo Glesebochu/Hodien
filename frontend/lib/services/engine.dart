@@ -96,6 +96,7 @@ class HumorEngine {
       'id': doc.id,
       'text': doc['text'],
       'humorType': _fromFirestoreValue(doc['humor_type']),
+      'humor_type_score': doc['humor_type_score'],
     };
   }
 
@@ -104,6 +105,7 @@ class HumorEngine {
     List<String>? contentIds,
   ) async {
     final selectedJokes = <Map<String, dynamic>>[];
+    final excludedIds = profile.getFavoriteContentStack(); // ✅ Load favorites
 
     for (final entry in typeCounts.entries) {
       if (entry.value <= 0) continue;
@@ -111,11 +113,10 @@ class HumorEngine {
       final countNeeded = entry.value;
 
       if (contentIds != null && contentIds.isNotEmpty) {
-        // 🔁 Fetch ALL docs in parallel
         final docs = await Future.wait(
           contentIds.map((id) => firestore.collection('content').doc(id).get()),
         );
-        // 🔍 Filter by humor type
+
         final matchingDocs =
             docs.where((doc) {
               final data = doc.data();
@@ -124,21 +125,33 @@ class HumorEngine {
                   data['humor_type'] == _toFirestoreValue(humorType);
             }).toList();
 
-        // 🎯 Convert + take the needed amount
         final jokes =
-            matchingDocs.map(_parseJokeDoc).toList()..shuffle(_random);
+            matchingDocs
+                .map(_parseJokeDoc)
+                .where(
+                  (joke) => !excludedIds.contains(joke['id']),
+                ) // ✅ exclude early
+                .toList()
+              ..shuffle(_random);
+
         selectedJokes.addAll(jokes.take(countNeeded));
       } else {
-        // 🔄 Use normal Firestore query
         final querySnapshot =
             await firestore
                 .collection('content')
                 .where('humor_type', isEqualTo: _toFirestoreValue(humorType))
-                .limit(countNeeded * 3)
+                .limit(countNeeded * 3) // 👈 Oversample
                 .get();
 
         final jokes =
-            querySnapshot.docs.map(_parseJokeDoc).toList()..shuffle(_random);
+            querySnapshot.docs
+                .map(_parseJokeDoc)
+                .where(
+                  (joke) => !excludedIds.contains(joke['id']),
+                ) // ✅ exclude early
+                .toList()
+              ..shuffle(_random);
+
         selectedJokes.addAll(jokes.take(countNeeded));
       }
     }
@@ -151,6 +164,7 @@ class HumorEngine {
       'id': joke['id'],
       'text': joke['text'],
       'humorType': joke['humorType'].toString().split('.').last,
+      'humorScore': joke['humor_type_score'],
     };
   }
 
@@ -159,14 +173,12 @@ class HumorEngine {
   }) async {
     try {
       final weights = overrideWeights ?? await profile.getHumorTypeScores();
-      //final Map<HumorType, double> weights = await profile.getHumorTypeScores();
 
       if (weights.values.every((w) => w == 0)) {
         print("All humor weights are zero");
         return {};
       }
 
-      // Step 1: Find the lowest score(s)
       final minScore = weights.values.reduce((a, b) => a < b ? a : b);
       final leastPreferredTypes =
           weights.entries
@@ -174,11 +186,9 @@ class HumorEngine {
               .map((entry) => entry.key)
               .toList();
 
-      // Step 2: Pick one least-preferred humor type randomly
       final surpriseType =
           leastPreferredTypes[_random.nextInt(leastPreferredTypes.length)];
 
-      // Step 3: Fetch jokes from Firestore with that type
       final querySnapshot =
           await firestore
               .collection('content')
@@ -186,15 +196,21 @@ class HumorEngine {
               .limit(10)
               .get();
 
+      final favoriteIds = profile.getFavoriteContentStack(); // ✅ Load favorites
+
       final jokes =
-          querySnapshot.docs.map((doc) => _parseJokeDoc(doc)).toList();
+          querySnapshot.docs
+              .map((doc) => _parseJokeDoc(doc))
+              .where(
+                (joke) => !favoriteIds.contains(joke['id']),
+              ) // ✅ Exclude favorites
+              .toList();
 
       if (jokes.isEmpty) {
-        print("No jokes found for surpriseType: $surpriseType");
+        print("No non-favorite jokes found for surpriseType: $surpriseType");
         return {};
       }
 
-      // Step 4: Pick one randomly and format it
       jokes.shuffle(_random);
       final joke = jokes.first;
 
