@@ -166,4 +166,4 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
-hodien-f5535-searchengine-adminsdk
+hodien-f5535-searchengine-adminsdk.json
