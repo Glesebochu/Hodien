@@ -1,8 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:frontend/services/engine.dart';
-import 'package:frontend/models/humor_profile.dart';
 import '../mocks/firebase_mocks.mocks.dart';
 import 'package:frontend/models/constants.dart';
 

@@ -2,47 +2,74 @@ import 'package:flutter/material.dart';
 import '../components/search_input_bar.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart' as shadcn;
 import 'package:frontend/models/humor_profile.dart';
+import '../services/query_profile_matcher.dart';
 import 'post_card.dart';
 
 class SearchPage extends StatefulWidget {
-  final HumorProfile profile; // Declare the profile variable
-  const SearchPage({
-    super.key,
-    required this.profile,
-  }); // Constructor with profile
+  final HumorProfile profile;
+  const SearchPage({super.key, required this.profile});
+
   @override
   State<SearchPage> createState() => _SearchPageState();
 }
 
 class _SearchPageState extends State<SearchPage> {
-  bool showNoResults = false; // Flag to toggle "No results found"
+  bool showNoResults = false;
   String? errorMessage;
   bool isSearchLoading = false;
+  bool isLoadingMore = false;
   List<Map<String, dynamic>> searchResults = [];
+  final ScrollController _scrollController = ScrollController();
+  String? lastQueryId;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >=
+              _scrollController.position.maxScrollExtent - 200 &&
+          !isLoadingMore) {
+        _fetchMoreSearchResults();
+      }
+    });
+  }
+
+  Future<void> _fetchMoreSearchResults() async {
+    if (lastQueryId == null) return;
+    setState(() => isLoadingMore = true);
+
+    try {
+      final results = await QueryProfileMatcher().matchQueryAndProfile(
+        userId: widget.profile.userId,
+        queryId: lastQueryId!,
+      );
+      if (results.isNotEmpty && results.first['error'] != true) {
+        setState(() {
+          searchResults.addAll(results);
+        });
+      }
+    } catch (_) {
+    } finally {
+      setState(() => isLoadingMore = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        // child: Padding(
-        // padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 2),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 12),
-
-            // Header Row
             Center(
               child: const shadcn.Text(
                 'Explore',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
-
             const SizedBox(height: 20),
-
-            // SearchInputBar with error callback
             SearchInputBar(
               onSearchStart: () {
                 setState(() {
@@ -50,6 +77,7 @@ class _SearchPageState extends State<SearchPage> {
                   showNoResults = false;
                   errorMessage = null;
                   searchResults = [];
+                  lastQueryId = null;
                 });
               },
               onError: (String error) {
@@ -58,19 +86,23 @@ class _SearchPageState extends State<SearchPage> {
                   errorMessage = error;
                   isSearchLoading = false;
                   searchResults = [];
+                  lastQueryId = null;
                 });
               },
               onSearchResults: (List<Map<String, dynamic>> results) {
                 setState(() {
                   isSearchLoading = false;
                   searchResults = results;
+                  if (results.isNotEmpty &&
+                      results.first.containsKey("queryId")) {
+                    lastQueryId = results.first["queryId"];
+                  }
                 });
               },
             ),
             const SizedBox(height: 8),
             const shadcn.Divider(),
             const SizedBox(height: 12),
-
             Expanded(
               child: Builder(
                 builder: (_) {
@@ -92,11 +124,26 @@ class _SearchPageState extends State<SearchPage> {
                     );
                   } else if (searchResults.isNotEmpty) {
                     return ListView.builder(
-                      itemCount: searchResults.length,
+                      controller: _scrollController,
+                      itemCount: searchResults.length + 1,
                       itemBuilder: (context, index) {
+                        if (index == searchResults.length) {
+                          return Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(24.0),
+                              child:
+                                  isLoadingMore
+                                      ? const CircularProgressIndicator()
+                                      : const Text(
+                                        'You have reached the end',
+                                        style: TextStyle(color: Colors.black54),
+                                      ),
+                            ),
+                          );
+                        }
                         return PostCard(
                           jokeData: searchResults[index],
-                          humorProfile: widget.profile, // Pass humor profile
+                          humorProfile: widget.profile,
                         );
                       },
                     );
@@ -123,11 +170,10 @@ class _SearchPageState extends State<SearchPage> {
                 },
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
           ],
         ),
       ),
     );
-    // );
   }
 }

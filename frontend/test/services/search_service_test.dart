@@ -28,7 +28,7 @@ void main() {
 
   group('SearchService Logic Tests', () {
     // TC1: Valid Search Query
-    test('TC1: Valid Search Query', () async {
+    test('TC-SEARCH-001: Valid Search Query', () async {
       final mockUser = MockUser();
       when(mockAuth.currentUser).thenReturn(mockUser);
       when(mockUser.uid).thenReturn('test_user');
@@ -74,22 +74,22 @@ void main() {
           results.isNotEmpty && results.first['text'].contains('funny cat');
 
       print('''
- TC1: Valid Search Query
- Description: Should translate, preprocess, and match a meaningful query like "funny cat".
- Input Query: "funny cat"
- Expected Behavior:
-  - Translation: "funny cat"
-  - Preprocessed to: query123
-  - Match returns results aligned to humor profile.
- Actual Output: $results
- Verdict: ${pass ? 'PASS' : 'FAIL'}
-''');
+        TC1: Valid Search Query
+        Description: Should translate, preprocess, and match a meaningful query like "funny cat".
+        Input Query: "funny cat"
+        Expected Behavior:
+          - Translation: "funny cat"
+          - Preprocessed to: query123
+          - Match returns results aligned to humor profile.
+        Actual Output: $results
+        Verdict: ${pass ? 'PASS' : 'FAIL'}
+        ''');
 
       expect(pass, isTrue);
     });
 
     // TC2: Invalid/Gibberish Search
-    test('TC2: Invalid/Gibberish Search', () async {
+    test('TC-SEARCH-002: Invalid/Gibberish Search', () async {
       final query = 'aajsdhasd\$\$\$';
       when(
         mockTranslator.translateText(query),
@@ -99,19 +99,19 @@ void main() {
         await mockTranslator.translateText(query);
       } catch (e) {
         print('''
- TC2: Invalid/Gibberish Search
- Description: Should reject nonsensical or malformed input.
- Input Query: "$query"
- Expected: Display "Please enter a valid query" and do not proceed.
- Actual Output: Exception -> $e
- Verdict: ${e.toString().contains('Invalid query') ? 'PASS' : 'FAIL'}
-''');
+          TC2: Invalid/Gibberish Search
+          Description: Should reject nonsensical or malformed input.
+          Input Query: "$query"
+          Expected: Display "Please enter a valid query" and do not proceed.
+          Actual Output: Exception -> $e
+          Verdict: ${e.toString().contains('Invalid query') ? 'PASS' : 'FAIL'}
+          ''');
         expect(e.toString(), contains('Invalid query'));
       }
     });
 
     // TC3: Empty Search
-    test('TC3: Empty Search', () async {
+    test('TC-SEARCH-003: Empty Search', () async {
       final query = '';
       when(mockTranslator.translateText(query)).thenAnswer(
         (_) async => TranslationResult(translatedText: '', language: 'en'),
@@ -120,19 +120,19 @@ void main() {
       final translation = await mockTranslator.translateText(query);
 
       print('''
- TC3: Empty Search
- Description: Should prevent search on empty input.
- Input Query: ""
- Expected: No API call or processing should happen.
- Actual Output: translatedText="${translation.translatedText}"
- Verdict: ${translation.translatedText!.isEmpty ? 'PASS' : 'FAIL'}
-''');
+        TC3: Empty Search
+        Description: Should prevent search on empty input.
+        Input Query: ""
+        Expected: No API call or processing should happen.
+        Actual Output: translatedText="${translation.translatedText}"
+        Verdict: ${translation.translatedText!.isEmpty ? 'PASS' : 'FAIL'}
+        ''');
 
       expect(translation.translatedText!.isEmpty, isTrue);
     });
 
     // TC4: Results Load Successfully
-    test('TC4: Results Load Successfully', () async {
+    test('TC-SEARCH-004: Results Load Successfully', () async {
       final mockUser = MockUser();
       when(mockAuth.currentUser).thenReturn(mockUser);
       when(mockUser.uid).thenReturn('test_user');
@@ -178,19 +178,19 @@ void main() {
       final pass = results.length >= 2;
 
       print('''
- TC4: Results Load Successfully
- Description: After search is triggered, spinner shows while results load and disappear afterward.
- Input: "funny cat"
- Expected: Results list returned and app continues smoothly.
- Actual Output: ${results.length} results -> $results
- Verdict: ${pass ? 'PASS' : 'FAIL'}
-''');
+        TC4: Results Load Successfully
+        Description: After search is triggered, spinner shows while results load and disappear afterward.
+        Input: "funny cat"
+        Expected: Results list returned and app continues smoothly.
+        Actual Output: ${results.length} results -> $results
+        Verdict: ${pass ? 'PASS' : 'FAIL'}
+        ''');
 
       expect(pass, isTrue);
     });
 
     // TC5: Backend Error During Search
-    test('TC5: Backend Error During Search', () async {
+    test('TC-SEARCH-005: Backend Error During Search', () async {
       final mockUser = MockUser();
       when(mockAuth.currentUser).thenReturn(mockUser);
       when(mockUser.uid).thenReturn('test_user');
@@ -232,13 +232,13 @@ void main() {
       } catch (e) {
         final pass = e.toString().contains('Backend error');
         print('''
- TC5: Backend Error During Search
- Description: When backend fails, app should gracefully handle it and show error message.
- Input: "funny cat"
- Expected: Toast/snackbar shown with retry advice.
- Actual Output: Exception -> $e
- Verdict: ${pass ? 'PASS' : 'FAIL'}
-''');
+          TC5: Backend Error During Search
+          Description: When backend fails, app should gracefully handle it and show error message.
+          Input: "funny cat"
+          Expected: Exception thrown and handled gracefully.
+          Actual Output: Exception -> $e
+          Verdict: ${pass ? 'PASS' : 'FAIL'}
+          ''');
         expect(pass, isTrue);
       }
     });

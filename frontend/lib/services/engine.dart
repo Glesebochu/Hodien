@@ -126,8 +126,16 @@ class HumorEngine {
 
         // 🎯 Convert + take the needed amount
         final jokes =
-            matchingDocs.map(_parseJokeDoc).toList()..shuffle(_random);
-        selectedJokes.addAll(jokes.take(countNeeded));
+            matchingDocs
+                .where((doc) {
+                  final data = doc.data();
+                  return data != null &&
+                      data['humor_type'] == _toFirestoreValue(humorType);
+                })
+                .map(_parseJokeDoc)
+                .toList();
+
+        selectedJokes.addAll(jokes);
       } else {
         // 🔄 Use normal Firestore query
         final querySnapshot =

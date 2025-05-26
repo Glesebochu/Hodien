@@ -24,37 +24,33 @@ class QueryProfileMatcher {
         ];
       }
 
-      // Step 2: Extract term weights from query
+      // Step 2: Extract and clean term weights
       final Map<String, dynamic> rawWeights = Map<String, dynamic>.from(
         queryDoc.data()?['term_weights'] ?? {},
       );
-      log("rawWeights: $rawWeights");
       if (rawWeights.isEmpty) {
-        log("Term weights missing or empty for query $queryId");
+        log("Empty or missing term_weights for query $queryId");
         return [
-          {'error': true, 'text': 'Invalid or incomplete query data.'},
+          {'error': true, 'text': 'No valid data to search with.'},
         ];
       }
 
-      // Convert weights to lowercase keys for matching
       final Map<String, double> termWeights = rawWeights.map(
         (k, v) => MapEntry(k.toLowerCase(), (v as num).toDouble()),
       );
 
-      // Step 3: Get matching content IDs from index
+      // Step 3: Parallel fetch of term content index
       final termDocs = await Future.wait(
         termWeights.keys.map(
           (term) => _firestore.collection('content_index').doc(term).get(),
         ),
       );
 
-      List<String> matchedContentIds = [];
-
+      final Set<String> matchedContentIds = {};
       for (final doc in termDocs) {
         if (doc.exists) {
           final data = doc.data();
           final List contentList = data?['content'] ?? [];
-
           for (final item in contentList) {
             if (item is Map && item['id'] != null) {
               matchedContentIds.add(item['id']);
@@ -63,61 +59,52 @@ class QueryProfileMatcher {
         }
       }
 
-      matchedContentIds = matchedContentIds.toSet().toList(); 
-      log("Matched content count: ${matchedContentIds.length}");
-
       if (matchedContentIds.isEmpty) {
-        log("No content found for matched terms.");
+        log("No matches found for terms: ${termWeights.keys}");
         return [
-          {'error': true, 'text': 'No matching content found for your query.'},
+          {'error': true, 'text': 'No matching content found.'},
         ];
       }
 
-      // Step 4: Fetch and filter content through HumorEngine
+      // Step 4: Fetch jokes based on content IDs and profile
       final profile = HumorProfile(userId: userId);
+      await profile.loadFavoriteContentStack();
       final engine = HumorEngine(profile: profile);
 
       final filteredContent = await engine.fetchJokesProportionally(
-        contentIds: matchedContentIds,
+        contentIds: matchedContentIds.toList(),
       );
 
       if (filteredContent.isEmpty) {
         return [
-          {
-            'error': true,
-            'text': 'No personalized results found for your profile.',
-          },
+          {'error': true, 'text': 'No personalized results found.'},
         ];
       }
 
-      // Step 5: Score and sort the filtered content by query relevance
-      // filteredContent.sort((a, b) {
-      //   final aScore = _scoreText(a['text'], termWeights);
-      //   final bScore = _scoreText(b['text'], termWeights);
-      //   return bScore.compareTo(aScore); // Descending
-      // });
-      log("Sending results to seacrh bar | from query_profile_matcher");
+      // Step 5: Score and sort results by query relevance
+      filteredContent.sort((a, b) {
+        final aScore = _scoreText(a['text'], termWeights);
+        final bScore = _scoreText(b['text'], termWeights);
+        return bScore.compareTo(aScore);
+      });
 
       return filteredContent;
     } catch (e, stack) {
-      log("Exception in matchQueryAndProfile: $e\n$stack");
+      log("Error in matchQueryAndProfile: $e\n$stack");
       return [
-        {
-          'error': true,
-          'text': 'Unexpected error occurred while processing your query.',
-        },
+        {'error': true, 'text': 'An error occurred while matching your query.'},
       ];
     }
   }
 
-  // double _scoreText(String text, Map<String, double> weights) {
-  //   double score = 0.0;
-  //   final lowerText = text.toLowerCase();
-  //   for (final entry in weights.entries) {
-  //     if (lowerText.contains(entry.key)) {
-  //       score += entry.value;
-  //     }
-  //   }
-  //   return score;
-  // }
+  double _scoreText(String text, Map<String, double> weights) {
+    double score = 0.0;
+    final lowerText = text.toLowerCase();
+    for (final entry in weights.entries) {
+      if (lowerText.contains(entry.key)) {
+        score += entry.value;
+      }
+    }
+    return score;
+  }
 }

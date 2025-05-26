@@ -3,8 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_setup.dart';
-import 'package:frontend/services/engine.dart';
-import 'package:frontend/models/humor_profile.dart';
 
 void main() {
   setUpAll(() async {
