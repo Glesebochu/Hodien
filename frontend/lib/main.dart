@@ -10,7 +10,7 @@ import 'pages/settings.dart';
 import 'utils/utils.dart';
 import './services/user_service.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart' as shadcn;
-import 'theme.dart';
+import 'utils/theme.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
