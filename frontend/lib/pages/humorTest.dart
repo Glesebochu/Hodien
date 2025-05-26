@@ -277,6 +277,10 @@ class _QuestionScreen extends StatelessWidget {
   }
 }
 
+void toggleTheme() {
+  ;
+}
+
 void _showSuccessDialog(BuildContext context) {
   showDialog(
     context: context,
@@ -304,7 +308,13 @@ void _showSuccessDialog(BuildContext context) {
                 shadcn.PrimaryButton(
                   onPressed: () {
                     Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (_) => Home()),
+                      MaterialPageRoute(
+                        builder:
+                            (_) => Home(
+                              toggleTheme: toggleTheme,
+                              isDarkMode: false,
+                            ),
+                      ),
                       (route) => false,
                     );
                   },
