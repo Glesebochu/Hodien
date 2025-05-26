@@ -166,109 +166,120 @@ class _QuestionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // final shadcn.StepperController controller = shadcn.StepperController();
 
-    return Scaffold(
-      appBar: AppBar(title: Text('Humor Test')),
-      body: shadcn.Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 600),
-            child: shadcn.Stepper(
-              variant: shadcn.StepVariant.line,
-              controller: controller,
-              direction: Axis.horizontal,
-              steps: [
-                for (int step = 1; step <= total; step++)
-                  shadcn.Step(
-                    title: Text('step $step'),
-                    icon: shadcn.StepNumber(
-                      onPressed: () {
-                        controller.jumpToStep(step);
+    return shadcn.Padding(
+      padding: const EdgeInsets.all(32.0),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Center(
+            child: Text(
+              'Humor Test',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+          automaticallyImplyLeading: false,
+        ),
+        body: shadcn.Padding(
+          padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 600),
+              child: shadcn.Stepper(
+                variant: shadcn.StepVariant.line,
+                controller: controller,
+                direction: Axis.horizontal,
+                steps: [
+                  for (int step = 1; step <= total; step++)
+                    shadcn.Step(
+                      title: Text('Step $step'),
+                      icon: shadcn.StepNumber(
+                        onPressed: () {
+                          controller.jumpToStep(step);
+                        },
+                      ),
+                      contentBuilder: (context) {
+                        return shadcn.StepContainer(
+                          actions: [],
+                          // child: Container(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              // color: Colors.grey[200],
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                            alignment: Alignment.center,
+                            // height: 200,
+                            // color: Colors.grey[200],
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Column(
+                                    children: [
+                                      Icon(
+                                        Icons.question_answer,
+
+                                        size: 80,
+                                        color: Colors.amber[400],
+                                      ),
+
+                                      Container(
+                                        alignment: Alignment.center,
+                                        child: shadcn.Text(
+                                          question,
+                                          style: TextStyle(fontSize: 24),
+                                        ),
+                                      ),
+
+                                      const SizedBox(height: 20),
+
+                                      ...options.map(
+                                        (opt) => Column(
+                                          children: [
+                                            shadcn.PrimaryButton(
+                                              key: ValueKey(
+                                                'humor_option_${opt['text']}',
+                                              ),
+                                              onPressed: () {
+                                                controller.nextStep();
+                                                context
+                                                    .read<HumorTestProvider>()
+                                                    .selectOption(opt['type']);
+                                              },
+                                              child: Container(
+                                                width: double.infinity,
+                                                // decoration: BoxDecoration(
+                                                //   color: Colors.grey[300],
+                                                //   borderRadius: BorderRadius.circular(
+                                                //     12.0,
+                                                //   ),
+                                                // ),
+                                                padding: const EdgeInsets.all(
+                                                  12.0,
+                                                ),
+                                                child: Column(
+                                                  children: [
+                                                    shadcn.Text(opt['text']),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(height: 10),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          // 'Step $step',
+                          // style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        );
                       },
                     ),
-                    contentBuilder: (context) {
-                      return shadcn.StepContainer(
-                        actions: [],
-                        // child: Container(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.grey[200],
-                            borderRadius: BorderRadius.circular(12.0),
-                          ),
-                          alignment: Alignment.center,
-                          // height: 200,
-                          // color: Colors.grey[200],
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Column(
-                                  children: [
-                                    Icon(
-                                      Icons.question_answer,
-
-                                      size: 80,
-                                      color: Colors.amber[400],
-                                    ),
-
-                                    Container(
-                                      alignment: Alignment.center,
-                                      child: shadcn.Text(
-                                        question,
-                                        style: TextStyle(fontSize: 24),
-                                      ),
-                                    ),
-
-                                    const SizedBox(height: 20),
-
-                                    ...options.map(
-                                      (opt) => Column(
-                                        children: [
-                                          shadcn.PrimaryButton(
-                                            key: ValueKey(
-                                              'humor_option_${opt['text']}',
-                                            ),
-                                            onPressed: () {
-                                              controller.nextStep();
-                                              context
-                                                  .read<HumorTestProvider>()
-                                                  .selectOption(opt['type']);
-                                            },
-                                            child: Container(
-                                              width: double.infinity,
-                                              // decoration: BoxDecoration(
-                                              //   color: Colors.grey[300],
-                                              //   borderRadius: BorderRadius.circular(
-                                              //     12.0,
-                                              //   ),
-                                              // ),
-                                              padding: const EdgeInsets.all(
-                                                12.0,
-                                              ),
-                                              child: Column(
-                                                children: [
-                                                  shadcn.Text(opt['text']),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          const SizedBox(height: 10),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        // 'Step $step',
-                        // style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                      );
-                    },
-                  ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
