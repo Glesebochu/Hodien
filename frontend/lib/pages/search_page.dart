@@ -126,7 +126,7 @@ class _SearchPageState extends State<SearchPage> {
                       child: shadcn.Text(
                         errorMessage ?? 'No Results Found',
                         style: const shadcn.TextStyle(
-                          color: Colors.grey,
+                          color: Color.fromARGB(255, 176, 173, 114),
                           fontStyle: FontStyle.italic,
                         ),
                       ),
@@ -145,7 +145,14 @@ class _SearchPageState extends State<SearchPage> {
                                       ? const CircularProgressIndicator()
                                       : const Text(
                                         'You have reached the end',
-                                        style: TextStyle(color: Colors.black54),
+                                        style: TextStyle(
+                                          color: Color.fromARGB(
+                                            255,
+                                            176,
+                                            173,
+                                            114,
+                                          ),
+                                        ),
                                       ),
                             ),
                           );

@@ -4,8 +4,6 @@ from collections import Counter
 import traceback
 from spellchecker import SpellChecker
 from nltk.corpus import wordnet
-from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
@@ -16,12 +14,11 @@ from .CustomStemmer import CustomPorterStemmer as CustomStemmer
 from nltk.corpus import words
 
 
-# # Logging setup
+# Logging setup
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
-app = FastAPI()
 # Firebase Admin SDK Initialization (must be before firestore.client())
 if not firebase_admin._apps:
     cred = credentials.Certificate("backend/search_engine/config/hodien-f5535-searchengine-adminsdk.json")
@@ -33,7 +30,7 @@ db = firestore.client()
 class DataPreprocessor:
     def __init__(self):
         # Stop words are loaded once for efficiency
-        with open('stopwords_en.txt') as f:
+        with open('backend/shared_utils/services/word_lists/stopwords_en.txt') as f:
             self.stop_words = set(word.strip().lower() for word in f)
 
     # This function does the entire preprocessing pipeline
@@ -212,36 +209,6 @@ class DataPreprocessor:
 
         result = {token: round(count / total, 3) for token, count in counts.items()}
         return result if result else tokens
-    
-app.add_middleware( CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
-@app.post("/preprocess")
-async def preprocess_query(request: Request):
-    try:
-        data = await request.json()
-        original_text = data.get("original_text", "").strip()
-        translated_text = data.get("translated_text", "").strip()
-        language = data.get("language", "").strip()
-        user_id = data.get("user_id", "").strip()
-
-        if not original_text or not user_id:
-            return JSONResponse(content={"error": "Missing required fields"}, status_code=400)
-
-        preprocessor = DataPreprocessor()
-        query_id = preprocessor.process_query(
-            original_text=original_text,
-            translated_text=translated_text,
-            language=language,
-            user_id=user_id,
-        )
-
-        return {"queryId": query_id}
-    except Exception as e:
-        logging.error(f"[Preprocessing Error] {str(e)}")
-        return JSONResponse(
-            content={"error": str(e)},
-            status_code=500
-        )
-
 
 # if __name__ == "__main__":
 #     preprocessor = DataPreprocessor()
