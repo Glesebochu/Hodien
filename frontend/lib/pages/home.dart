@@ -116,7 +116,9 @@ class _HomeState extends State<Home> {
               padding: const EdgeInsets.all(24.0),
               child:
                   isLoading
-                      ? const CircularProgressIndicator()
+                      ? const CircularProgressIndicator(
+                        color: Color.fromARGB(255, 225, 204, 15),
+                      )
                       : const Text(
                         'You have reached the end',
                         style: TextStyle(color: Colors.white70),
