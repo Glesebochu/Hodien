@@ -41,3 +41,4 @@ flutter:
   uses-material-design: true
   assets:
     - assets/hodien.png
+    - assets/test_corpus.json
