@@ -36,7 +36,7 @@ class HumorTestScreen extends StatelessWidget {
       ],
     },
     {
-      'question': 'What’s your favorite type of joke?',
+      'question': "What's your favorite type of joke?",
       'options': [
         {'text': 'Puns and wordplay', 'type': 'Linguistic'},
         {'text': 'Slapstick and physical gags', 'type': 'Physical'},
@@ -63,7 +63,7 @@ class HumorTestScreen extends StatelessWidget {
       ],
     },
     {
-      'question': 'What’s funniest in a movie?',
+      'question': "What's funniest in a movie?",
       'options': [
         {'text': 'Over-the-top fight scenes', 'type': 'Physical'},
         {'text': 'Witty one-liners', 'type': 'Linguistic'},
@@ -222,40 +222,111 @@ class _QuestionScreen extends StatelessWidget {
 
                                     const SizedBox(height: 20),
 
-                                    ...options.map(
-                                      (opt) => Column(
-                                        children: [
-                                          shadcn.PrimaryButton(
-                                            key: ValueKey(
-                                              'humor_option_${opt['text']}',
-                                            ),
-                                            onPressed: () {
-                                              controller.nextStep();
-                                              context
-                                                  .read<HumorTestProvider>()
-                                                  .selectOption(opt['type']);
-                                            },
-                                            child: Container(
-                                              width: double.infinity,
-                                              // decoration: BoxDecoration(
-                                              //   color: Colors.grey[300],
-                                              //   borderRadius: BorderRadius.circular(
-                                              //     12.0,
-                                              //   ),
-                                              // ),
-                                              padding: const EdgeInsets.all(
-                                                12.0,
-                                              ),
-                                              child: Column(
-                                                children: [
-                                                  shadcn.Text(opt['text']),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          const SizedBox(height: 10),
-                                        ],
-                                      ),
+                                    LayoutBuilder(
+                                      builder: (context, constraints) {
+                                        final isWide =
+                                            constraints.maxWidth > 600 ||
+                                            MediaQuery.of(
+                                                  context,
+                                                ).orientation ==
+                                                Orientation.landscape;
+
+                                        return isWide
+                                            ? GridView.count(
+                                              shrinkWrap: true,
+                                              crossAxisCount: 2,
+                                              mainAxisSpacing: 10,
+                                              crossAxisSpacing: 10,
+                                              childAspectRatio: 3,
+                                              children:
+                                                  options
+                                                      .map(
+                                                        (
+                                                          opt,
+                                                        ) => shadcn.PrimaryButton(
+                                                          key: ValueKey(
+                                                            'humor_option_${opt['text']}',
+                                                          ),
+                                                          onPressed: () {
+                                                            controller
+                                                                .nextStep();
+                                                            context
+                                                                .read<
+                                                                  HumorTestProvider
+                                                                >()
+                                                                .selectOption(
+                                                                  opt['type'],
+                                                                );
+                                                          },
+                                                          child: Container(
+                                                            width:
+                                                                double.infinity,
+                                                            padding:
+                                                                const EdgeInsets.all(
+                                                                  5.0,
+                                                                ),
+                                                            child: Column(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .center,
+                                                              children: [
+                                                                shadcn.Text(
+                                                                  opt['text'],
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      )
+                                                      .toList(),
+                                            )
+                                            : Column(
+                                              children:
+                                                  options
+                                                      .map(
+                                                        (opt) => Column(
+                                                          children: [
+                                                            shadcn.PrimaryButton(
+                                                              key: ValueKey(
+                                                                'humor_option_${opt['text']}',
+                                                              ),
+                                                              onPressed: () {
+                                                                controller
+                                                                    .nextStep();
+                                                                context
+                                                                    .read<
+                                                                      HumorTestProvider
+                                                                    >()
+                                                                    .selectOption(
+                                                                      opt['type'],
+                                                                    );
+                                                              },
+                                                              child: Container(
+                                                                width:
+                                                                    double
+                                                                        .infinity,
+                                                                padding:
+                                                                    const EdgeInsets.all(
+                                                                      10.0,
+                                                                    ),
+                                                                child: Column(
+                                                                  children: [
+                                                                    shadcn.Text(
+                                                                      opt['text'],
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            const SizedBox(
+                                                              height: 10,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      )
+                                                      .toList(),
+                                            );
+                                      },
                                     ),
                                   ],
                                 ),
