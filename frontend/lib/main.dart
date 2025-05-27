@@ -7,10 +7,10 @@ import 'pages/authpage.dart';
 import 'pages/home.dart';
 import 'pages/humorTest.dart';
 import 'pages/settings.dart';
+import 'pages/search_page.dart';
 import 'utils/utils.dart';
 import './services/user_service.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart' as shadcn;
-import 'utils/theme.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -69,6 +69,7 @@ class _MainAppState extends State<MainApp> {
             (context) => Home(toggleTheme: toggleTheme, isDarkMode: isDarkMode),
         '/settings': (context) => const SettingsPage(),
         '/humorTest': (context) => HumorTestScreen(),
+        '/search': (context) => SearchPage(),
       },
       home: Scaffold(
         body: StreamBuilder<User?>(

@@ -127,14 +127,15 @@ class HumorEngine {
 
         final jokes =
             matchingDocs
+                .where((doc) {
+                  final data = doc.data();
+                  return data != null &&
+                      data['humor_type'] == _toFirestoreValue(humorType);
+                })
                 .map(_parseJokeDoc)
-                .where(
-                  (joke) => !excludedIds.contains(joke['id']),
-                ) // ✅ exclude early
-                .toList()
-              ..shuffle(_random);
+                .toList();
 
-        selectedJokes.addAll(jokes.take(countNeeded));
+        selectedJokes.addAll(jokes);
       } else {
         final querySnapshot =
             await firestore
