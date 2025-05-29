@@ -24,6 +24,21 @@ class _FavoriteContentPageState extends State<FavoriteContentPage> {
     _fetchFavoriteJokesFromFirestore();
   }
 
+  String toTitleCase(String text) {
+    if (text.isEmpty) return text;
+
+    return text
+        .toLowerCase()
+        .split(' ')
+        .map(
+          (word) =>
+              word.isNotEmpty
+                  ? '${word[0].toUpperCase()}${word.substring(1)}'
+                  : '',
+        )
+        .join(' ');
+  }
+
   String toSentenceCase(String text) {
     if (text.isEmpty) return text;
 
@@ -192,16 +207,34 @@ class _FavoriteContentPageState extends State<FavoriteContentPage> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  "#${_getHumorTypeLabel(joke['humor_type'])} (${(joke['humor_type_score'] * 100).toStringAsFixed(1)}%)",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color:
-                        isDarkMode
-                            ? Colors.yellow[700]
-                            : Color.fromARGB(255, 94, 70, 9),
-                    fontWeight: FontWeight.bold,
-                  ),
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color:
+                            isDarkMode
+                                ? Colors.yellow[800]?.withOpacity(0.15)
+                                : const Color.fromARGB(255, 255, 236, 179),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        '${((joke['humor_type_score']) * 100).toStringAsFixed(0)}% ${toTitleCase(_getHumorTypeLabel(joke['humor_type']))}',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color:
+                              isDarkMode
+                                  ? Colors.yellow[700]
+                                  : const Color.fromARGB(255, 94, 70, 9),
+                          fontWeight: FontWeight.bold,
+                          height: 1.2,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
