@@ -179,26 +179,6 @@ class _HomeState extends State<Home> {
               ),
             ],
           ),
-          // RichText(
-          //   text: TextSpan(
-          //     children: [
-          //       TextSpan(
-          //         text: 'Ho',
-          //         style: GoogleFonts.pacifico(
-          //           fontSize: 28,
-          //           color: widget.isDarkMode ? Colors.white : Colors.black87,
-          //         ),
-          //       ),
-          //       TextSpan(
-          //         text: 'diEn',
-          //         style: GoogleFonts.pacifico(
-          //           fontSize: 28,
-          //           color: Colors.yellow[700],
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // ),
           actions: [
             Padding(
               padding: const EdgeInsets.fromLTRB(0, 0, 16, 0),
@@ -232,12 +212,12 @@ class _HomeState extends State<Home> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
+                    children: [
                       Icon(Icons.auto_awesome, color: Colors.black),
                       SizedBox(width: 8),
                       Text(
                         'Surprise Me',
-                        style: TextStyle(
+                        style: GoogleFonts.varela(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
                         ),

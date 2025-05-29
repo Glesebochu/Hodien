@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/services/reactions.dart';
 import 'package:frontend/models/humor_profile.dart';
 import 'package:frontend/models/constants.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class PostCard extends StatefulWidget {
   final Map<String, dynamic> jokeData;
@@ -178,28 +179,39 @@ class _PostCardState extends State<PostCard> {
                     children: [
                       TextSpan(
                         text: '${toSentenceCase(widget.jokeData['text'])} ',
-                        style: TextStyle(
+                        style: GoogleFonts.varela(
                           fontSize: 23,
                           color: isDarkMode ? Colors.white : Colors.black,
                           height: 1.6,
+                          fontWeight: FontWeight.w300,
                         ),
                       ),
-                      TextSpan(
-                        text:
-                            '#${widget.jokeData['humorType']} (${(widget.jokeData['humorScore'] * 100).toStringAsFixed(1)}%)',
-                        style: TextStyle(
-                          fontSize: 16, // Smaller than main text
-                          color:
-                              isDarkMode
-                                  ? Colors.yellow[700]
-                                  : Color.fromARGB(
-                                    255,
-                                    94,
-                                    70,
-                                    9,
-                                  ), // Yellow hashtag
-                          height: 1.6,
-                          fontWeight: FontWeight.bold,
+                      WidgetSpan(
+                        alignment: PlaceholderAlignment.middle,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color:
+                                isDarkMode
+                                    ? Colors.yellow[800]?.withOpacity(0.15)
+                                    : const Color.fromARGB(255, 255, 236, 179),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            '${(widget.jokeData['humorScore'] * 100).toStringAsFixed(0)}% ${toTitleCase(widget.jokeData['humorType'])}',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color:
+                                  isDarkMode
+                                      ? Colors.yellow[700]
+                                      : const Color.fromARGB(255, 94, 70, 9),
+                              fontWeight: FontWeight.bold,
+                              height: 1.2,
+                            ),
+                          ),
                         ),
                       ),
                     ],
