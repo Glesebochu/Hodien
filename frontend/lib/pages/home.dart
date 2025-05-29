@@ -76,8 +76,16 @@ class _HomeState extends State<Home> {
 
   Future<void> showSurpriseJoke() async {
     final joke = await engine.fetchSurpriseMeJoke();
+    // Defensive: ensure all required fields are non-null and String-typed
+    final safeJoke = {
+      'id': joke['id']?.toString() ?? '',
+      'text': joke['text']?.toString() ?? '',
+      'humorType': joke['humorType']?.toString() ?? '',
+      'humorScore': joke['humorScore'] ?? 0.0,
+      // add other fields as needed
+    };
     setState(() {
-      surpriseJoke = joke;
+      surpriseJoke = safeJoke;
       showSurprise = true;
     });
   }
