@@ -170,7 +170,10 @@ class _HomeState extends State<Home> {
                 'Hodien',
                 style: GoogleFonts.varela(
                   fontSize: 28,
-                  color: widget.isDarkMode ? Colors.white : Colors.black87,
+                  color:
+                      Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : Colors.black87,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -268,9 +271,12 @@ class _HomeState extends State<Home> {
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _selectedTabIndex,
           onTap: (index) => setState(() => _selectedTabIndex = index),
-          selectedItemColor: widget.isDarkMode ? Colors.amber : Colors.black,
+          selectedItemColor:
+              Theme.of(context).brightness == Brightness.dark
+                  ? Colors.amber
+                  : Colors.black,
           unselectedItemColor:
-              widget.isDarkMode
+              Theme.of(context).brightness == Brightness.dark
                   ? Colors.yellow
                   : const Color.fromARGB(255, 91, 90, 90),
           backgroundColor:

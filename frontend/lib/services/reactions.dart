@@ -68,7 +68,13 @@ class _ReactionState extends State<Reaction>
           const SizedBox(height: 4),
           Text(
             widget.label,
-            style: const TextStyle(color: Colors.white70, fontSize: 12),
+            style: TextStyle(
+              color:
+                  Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white70
+                      : Colors.black87,
+              fontSize: 12,
+            ),
           ),
         ],
       ),
