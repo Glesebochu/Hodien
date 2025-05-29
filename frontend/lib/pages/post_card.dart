@@ -177,7 +177,7 @@ class _PostCardState extends State<PostCard> {
                   text: TextSpan(
                     children: [
                       TextSpan(
-                        text: toSentenceCase(widget.jokeData['text']) + ' ',
+                        text: '${toSentenceCase(widget.jokeData['text'])} ',
                         style: TextStyle(
                           fontSize: 23,
                           color: isDarkMode ? Colors.white : Colors.black,

@@ -116,7 +116,9 @@ class _HomeState extends State<Home> {
               padding: const EdgeInsets.all(24.0),
               child:
                   isLoading
-                      ? const CircularProgressIndicator()
+                      ? const CircularProgressIndicator(
+                        color: Color.fromARGB(255, 225, 204, 15),
+                      )
                       : const Text(
                         'You have reached the end',
                         style: TextStyle(color: Colors.white70),
@@ -156,113 +158,136 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: RichText(
-          text: TextSpan(
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Row(
             children: [
-              TextSpan(
-                text: 'Ho',
-                style: GoogleFonts.pacifico(
+              Image.asset('assets/hodien.png', height: 60),
+              const SizedBox(width: 4),
+              Text(
+                'Hodien',
+                style: GoogleFonts.varela(
                   fontSize: 28,
                   color: widget.isDarkMode ? Colors.white : Colors.black87,
-                ),
-              ),
-              TextSpan(
-                text: 'diEn',
-                style: GoogleFonts.pacifico(
-                  fontSize: 28,
-                  color: Colors.yellow[700],
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ],
           ),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(
-              widget.isDarkMode ? Icons.wb_sunny : Icons.nightlight_round,
-            ),
-            onPressed: widget.toggleTheme,
-          ),
-        ],
-      ),
-      body: Stack(
-        children: [
-          _buildBody(),
-          if (_selectedTabIndex == 0)
-            Positioned(
-              top: 16,
-              left: 16,
-              child: RawMaterialButton(
-                onPressed: showSurpriseJoke,
-                fillColor: Colors.yellow[700],
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(24),
+          // RichText(
+          //   text: TextSpan(
+          //     children: [
+          //       TextSpan(
+          //         text: 'Ho',
+          //         style: GoogleFonts.pacifico(
+          //           fontSize: 28,
+          //           color: widget.isDarkMode ? Colors.white : Colors.black87,
+          //         ),
+          //       ),
+          //       TextSpan(
+          //         text: 'diEn',
+          //         style: GoogleFonts.pacifico(
+          //           fontSize: 28,
+          //           color: Colors.yellow[700],
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 0, 16, 0),
+              child: IconButton(
+                icon: Icon(
+                  widget.isDarkMode ? Icons.wb_sunny : Icons.nightlight_round,
                 ),
-                constraints: const BoxConstraints(
-                  minWidth: 140,
-                  minHeight: 56,
-                ), // wider & taller
-                elevation: 6,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Icon(Icons.auto_awesome, color: Colors.black),
-                    SizedBox(width: 8),
-                    Text(
-                      'Surprise Me',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          if (showSurprise && surpriseJoke != null) ...[
-            GestureDetector(
-              onTap: () => setState(() => showSurprise = false),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
-                child: Container(color: Colors.black.withOpacity(0.4)),
-              ),
-            ),
-            Center(
-              child: AnimatedScale(
-                scale: showSurprise ? 1 : 0,
-                duration: const Duration(milliseconds: 300),
-                child: PostCard(jokeData: surpriseJoke!, humorProfile: profile),
+                onPressed: widget.toggleTheme,
               ),
             ),
           ],
-        ],
-      ),
+        ),
+        body: Stack(
+          children: [
+            _buildBody(),
+            if (_selectedTabIndex == 0)
+              Positioned(
+                top: 16,
+                left: 16,
+                child: RawMaterialButton(
+                  onPressed: showSurpriseJoke,
+                  fillColor: Colors.yellow[700],
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  constraints: const BoxConstraints(
+                    minWidth: 140,
+                    minHeight: 56,
+                  ), // wider & taller
+                  elevation: 6,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Icon(Icons.auto_awesome, color: Colors.black),
+                      SizedBox(width: 8),
+                      Text(
+                        'Surprise Me',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            if (showSurprise && surpriseJoke != null) ...[
+              GestureDetector(
+                onTap: () => setState(() => showSurprise = false),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+                  child: Container(color: Colors.black.withOpacity(0.4)),
+                ),
+              ),
+              Center(
+                child: AnimatedScale(
+                  scale: showSurprise ? 1 : 0,
+                  duration: const Duration(milliseconds: 300),
+                  child: PostCard(
+                    jokeData: surpriseJoke!,
+                    humorProfile: profile,
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
 
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedTabIndex,
-        onTap: (index) => setState(() => _selectedTabIndex = index),
-        selectedItemColor: widget.isDarkMode ? Colors.amber : Colors.black,
-        unselectedItemColor:
-            widget.isDarkMode
-                ? Colors.yellow
-                : const Color.fromARGB(255, 91, 90, 90),
-        backgroundColor:
-            widget.isDarkMode ? Colors.black : Theme.of(context).canvasColor,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite_border),
-            label: 'Saved',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            label: 'Account',
-          ),
-        ],
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: _selectedTabIndex,
+          onTap: (index) => setState(() => _selectedTabIndex = index),
+          selectedItemColor: widget.isDarkMode ? Colors.amber : Colors.black,
+          unselectedItemColor:
+              widget.isDarkMode
+                  ? Colors.yellow
+                  : const Color.fromARGB(255, 91, 90, 90),
+          backgroundColor:
+              widget.isDarkMode ? Colors.black : Theme.of(context).canvasColor,
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+            BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.favorite_border),
+              label: 'Saved',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person_outline),
+              label: 'Account',
+            ),
+          ],
+        ),
       ),
     );
   }

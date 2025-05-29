@@ -8,7 +8,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 class CustomPorterStemmer:
     def __init__(self):
         self.vowels = "aeiou"
-        with open("base_words.txt", "r", encoding="utf-8") as f:
+        with open("backend/shared_utils/services/word_lists/base_words.txt", "r", encoding="utf-8") as f:
             self.valid_words = set(word.strip().lower() for word in f.readlines())
 
     def is_valid(self, word: str) -> bool:
