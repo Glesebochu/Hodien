@@ -51,10 +51,12 @@ class _FavoriteContentPageState extends State<FavoriteContentPage> {
   }
 
   Map<String, dynamic> normalizeJokeData(Map<String, dynamic> rawJoke) {
+    final dynamic humorTypeValue =
+        rawJoke['humorType'] ?? rawJoke['humor_type'];
     return {
       'id': rawJoke['id'],
       'text': rawJoke['text'],
-      'humorType': rawJoke['humor_type'] ?? rawJoke['humorType'],
+      'humorType': _getHumorTypeLabel(humorTypeValue),
       'humorScore': rawJoke['humor_type_score'] ?? rawJoke['humorScore'],
     };
   }
@@ -159,7 +161,7 @@ class _FavoriteContentPageState extends State<FavoriteContentPage> {
               color:
                   isDarkMode
                       ? Colors.grey[900] // Match PostCard dark bg
-                      : const Color.fromARGB(255, 147, 146, 146),
+                      : const Color.fromARGB(255, 186, 186, 186),
             ), // Match light bg
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center, // Vertically center
@@ -180,10 +182,13 @@ class _FavoriteContentPageState extends State<FavoriteContentPage> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  "#${_getHumorTypeLabel(joke['humor_type'])} #${joke['humor_type_score']}",
+                  "#${_getHumorTypeLabel(joke['humor_type'])} (${(joke['humor_type_score'] * 100).toStringAsFixed(1)}%)",
                   style: TextStyle(
                     fontSize: 12,
-                    color: Colors.yellow[700],
+                    color:
+                        isDarkMode
+                            ? Colors.yellow[700]
+                            : Color.fromARGB(255, 94, 70, 9),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
