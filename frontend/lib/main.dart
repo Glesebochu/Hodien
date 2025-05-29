@@ -7,7 +7,6 @@ import 'pages/authpage.dart';
 import 'pages/home.dart';
 import 'pages/humorTest.dart';
 import 'pages/settings.dart';
-import 'pages/search_page.dart';
 import 'utils/utils.dart';
 import './services/user_service.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart' as shadcn;
@@ -92,7 +91,6 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-<<<<<<< HEAD
     final isDarkMode = themeNotifier.value == ThemeMode.dark;
 
     return Scaffold(
@@ -125,54 +123,6 @@ class MainApp extends StatelessWidget {
             return const Authpage();
           }
         },
-=======
-    return MaterialApp(
-      title: 'Hodien',
-      debugShowCheckedModeBanner: false,
-      navigatorKey: navigatorKey,
-      scaffoldMessengerKey: Utils.messengerKey,
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
-      themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
-      routes: {
-        '/home':
-            (context) => Home(toggleTheme: toggleTheme, isDarkMode: isDarkMode),
-        '/settings': (context) => const SettingsPage(),
-        '/humorTest': (context) => HumorTestScreen(),
-        '/search': (context) => SearchPage(),
-      },
-      home: Scaffold(
-        body: StreamBuilder<User?>(
-          stream: FirebaseAuth.instance.authStateChanges(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text('something went wrong'));
-            } else if (snapshot.hasData) {
-              return FutureBuilder<bool>(
-                future: UserService().checkHumorProfileExists(),
-                builder: (context, profileSnapshot) {
-                  if (profileSnapshot.connectionState ==
-                      ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (profileSnapshot.hasError ||
-                      !(profileSnapshot.data ?? false)) {
-                    return HumorTestScreen();
-                  } else {
-                    return Home(
-                      toggleTheme: toggleTheme,
-                      isDarkMode: isDarkMode,
-                    );
-                  }
-                },
-              );
-            } else {
-              return Authpage();
-            }
-          },
-        ),
->>>>>>> 8231a9286923766d7e652551b7a14bd11b25a1f1
       ),
     );
   }

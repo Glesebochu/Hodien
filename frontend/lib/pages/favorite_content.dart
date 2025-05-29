@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:frontend/models/humor_profile.dart';
 import 'post_card.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class FavoriteContentPage extends StatefulWidget {
   final HumorProfile humorProfile;
@@ -117,7 +118,17 @@ class _FavoriteContentPageState extends State<FavoriteContentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Saved Favorites")),
+      appBar: AppBar(
+        title: Text(
+          'Saved Favorites',
+          style: GoogleFonts.varela(
+            fontSize: 16,
+            //color: widget.isDarkMode ? Colors.white : Colors.black87,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+      ),
       body:
           isLoading
               ? const Center(child: CircularProgressIndicator())
