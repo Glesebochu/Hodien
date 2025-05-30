@@ -245,39 +245,37 @@ class _FavoriteContentPageState extends State<FavoriteContentPage> {
   }
 
   Widget _buildExpandedCard(Map<String, dynamic> joke, int index) {
-    // Pass the joke data and humor profile to PostCard when expanded
-    return Column(
-      children: [
-        Expanded(
-          child: PostCard(
-            jokeData: normalizeJokeData(
-              joke,
-            ), // Pass the full joke data to PostCard
-            humorProfile: widget.humorProfile, // Pass the humor profile
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 16.0),
-          child: ElevatedButton.icon(
-            onPressed: () {
-              // Force a complete refresh by resetting the state
-              setState(() {
-                expandedIndex = null; // Collapse the view
-                isLoading = true; // Show loading indicator
-              });
-
-              // Reload the data
-              _fetchFavoriteJokesFromFirestore().then((_) {
+    return Expanded(
+      // Fills the vertical space from parent
+      child: Center(
+        child: Column(
+          mainAxisSize:
+              MainAxisSize.min, // Ensures the column shrinks to fit its content
+          children: [
+            PostCard(
+              jokeData: normalizeJokeData(joke),
+              humorProfile: widget.humorProfile,
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton.icon(
+              onPressed: () {
                 setState(() {
-                  isLoading = false; // Hide loading indicator
+                  expandedIndex = null;
+                  isLoading = true;
                 });
-              });
-            },
-            icon: const Icon(Icons.arrow_back),
-            label: const Text("Back to Favorites"),
-          ),
+
+                _fetchFavoriteJokesFromFirestore().then((_) {
+                  setState(() {
+                    isLoading = false;
+                  });
+                });
+              },
+              icon: const Icon(Icons.arrow_back),
+              label: const Text("Back to Favorites"),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
