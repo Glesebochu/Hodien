@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:frontend/models/humor_profile.dart';
 import 'post_card.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class FavoriteContentPage extends StatefulWidget {
   final HumorProfile humorProfile;
@@ -21,6 +22,21 @@ class _FavoriteContentPageState extends State<FavoriteContentPage> {
   void initState() {
     super.initState();
     _fetchFavoriteJokesFromFirestore();
+  }
+
+  String toTitleCase(String text) {
+    if (text.isEmpty) return text;
+
+    return text
+        .toLowerCase()
+        .split(' ')
+        .map(
+          (word) =>
+              word.isNotEmpty
+                  ? '${word[0].toUpperCase()}${word.substring(1)}'
+                  : '',
+        )
+        .join(' ');
   }
 
   String toSentenceCase(String text) {
@@ -51,10 +67,12 @@ class _FavoriteContentPageState extends State<FavoriteContentPage> {
   }
 
   Map<String, dynamic> normalizeJokeData(Map<String, dynamic> rawJoke) {
+    final dynamic humorTypeValue =
+        rawJoke['humorType'] ?? rawJoke['humor_type'];
     return {
       'id': rawJoke['id'],
       'text': rawJoke['text'],
-      'humorType': rawJoke['humor_type'] ?? rawJoke['humorType'],
+      'humorType': _getHumorTypeLabel(humorTypeValue),
       'humorScore': rawJoke['humor_type_score'] ?? rawJoke['humorScore'],
     };
   }
@@ -115,7 +133,17 @@ class _FavoriteContentPageState extends State<FavoriteContentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Saved Favorites")),
+      appBar: AppBar(
+        title: Text(
+          'Saved Favorites',
+          style: GoogleFonts.varela(
+            fontSize: 16,
+            //color: widget.isDarkMode ? Colors.white : Colors.black87,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+      ),
       body:
           isLoading
               ? const Center(child: CircularProgressIndicator())
@@ -159,7 +187,7 @@ class _FavoriteContentPageState extends State<FavoriteContentPage> {
               color:
                   isDarkMode
                       ? Colors.grey[900] // Match PostCard dark bg
-                      : const Color.fromARGB(255, 147, 146, 146),
+                      : const Color.fromARGB(255, 186, 186, 186),
             ), // Match light bg
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center, // Vertically center
@@ -179,13 +207,34 @@ class _FavoriteContentPageState extends State<FavoriteContentPage> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  "#${_getHumorTypeLabel(joke['humor_type'])} #${joke['humor_type_score']}",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.yellow[700],
-                    fontWeight: FontWeight.bold,
-                  ),
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color:
+                            isDarkMode
+                                ? Colors.yellow[800]?.withOpacity(0.15)
+                                : const Color.fromARGB(255, 255, 236, 179),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        '${((joke['humor_type_score']) * 100).toStringAsFixed(0)}% ${toTitleCase(_getHumorTypeLabel(joke['humor_type']))}',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color:
+                              isDarkMode
+                                  ? Colors.yellow[700]
+                                  : const Color.fromARGB(255, 94, 70, 9),
+                          fontWeight: FontWeight.bold,
+                          height: 1.2,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -196,39 +245,37 @@ class _FavoriteContentPageState extends State<FavoriteContentPage> {
   }
 
   Widget _buildExpandedCard(Map<String, dynamic> joke, int index) {
-    // Pass the joke data and humor profile to PostCard when expanded
-    return Column(
-      children: [
-        Expanded(
-          child: PostCard(
-            jokeData: normalizeJokeData(
-              joke,
-            ), // Pass the full joke data to PostCard
-            humorProfile: widget.humorProfile, // Pass the humor profile
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 16.0),
-          child: ElevatedButton.icon(
-            onPressed: () {
-              // Force a complete refresh by resetting the state
-              setState(() {
-                expandedIndex = null; // Collapse the view
-                isLoading = true; // Show loading indicator
-              });
-
-              // Reload the data
-              _fetchFavoriteJokesFromFirestore().then((_) {
+    return Expanded(
+      // Fills the vertical space from parent
+      child: Center(
+        child: Column(
+          mainAxisSize:
+              MainAxisSize.min, // Ensures the column shrinks to fit its content
+          children: [
+            PostCard(
+              jokeData: normalizeJokeData(joke),
+              humorProfile: widget.humorProfile,
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton.icon(
+              onPressed: () {
                 setState(() {
-                  isLoading = false; // Hide loading indicator
+                  expandedIndex = null;
+                  isLoading = true;
                 });
-              });
-            },
-            icon: const Icon(Icons.arrow_back),
-            label: const Text("Back to Favorites"),
-          ),
+
+                _fetchFavoriteJokesFromFirestore().then((_) {
+                  setState(() {
+                    isLoading = false;
+                  });
+                });
+              },
+              icon: const Icon(Icons.arrow_back),
+              label: const Text("Back to Favorites"),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

@@ -104,6 +104,8 @@ class _SignupPageState extends State<SignupPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Image.asset('assets/hodien.png', height: 100),
+                const SizedBox(width: 4),
                 const Text(
                   'Welcome',
                   style: TextStyle(

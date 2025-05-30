@@ -142,7 +142,7 @@ class _PostCardState extends State<PostCard> {
           color:
               isDarkMode
                   ? Colors.grey[900]
-                  : const Color.fromARGB(255, 147, 146, 146),
+                  : const Color.fromARGB(255, 189, 188, 188),
           borderRadius: BorderRadius.circular(24),
         ),
         height:
@@ -184,14 +184,32 @@ class _PostCardState extends State<PostCard> {
                           height: 1.6,
                         ),
                       ),
-                      TextSpan(
-                        text:
-                            '#${widget.jokeData['humorType']} #${widget.jokeData['humorScore']}',
-                        style: TextStyle(
-                          fontSize: 16, // Smaller than main text
-                          color: Colors.yellow[700], // Yellow hashtag
-                          height: 1.6,
-                          fontWeight: FontWeight.bold,
+                      WidgetSpan(
+                        alignment: PlaceholderAlignment.middle,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color:
+                                isDarkMode
+                                    ? Colors.yellow[800]?.withOpacity(0.15)
+                                    : const Color.fromARGB(255, 255, 236, 179),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            '${(widget.jokeData['humorScore'] * 100).toStringAsFixed(0)}% ${toTitleCase(widget.jokeData['humorType'])}',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color:
+                                  isDarkMode
+                                      ? Colors.yellow[700]
+                                      : const Color.fromARGB(255, 94, 70, 9),
+                              fontWeight: FontWeight.bold,
+                              height: 1.1,
+                            ),
+                          ),
                         ),
                       ),
                     ],

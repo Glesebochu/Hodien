@@ -76,8 +76,16 @@ class _HomeState extends State<Home> {
 
   Future<void> showSurpriseJoke() async {
     final joke = await engine.fetchSurpriseMeJoke();
+    // Defensive: ensure all required fields are non-null and String-typed
+    final safeJoke = {
+      'id': joke['id']?.toString() ?? '',
+      'text': joke['text']?.toString() ?? '',
+      'humorType': joke['humorType']?.toString() ?? '',
+      'humorScore': joke['humorScore'] ?? 0.0,
+      // add other fields as needed
+    };
     setState(() {
-      surpriseJoke = joke;
+      surpriseJoke = safeJoke;
       showSurprise = true;
     });
   }
@@ -170,32 +178,15 @@ class _HomeState extends State<Home> {
                 'Hodien',
                 style: GoogleFonts.varela(
                   fontSize: 28,
-                  color: widget.isDarkMode ? Colors.white : Colors.black87,
+                  color:
+                      Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : Colors.black87,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ],
           ),
-          // RichText(
-          //   text: TextSpan(
-          //     children: [
-          //       TextSpan(
-          //         text: 'Ho',
-          //         style: GoogleFonts.pacifico(
-          //           fontSize: 28,
-          //           color: widget.isDarkMode ? Colors.white : Colors.black87,
-          //         ),
-          //       ),
-          //       TextSpan(
-          //         text: 'diEn',
-          //         style: GoogleFonts.pacifico(
-          //           fontSize: 28,
-          //           color: Colors.yellow[700],
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // ),
           actions: [
             Padding(
               padding: const EdgeInsets.fromLTRB(0, 0, 16, 0),
@@ -229,12 +220,12 @@ class _HomeState extends State<Home> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
+                    children: [
                       Icon(Icons.auto_awesome, color: Colors.black),
                       SizedBox(width: 8),
                       Text(
                         'Surprise Me',
-                        style: TextStyle(
+                        style: GoogleFonts.varela(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
                         ),
@@ -268,9 +259,12 @@ class _HomeState extends State<Home> {
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _selectedTabIndex,
           onTap: (index) => setState(() => _selectedTabIndex = index),
-          selectedItemColor: widget.isDarkMode ? Colors.amber : Colors.black,
+          selectedItemColor:
+              Theme.of(context).brightness == Brightness.dark
+                  ? Colors.amber
+                  : Colors.black,
           unselectedItemColor:
-              widget.isDarkMode
+              Theme.of(context).brightness == Brightness.dark
                   ? Colors.yellow
                   : const Color.fromARGB(255, 91, 90, 90),
           backgroundColor:

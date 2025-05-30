@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'dart:async';
 import '../utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -98,8 +99,10 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Image.asset('assets/hodien.png', height: 100),
+                const SizedBox(width: 4),
                 const Text(
-                  'Welcome Back',
+                  'Hodien',
                   style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
