@@ -48,7 +48,7 @@ class AppRoot extends StatelessWidget {
       valueListenable: themeNotifier,
       builder: (context, currentTheme, _) {
         return MaterialApp(
-          title: 'Hodien',
+          title: 'Hodien | ሆዴን',
           debugShowCheckedModeBanner: false,
           navigatorKey: navigatorKey,
           scaffoldMessengerKey: Utils.messengerKey,

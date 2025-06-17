@@ -102,7 +102,7 @@ class _LoginPageState extends State<LoginPage> {
                 Image.asset('assets/hodien.png', height: 100),
                 const SizedBox(width: 4),
                 const Text(
-                  'Hodien',
+                  'Hodien | ሆዴን',
                   style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,

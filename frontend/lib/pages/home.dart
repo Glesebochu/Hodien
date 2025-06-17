@@ -175,7 +175,7 @@ class _HomeState extends State<Home> {
               Image.asset('assets/hodien.png', height: 60),
               const SizedBox(width: 4),
               Text(
-                'Hodien',
+                'Hodien | ሆዴን',
                 style: GoogleFonts.varela(
                   fontSize: 28,
                   color:
