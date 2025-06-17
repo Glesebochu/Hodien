@@ -248,51 +248,85 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
 
                 const SizedBox(height: 16),
-                shadcn.Card(
+
+                Container(
+                  decoration: BoxDecoration(
+                    color:
+                        Theme.of(context).brightness == Brightness.dark
+                            ? Colors.grey[900]
+                            : Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                   child: Padding(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(14),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           'Edit Profile',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black87,
+                          ),
                         ),
                         const SizedBox(height: 8),
                         shadcn.TextField(
+                          //make text color white on dark mode
+                          style: TextStyle(
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black87,
+                          ),
                           controller: _usernameController,
                           placeholder: const Text('Username'),
                           features: const [shadcn.InputFeature.clear()],
                         ),
                         const SizedBox(height: 12),
-                        // shadcn.TextField(
-                        //   controller: _emailController,
-                        //   placeholder: const Text('Email'),
-                        //   features: const [shadcn.InputFeature.clear()],
-                        // ),
-                        // const SizedBox(height: 12),
                         shadcn.PrimaryButton(
                           onPressed: _handleEditProfile,
                           child: const Text('Update Info'),
-                          // text: 'Save Changes',
                         ),
                       ],
                     ),
                   ),
                 ),
+
                 const SizedBox(height: 16),
-                shadcn.Card(
+                Container(
+                  decoration: BoxDecoration(
+                    color:
+                        Theme.of(context).brightness == Brightness.dark
+                            ? Colors.grey[900]
+                            : Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                   child: Padding(
                     padding: const EdgeInsets.all(12),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           'Change Password',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black87,
+                          ),
                         ),
                         const SizedBox(height: 8),
                         shadcn.TextField(
+                          style: TextStyle(
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black87,
+                          ),
                           controller: _currentPasswordController,
                           obscureText: true,
                           placeholder: const Text('Current Password'),
@@ -305,6 +339,12 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                         const SizedBox(height: 12),
                         shadcn.TextField(
+                          style: TextStyle(
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black87,
+                          ),
                           controller: _newPasswordController,
                           obscureText: true,
                           placeholder: const Text('New Password'),
@@ -324,17 +364,31 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   ),
                 ),
+
                 const SizedBox(height: 16),
-                shadcn.Card(
-                  // color: Colors.red.shade50,
+
+                Container(
+                  decoration: BoxDecoration(
+                    color:
+                        Theme.of(context).brightness == Brightness.dark
+                            ? Colors.grey[900]
+                            : Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                   child: Padding(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(14),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           'Account Actions',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black87,
+                          ),
                         ),
                         const SizedBox(height: 8),
                         SizedBox(
@@ -344,10 +398,19 @@ class _SettingsPageState extends State<SettingsPage> {
                             onPressed: _handleLogout,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
+                              children: [
                                 Icon(Icons.logout),
                                 SizedBox(width: 8),
-                                Text('Logout'),
+                                Text(
+                                  'Logout',
+                                  style: TextStyle(
+                                    color:
+                                        Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? Colors.white
+                                            : Colors.black87,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
